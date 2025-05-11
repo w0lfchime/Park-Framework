@@ -10,20 +10,20 @@ public struct Fix64
 
 
 
-    public static readonly Fix64 Zero = new Fix64(0);
+    public static readonly Fix64 Zero = new(0);
 
 
 
     public Fix64(long raw) => RawValue = raw;
-    public static Fix64 FromFloat(float f) => new Fix64((long)(f * ONE));
+    public static Fix64 FromFloat(float f) => new((long)(f * ONE));
     public float ToFloat() => (float)RawValue / ONE;
 
     // Basic operators
-    public static Fix64 operator +(Fix64 a, Fix64 b) => new Fix64(a.RawValue + b.RawValue);
-    public static Fix64 operator -(Fix64 a, Fix64 b) => new Fix64(a.RawValue - b.RawValue);
-    public static Fix64 operator -(Fix64 a) => new Fix64(-a.RawValue);
-    public static Fix64 operator *(Fix64 a, Fix64 b) => new Fix64((a.RawValue * b.RawValue) >> SHIFT);
-    public static Fix64 operator /(Fix64 a, Fix64 b) => new Fix64((a.RawValue << SHIFT) / b.RawValue);
+    public static Fix64 operator +(Fix64 a, Fix64 b) => new(a.RawValue + b.RawValue);
+    public static Fix64 operator -(Fix64 a, Fix64 b) => new(a.RawValue - b.RawValue);
+    public static Fix64 operator -(Fix64 a) => new(-a.RawValue);
+    public static Fix64 operator *(Fix64 a, Fix64 b) => new((a.RawValue * b.RawValue) >> SHIFT);
+    public static Fix64 operator /(Fix64 a, Fix64 b) => new((a.RawValue << SHIFT) / b.RawValue);
 
 
     public static bool operator >(Fix64 a, Fix64 b) => a.RawValue > b.RawValue;

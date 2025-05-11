@@ -43,7 +43,7 @@ public static class LogCore
         {
             messageCount++;
 
-            string formattedMessage = $"[{category}] {messageCount} {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
+            string formattedMessage = $"({messageCount}) [{category}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
 
             if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
             {

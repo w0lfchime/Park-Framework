@@ -388,7 +388,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 
 		//The rest
 		RegisterCommands();
-		GlobalData.characterInitialized = true;	//HACK: do we need this?
+		//GlobalData.characterInitialized = true;	//HACK: do we need this?
 
 		//magic numbers
 		UpdateACD();
@@ -415,11 +415,11 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	protected virtual void RegisterCommands()
 	{
-		if (GlobalData.characterInitialized)
-		{
-			//register commands here (?)
+		//if (GlobalData.characterInitialized)
+		//{
+		//	//register commands here (?)
 
-		}
+		//}
 	}
 	protected virtual void SetMemberVariables()
 	{
@@ -428,7 +428,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		this.characterInstanceName = GetType().Name + "_1";
 
 		//debug 
-		this.debug = GlobalData.debug;
+		//this.debug = GlobalData.debug;
 	}
 	protected virtual void SetReferences()
 	{

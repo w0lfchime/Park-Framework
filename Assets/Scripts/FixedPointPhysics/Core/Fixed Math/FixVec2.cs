@@ -1,19 +1,26 @@
 using System;
+using System.Numerics;
+
 
 [Serializable]
 public struct FixVec2
 {
     public Fix64 x, y;
 
-    public static readonly FixVec2 zero = new FixVec2(Fix64.Zero, Fix64.Zero);
-    public static readonly FixVec2 one = new FixVec2(Fix64.FromFloat(1), Fix64.FromFloat(1));
-    public static readonly FixVec2 right = new FixVec2(Fix64.FromFloat(1), Fix64.Zero);
-    public static readonly FixVec2 up = new FixVec2(Fix64.Zero, Fix64.FromFloat(1));
+    public static readonly FixVec2 zero = new(Fix64.Zero, Fix64.Zero);
+    public static readonly FixVec2 one = new(Fix64.FromFloat(1), Fix64.FromFloat(1));
+    public static readonly FixVec2 right = new(Fix64.FromFloat(1), Fix64.Zero);
+    public static readonly FixVec2 up = new(Fix64.Zero, Fix64.FromFloat(1));
 
     public FixVec2(Fix64 x, Fix64 y)
     {
         this.x = x;
         this.y = y;
+    }
+    public FixVec2(float x, float y)
+    {
+        this.x = Fix64.FromFloat(x);
+        this.y = Fix64.FromFloat(y);
     }
 
     public FixVec2(UnityEngine.Vector3 vector)
@@ -21,14 +28,33 @@ public struct FixVec2
         this.x = Fix64.FromFloat(vector.x);
         this.y = Fix64.FromFloat(vector.y);
     }
+    public FixVec2(UnityEngine.Vector2 vector)
+    {
+        this.x = Fix64.FromFloat(vector.x);
+        this.y = Fix64.FromFloat(vector.y);
+    }
+
+    public UnityEngine.Vector3 ToVector3()
+    {
+        return new UnityEngine.Vector3(x.ToFloat(), y.ToFloat(), 0.0f);
+    }
+
+    public static FixVec2 Normalize(FixVec2 v)
+    {
+        Fix64 mag = v.Magnitude;
+        return mag > Fix64.Zero ? v / mag : zero;
+    }
+
 
     // Operators
-    public static FixVec2 operator +(FixVec2 a, FixVec2 b) => new FixVec2(a.x + b.x, a.y + b.y);
-    public static FixVec2 operator -(FixVec2 a, FixVec2 b) => new FixVec2(a.x - b.x, a.y - b.y);
-    public static FixVec2 operator *(FixVec2 a, Fix64 b) => new FixVec2(a.x * b, a.y * b);
-    public static FixVec2 operator *(Fix64 b, FixVec2 a) => new FixVec2(a.x * b, a.y * b);
-    public static FixVec2 operator /(FixVec2 a, Fix64 b) => new FixVec2(a.x / b, a.y / b);
-    public static FixVec2 operator -(FixVec2 v) => new FixVec2(-v.x, -v.y); // Unary negation
+    public static FixVec2 operator +(FixVec2 a, FixVec2 b) => new(a.x + b.x, a.y + b.y);
+    public static FixVec2 operator -(FixVec2 a, FixVec2 b) => new(a.x - b.x, a.y - b.y);
+    public static FixVec2 operator *(FixVec2 a, Fix64 b) => new(a.x * b, a.y * b);
+    public static FixVec2 operator *(Fix64 b, FixVec2 a) => new(a.x * b, a.y * b);
+    public static FixVec2 operator *(FixVec2 a, FixVec2 b) => new(a.x * b.x, a.y * b.y);
+
+    public static FixVec2 operator /(FixVec2 a, Fix64 b) => new(a.x / b, a.y / b);
+    public static FixVec2 operator -(FixVec2 v) => new(-v.x, -v.y); // Unary negation
 
     public static bool operator ==(FixVec2 a, FixVec2 b) => a.x == b.x && a.y == b.y;
     public static bool operator !=(FixVec2 a, FixVec2 b) => !(a == b);
@@ -69,7 +95,7 @@ public struct FixVec2
     }
 
     // Perpendicular vector (like a 90 degree rotation)
-    public FixVec2 Perpendicular() => new FixVec2(-y, x);
+    public FixVec2 Perpendicular() => new(-y, x);
 
     // Distance
     public static Fix64 Distance(FixVec2 a, FixVec2 b) => (a - b).Magnitude;

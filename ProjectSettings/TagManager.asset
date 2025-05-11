@@ -17,10 +17,10 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - FP_Player
+  - FP_Ground
+  - FP_Platform
+  - FP_Wall
   - 
   - 
   - 

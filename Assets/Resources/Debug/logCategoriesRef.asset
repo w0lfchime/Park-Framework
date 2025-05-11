@@ -35,3 +35,6 @@ MonoBehaviour:
   - NoCategory
   - Input_HighDetail
   - Attacks
+  - PhysicsSetup
+  - Game Setup
+  - GameSetup
