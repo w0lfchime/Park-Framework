@@ -30,11 +30,13 @@ public class HomeMenuManager : MonoBehaviour
 			state.stateRoot.SetActive(false); // Hide all on start
 		}
 
-		SetState(initialState, pushToStack: false);
+		SetState(initialState);
 	}
 
-	public void SetState(string stateName, bool pushToStack = true)
+	public void SetState(string stateName)
 	{
+		//HACK: push to stack 
+		bool pushToStack = true;
 		if (!stateDict.TryGetValue(stateName, out var newState))
 		{
 			Debug.LogWarning($"Menu state '{stateName}' not found.");
