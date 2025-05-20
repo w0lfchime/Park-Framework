@@ -30,7 +30,7 @@ public abstract class CharacterState
 	//Flow variables
 	public int? currentFrame;
 	public bool? exitAllowed; //overules priority
-	public bool? stateComplete;
+	//Spublic bool? stateComplete;
 
 	//clearOnExitState
 	//forceClearStateHeapOnEntry
@@ -111,7 +111,7 @@ public abstract class CharacterState
 	{
 		this.StateName = GetType().Name;
 		this.StateMachine = sm;
-		this.Ch = sm.owner;
+		this.Ch = sm.machineOwner;
 		
 	}
 	public virtual void SetStateFields()
@@ -136,19 +136,19 @@ public abstract class CharacterState
 	{
 		currentFrame++;
 
-		if (currentFrame <= minimumStateDuration)
-		{
-			exitAllowed = false;
-			stateComplete = false;
-		}
-		if (currentFrame > minimumStateDuration)
-		{
-			exitAllowed = true;
-		}
-		if (stateDuration != 0 && currentFrame >= stateDuration)
-		{
-			stateComplete = true;
-		}
+		//if (currentFrame <= minimumStateDuration)
+		//{
+		//	exitAllowed = false;
+		//	stateComplete = false;
+		//}
+		//if (currentFrame > minimumStateDuration)
+		//{
+		//	exitAllowed = true;
+		//}
+		//if (stateDuration != 0 && currentFrame >= stateDuration)
+		//{
+		//	stateComplete = true;
+		//}
 
 		//...
 	}
