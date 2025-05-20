@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Suspended : CharacterState
+public class Suspended : CharacterStateOld
 {
 	//Level x state
 

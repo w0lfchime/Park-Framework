@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class ExampleState : CharacterState
+public class ExampleState : CharacterStateOld
 {
 	//Level x state
 

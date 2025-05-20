@@ -5,25 +5,28 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public abstract class PerformanceState
+public abstract class CharacterState
 {
 	//THE BASE STATE
 
 	//======// /==/==/==/=||[LOCAL FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
 	#region local_fields
 	//meta
-	public string stateName;
+	public string StateName;
 	//refs
-	public PerformanceCSM stateMachine;
-	//Flow Params
-	public CStateID? stateID;
-	public CStateID? exitState;
-	public bool? clearFromQueueOnSetState;
-	public bool? forceClearQueueOnEntry;
-	public int? priority;
-	public int? stateDuration; //0, if indefinite 
-	public int? minimumStateDuration; //anti fluttering
-	public bool? exitOnStateComplete;
+	public PerformanceCSM StateMachine;
+	public Character Ch;
+
+
+	//State Definition
+	public CStateID? StateID;
+	public CStateID? DefaultExitState;
+	public bool? ClearFromQueueOnCharacterSetNewState;
+	public bool? ForceClearQueueOnEntry;
+	public int? DefaultPriority;
+	//public int? stateDuration; //0, if indefinite 
+	//public int? minimumStateDuration; //anti fluttering
+	//public bool? exitOnStateComplete;
 	//Flow variables
 	public int? currentFrame;
 	public bool? exitAllowed; //overules priority
@@ -50,7 +53,7 @@ public abstract class PerformanceState
 	#region get_and_set
 	public int GetPriority()
 	{
-		return (int)priority;
+		return (int)DefaultPriority;
 	}
 	#endregion get_and_set
 	//=//-----|Debug|----------------------------------------------------//=//
@@ -104,17 +107,14 @@ public abstract class PerformanceState
 	#region base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region setup
-	public PerformanceState(PerformanceCSM sm)
+	public CharacterState(PerformanceCSM sm)
 	{
-		this.stateName = GetType().Name;
-		this.stateMachine = sm;
+		this.StateName = GetType().Name;
+		this.StateMachine = sm;
+		this.Ch = sm.owner;
 		
 	}
-	protected virtual void SetStateReferences()
-	{
-		//...
-	}
-	public virtual void SetStateMembers()
+	public virtual void SetStateFields()
 	{
 		SetOnEntry();
 		//...
@@ -122,15 +122,15 @@ public abstract class PerformanceState
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
 	#region data_management
-	protected virtual void ProcessInput()
-	{
-		//...
-	}
 	protected virtual void SetOnEntry()
 	{
 		exitAllowed = false;
 		currentFrame = 0;
 		stateComplete = false;
+	}
+	protected virtual void ProcessInput()
+	{
+		//...
 	}
 	protected virtual void PerFrame()
 	{
@@ -161,7 +161,7 @@ public abstract class PerformanceState
 		//...
 		if (exitOnStateComplete == true && stateComplete == true)
 		{
-			StatePushState(exitState, (int)priority + 1, 2);
+			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
 		}
 	}
 	protected virtual void RouteStateFixed()
@@ -173,13 +173,13 @@ public abstract class PerformanceState
 	#region flow
 	public virtual void Enter()
 	{
-		LogCore.Log("PSM_Flow", $"Entering State {stateName}.");
+		LogCore.Log("CSM_Flow", $"Entering State {StateName}.");
 		SetOnEntry();
 		//...
 	}
 	public virtual void Exit()
 	{
-		LogCore.Log("PSM_Flow", $"Exting State {stateName}.");
+		LogCore.Log("CSM_Flow", $"Exting State {StateName}.");
 		//...
 	}
 	#endregion flow

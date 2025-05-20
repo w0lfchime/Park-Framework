@@ -579,7 +579,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	#region state
 	public void OnStateSet()
 	{
-		currentStateName = csm.GetState().stateName;
+		currentStateName = csm.GetState().StateName;
 
 		if (debug && stateText != null)
 		{

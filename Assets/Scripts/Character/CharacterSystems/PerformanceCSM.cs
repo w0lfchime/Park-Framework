@@ -52,8 +52,8 @@ public class PerformanceCSM
 
 	public CStateID currentStateID;
 	public CStateID previousStateID;
-	public PerformanceState currentState;
-	protected PerformanceState[] stateArray;
+	public CharacterState currentState;
+	protected CharacterState[] stateArray;
 	public RequestQueue requestQueue = new();
 
 	public int perFrameProcessLimit = 10;
@@ -65,7 +65,7 @@ public class PerformanceCSM
 		this.machineOwner = owner;
 
 		stateCount = Enum.GetValues(typeof(CStateID)).Length;
-		stateArray = new PerformanceState[stateCount];
+		stateArray = new CharacterState[stateCount];
 
 		machineName = $"{machineOwner.characterInstanceName} SM";
 
@@ -94,7 +94,7 @@ public class PerformanceCSM
 				continue;
 			}
 
-			var stateInstance = (CharacterState)Activator.CreateInstance(stateClass, this, machineOwner);
+			var stateInstance = (CharacterStateOld)Activator.CreateInstance(stateClass, this, machineOwner);
 			stateInstance.stateID = stateID;
 			stateInstance.SetStateMembers(); //get it in before state verification
 			SetStateArrayState(stateID, stateInstance);
@@ -113,12 +113,12 @@ public class PerformanceCSM
 			}
 			else if (!stateArray[i].VerifyState())
 			{
-				LogCore.Log("CSM_Error", $"State {stateArray[i].stateName} is invalid.");
+				LogCore.Log("CSM_Error", $"State {stateArray[i].StateName} is invalid.");
 				passed = false;
 			} 
 			else
 			{
-				LogCore.Log("CSM_Setup", $"Verified state {stateArray[i].stateName}");
+				LogCore.Log("CSM_Setup", $"Verified state {stateArray[i].StateName}");
 			}
 		}
 
@@ -129,20 +129,20 @@ public class PerformanceCSM
 				   : "Failed to verify all registered character states.");
 	}
 
-	public PerformanceState GetState(CStateID stateID) => stateArray[(int)stateID];
+	public CharacterState GetState(CStateID stateID) => stateArray[(int)stateID];
 
-	public PerformanceState GetState() => stateArray[(int)currentStateID];
+	public CharacterState GetState() => stateArray[(int)currentStateID];
 
-	protected void SetStateArrayState(CStateID stateID, PerformanceState state)
+	protected void SetStateArrayState(CStateID stateID, CharacterState state)
 	{
 		int index = (int)stateID;
-		LogCore.Log("CSM_Setup", $"Setting index {index} of state array to state {state.stateName}.");
+		LogCore.Log("CSM_Setup", $"Setting index {index} of state array to state {state.StateName}.");
 		stateArray[index] = state;
 	}
 
 	public void PushState(CStateID stateID, int pushForce, int frameLifetime)
 	{
-		bool coss = (bool)GetState(stateID).clearFromQueueOnSetState;
+		bool coss = (bool)GetState(stateID).ClearFromQueueOnCharacterSetNewState;
 		var newRequest = new SetStateRequest(stateID, pushForce, coss);
 
 		requestQueue.Add(newRequest, frameLifetime);
@@ -174,7 +174,7 @@ public class PerformanceCSM
 		currentState = GetState(newStateID);
 		currentStateID = newStateID;
 
-		if (currentState.forceClearQueueOnEntry == true)
+		if (currentState.ForceClearQueueOnEntry == true)
 		{
 			requestQueue.Clear();
 		}

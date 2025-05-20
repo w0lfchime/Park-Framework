@@ -2,20 +2,12 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 
-public class CharacterState : PerformanceState
+public class CharacterStateOld : PerformanceState
 {
 	//Level 1 Abstract State
 
 	//======// /==/==/==/=||[LOCAL FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
 	#region local_fields
-	[Header("Parent")]
-	protected Character ch;
-
-	[Header("Component Refs")]
-	protected Rigidbody rb;
-	protected CapsuleCollider cc;
-	protected PlayerInputHandler cih;
-	protected AAPController aapc;
 
 
 	//=//----------------------------------------------------------------//=//
@@ -29,7 +21,7 @@ public class CharacterState : PerformanceState
 	#region base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region setup
-	public CharacterState(PerformanceCSM sm, Character character) : base(sm)
+	public CharacterStateOld(PerformanceCSM sm, Character character) : base(sm)
 	{
 		this.ch = character;
 

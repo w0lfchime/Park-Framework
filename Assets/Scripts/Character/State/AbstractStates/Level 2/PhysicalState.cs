@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class PhysicalState : CharacterState
+public class PhysicalState : CharacterStateOld
 {
 	//Level 2 state 
 	//======// /==/==/==/=||[LOCAL FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
