@@ -18,26 +18,19 @@ public abstract class CharacterState
 	public Character Ch;
 
 
-	//State Definition
+	//General Definition
 	public CStateID? StateID;
 	public CStateID? DefaultExitState;
 	public bool? ClearFromQueueOnCharacterSetNewState;
 	public bool? ForceClearQueueOnEntry;
-	public int? DefaultPriority;
-	//public int? stateDuration; //0, if indefinite 
-	//public int? minimumStateDuration; //anti fluttering
-	//public bool? exitOnStateComplete;
-	//Flow variables
-	public int? currentFrame;
-	public bool? exitAllowed; //overules priority
-	//Spublic bool? stateComplete;
+	//public int? DefaultPriority;
+	
+	//Duration Definition
+	public int? StateDuration; //0, if indefinite 
+	public int? MinimumStateDuration;
+	public int? CurrentFrame;
 
-	//clearOnExitState
-	//forceClearStateHeapOnEntry
-	//priority
-	//stateDuration
-	//minimumStateDuration
-	//exitOnStateComplete
+	public bool? IsPhysical;
 
 	//=//----------------------------------------------------------------//=//
 	#endregion local_fields
@@ -51,10 +44,7 @@ public abstract class CharacterState
 	//Methods for only this class 
 	//=//-----|Get & set|------------------------------------------------//=//
 	#region get_and_set
-	public int GetPriority()
-	{
-		return (int)DefaultPriority;
-	}
+
 	#endregion get_and_set
 	//=//-----|Debug|----------------------------------------------------//=//
 	#region debug
@@ -124,9 +114,7 @@ public abstract class CharacterState
 	#region data_management
 	protected virtual void SetOnEntry()
 	{
-		exitAllowed = false;
-		currentFrame = 0;
-		stateComplete = false;
+		CurrentFrame = 0;
 	}
 	protected virtual void ProcessInput()
 	{
@@ -134,7 +122,7 @@ public abstract class CharacterState
 	}
 	protected virtual void PerFrame()
 	{
-		currentFrame++;
+		CurrentFrame++;
 
 		//if (currentFrame <= minimumStateDuration)
 		//{
@@ -155,7 +143,10 @@ public abstract class CharacterState
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
 	#region routing
-	protected abstract void StatePushState(CStateID? stateID, int pushForce, int lifetime); //for push state
+	protected override void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
+	{
+		ch.StatePushState(stateID, pushForce, lifeTime);
+	}
 	protected virtual void RouteState()
 	{
 		//...
