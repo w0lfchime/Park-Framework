@@ -7,29 +7,26 @@
 // explicit permission from the owner.  
 //----------------------------------------------------------------------------------
 
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting.FullSerializer;
-using UnityEngine.Rendering;
 
 public enum CStateID //Standard state types
 {
 	//Debug
-	PSNull,
+	Null,
 	Suspended,
 	Flight,
 	//Gameplay
-	OO_GroundedIdle,
-	OO_Walk,
-	OO_Run,
+	GroundedIdle,
+	Walk,
+	Run,
 	//OO_GroundedDash,
-	OO_Jump,
-	OO_IdleAirborne,
+	Jump,
+	IdleAirborne,
 	//OO_GroundedForwardChargeAttack,
 
 }
@@ -425,7 +422,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	{
 		//meta
 		this.characterStandardName = GetType().Name;
-		this.characterInstanceName = GetType().Name + "_1";
+		this.characterInstanceName = GetType().Name + "_1"; //HACK: hack solution for character instance name 
 
 		//debug 
 		//this.debug = GlobalData.debug;

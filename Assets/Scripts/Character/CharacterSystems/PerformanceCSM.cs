@@ -61,7 +61,7 @@ public class PerformanceCSM
 
 	public PerformanceCSM(Character owner)
 	{
-		this.currentStateID = CStateID.PSNull;
+		this.currentStateID = CStateID.Null;
 		this.machineOwner = owner;
 
 		stateCount = Enum.GetValues(typeof(CStateID)).Length;
@@ -79,23 +79,25 @@ public class PerformanceCSM
 
 		foreach (CStateID stateID in Enum.GetValues(typeof(CStateID)))
 		{
-			if (stateID == CStateID.PSNull) continue;
+			if (stateID == CStateID.Null) continue;
 
-			string stateClassName = stateID.ToString();
-			if (stateClassName.StartsWith("OO_"))
-			{
-				stateClassName = stateOwnerClassName + stateClassName.Substring(3);
-			}
+			string stateClassName = stateOwnerClassName + stateID.ToString();
 
 			Type stateClass = Type.GetType(stateClassName);
 			if (stateClass == null)
 			{
-				LogCore.Log("PSM_Error", $"Failed to generate state from {stateID}.");
-				continue;
+				//No character specific override found, create a generic state. 
+				stateClassName = stateClassName.Substring(stateOwnerClassName.Length);
+				stateClass = Type.GetType(stateClassName);
+
+				if (stateClass == null)
+				{
+
+				}
 			}
 
-			var stateInstance = (CharacterStateOld)Activator.CreateInstance(stateClass, this, machineOwner);
-			stateInstance.stateID = stateID;
+			var stateInstance = (CharacterState)Activator.CreateInstance(stateClass, this, machineOwner);
+			stateInstance.StateID = stateID;
 			stateInstance.SetStateMembers(); //get it in before state verification
 			SetStateArrayState(stateID, stateInstance);
 		}

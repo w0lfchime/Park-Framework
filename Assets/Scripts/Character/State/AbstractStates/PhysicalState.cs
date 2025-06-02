@@ -290,14 +290,14 @@ public class PhysicalState : CharacterStateOld
 			ch.jumpCount = 0;
 			if (!ch.isGroundedByState)
 			{
-				StatePushState(CStateID.OO_GroundedIdle, (int)priority + 1, 2);
+				StatePushState(CStateID.GroundedIdle, (int)priority + 1, 2);
 			}
 		}
 		if (ch.onUngrounding)
 		{
 			if (ch.isGroundedByState)
 			{
-				StatePushState(CStateID.OO_IdleAirborne, (int)priority + 1, 2);
+				StatePushState(CStateID.IdleAirborne, (int)priority + 1, 2);
 			}
 		}
 	}
@@ -317,7 +317,7 @@ public class PhysicalState : CharacterStateOld
 		if (cih.GetButtonDown("Jump") && jumpAllowed)
 		{
 			ch.jumpCount++;
-			StatePushState(CStateID.OO_Jump, 4, 4);
+			StatePushState(CStateID.Jump, 4, 4);
 		}
 	}
 	#endregion routes

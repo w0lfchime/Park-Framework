@@ -43,7 +43,7 @@ public class Suspended : CharacterStateOld
 	{
 		base.SetStateMembers();
 		//...
-		exitState = CStateID.OO_IdleAirborne;
+		exitState = CStateID.IdleAirborne;
 		clearFromQueueOnSetState = true;
 		forceClearQueueOnEntry = true;
 		priority = 0;
