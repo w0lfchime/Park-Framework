@@ -18,17 +18,31 @@ public abstract class CharacterState
 	public Character Ch;
 
 
-	//General Definition
+	#region psm
+	//Definition
 	public CStateID? StateID;
 	public CStateID? DefaultExitState;
 	public bool? ClearFromQueueOnCharacterSetNewState;
 	public bool? ForceClearQueueOnEntry;
 	//public int? DefaultPriority;
-	
+
+	//Variables
+	#endregion psm
+
+
+	#region duration
 	//Duration Definition
-	public int? StateDuration; //0, if indefinite 
+	public int? StateDuration; //0, if indefinite
+	public bool? ExitOnStateComplete;
 	public int? MinimumStateDuration;
 	public int? CurrentFrame;
+
+	//Duration Variables
+	public bool? StateComplete; //will cause state to push DefaultExitState if ExitOnStateComplete is true. 
+	#endregion duration
+
+
+
 
 	public bool? IsPhysical;
 
