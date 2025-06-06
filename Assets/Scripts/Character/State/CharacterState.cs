@@ -24,12 +24,12 @@ public abstract class CharacterState
 	public CStateID? DefaultExitState;
 	public bool? ClearFromQueueOnCharacterSetNewState;
 	public bool? ForceClearQueueOnEntry;
-	//public int? DefaultPriority;
+	public int? DefaultPriority;
 
 	//Variables
 	#endregion psm
 
-
+	
 	#region duration
 	//Duration Definition
 	public int? StateDuration; //0, if indefinite
@@ -134,48 +134,30 @@ public abstract class CharacterState
 	{
 		//...
 	}
-	protected virtual void PerFrame()
+	protected virtual void EachFrame()
 	{
 		CurrentFrame++;
 
-		//if (currentFrame <= minimumStateDuration)
-		//{
-		//	exitAllowed = false;
-		//	stateComplete = false;
-		//}
-		//if (currentFrame > minimumStateDuration)
-		//{
-		//	exitAllowed = true;
-		//}
-		//if (stateDuration != 0 && currentFrame >= stateDuration)
-		//{
-		//	stateComplete = true;
-		//}
-
-		//...
-	}
-	#endregion data_management
-	//=//-----|Routing|--------------------------------------------------//=//
-	#region routing
-	protected override void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
-	{
-		ch.StatePushState(stateID, pushForce, lifeTime);
-	}
-	protected virtual void RouteState()
-	{
-		//...
-		if (exitOnStateComplete == true && stateComplete == true)
+		if (ExitOnStateComplete == true && StateComplete == true)
 		{
 			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
 		}
 	}
-	protected virtual void RouteStateFixed()
+	#endregion data_management
+	//=//-----|Routing|--------------------------------------------------//=//
+	#region routing
+	protected void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
 	{
-
+		Ch.StatePushState(stateID, pushForce, lifeTime);
 	}
 	#endregion routing
-	//=//-----|Flow|-----------------------------------------------------//=//
-	#region flow
+	//=//-----|Changing States|------------------------------------------//=//
+	#region changing_states
+
+
+	#endregion changing_states
+	//=//-----|Wrapper Events/Mono|--------------------------------------//=//
+	#region mono
 	public virtual void Enter()
 	{
 		LogCore.Log("CSM_Flow", $"Entering State {StateName}.");
@@ -187,22 +169,16 @@ public abstract class CharacterState
 		LogCore.Log("CSM_Flow", $"Exting State {StateName}.");
 		//...
 	}
-	#endregion flow
-	//=//-----|Mono|-----------------------------------------------------//=//
-	#region mono
-	public virtual void Update()
-	{
-		ProcessInput();
-		//...
-		RouteState();
-	}
 	public virtual void FixedFrameUpdate()
 	{
-		PerFrame();
+		EachFrame();
 		//...
-		RouteStateFixed();
+
 	}
-	public virtual void FixedPhysicsUpdate() { }
+	public virtual void Update()
+	{
+		ProcessInput(); //HACK: idk...
+	}
 	public virtual void LateUpdate() { }
 	#endregion mono
 	//=//-----|Debug|----------------------------------------------------//=//
