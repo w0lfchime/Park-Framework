@@ -68,9 +68,9 @@ public class Storm : Character
 		base.ProcessInput();
 		//...
 	}
-	protected override void UpdateACD()
+	protected override void UpdateACS()
 	{
-		base.UpdateACD();
+		base.UpdateACS();
 		//...
 	}
 	protected override void UpdateCharacterData() //TODO: better name 

@@ -16,18 +16,18 @@ using UnityEngine.InputSystem;
 
 public enum CStateID //Standard state types
 {
-	//Debug
+	//Misc
 	Null,
 	Suspended,
 	Flight,
-	//Gameplay
+
+	//Gameplay: 
 	GroundedIdle,
 	Walk,
 	Run,
-	//OO_GroundedDash,
 	Jump,
 	IdleAirborne,
-	//OO_GroundedForwardChargeAttack,
+
 
 }
 
@@ -38,8 +38,9 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	//=//-----|General|-----------------------------------------------------------//=//
 	#region general
 	[Header("Meta")]
-	public string characterInstanceName;
-	public string characterStandardName;
+	public string CharacterName;
+	public string InstanceName;
+	public string StandardClassPrefix;
 	public bool nonPlayer = false;
 
 	[Header("Component Refs")]
@@ -290,8 +291,8 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	public void CSMDebugUpdate()
 	{
-		requestQueueSize = csm.requestQueue.Count;
-		currStateExitAllowed = csm.currentState.exitAllowed == true;
+		requestQueueSize = csm.RequestQueue.Count;
+		currStateExitAllowed = csm.CurrentState.exitAllowed == true;
 	}
 	#endregion csm
 	//=//-----|Physics|----------------------------------------------------------//=//
@@ -388,7 +389,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//GlobalData.characterInitialized = true;	//HACK: do we need this?
 
 		//magic numbers
-		UpdateACD();
+		UpdateACS();
 
 		//wiring data (runs in update)
 		UpdateCharacterData();
@@ -402,10 +403,10 @@ public abstract class Character : MonoBehaviour, IGameUpdate
         //state
         csm = new PerformanceCSM(this); //special init proc
 		
-		LogCore.Log("Character", $"Character initialized: {characterInstanceName}");
+		LogCore.Log("Character", $"Character initialized: {InstanceName}");
 
 		//post setup
-		if (csm.verified)
+		if (csm.Verified)
 		{
 			CharacterPushState(CStateID.Suspended, 9, 9); 
 		}
@@ -421,17 +422,15 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	protected virtual void SetMemberVariables()
 	{
 		//meta
-		this.characterStandardName = GetType().Name;
-		this.characterInstanceName = GetType().Name + "_1"; //HACK: hack solution for character instance name 
-
-		//debug 
-		//this.debug = GlobalData.debug;
+		this.StandardClassPrefix = GetType().Name;
+		this.InstanceName = StandardClassPrefix + "_1"; //HACK: hack solution for character instance name 
+		this.CharacterName = acs.characterName;
 	}
 	protected virtual void SetReferences()
 	{
 		//input
 		playerInput = GetComponent<PlayerInput>();
-		playerInputHandler = GetComponent<PlayerInputHandler>();
+		//playerInputHandler = GetComponent<PlayerInputHandler>(); //HACK: replacing needed
 
 		//physics
 		rigidBody = GetComponent<Rigidbody>();
@@ -478,7 +477,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		}
 		if (debug && Input.GetKeyDown(KeyCode.U))
 		{
-			UpdateACD();
+			UpdateACS();
 		}
 		if (debug && Input.GetKeyDown(KeyCode.H))
 		{
@@ -487,7 +486,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		
 		//...
 	}
-	protected virtual void UpdateACD()
+	protected virtual void UpdateACS()
 	{
 		// ucd + bcd = acd
 
@@ -520,8 +519,6 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 				field.SetValue(acs, vectorValue1 + vectorValue2);
 			}
 		}
-
-		this.characterInstanceName = bcs.characterName;
 	}
 	protected virtual void UpdateCharacterData() //TODO: better name 
 	{
@@ -581,9 +578,9 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		if (debug && stateText != null)
 		{
 			// Remove the character class name prefix if it exists
-			if (currentStateName.StartsWith(characterStandardName))
+			if (currentStateName.StartsWith(StandardClassPrefix))
 			{
-				currentStateName = currentStateName.Substring(characterStandardName.Length);
+				currentStateName = currentStateName.Substring(StandardClassPrefix.Length);
 			}
 
 			stateText.text = currentStateName;

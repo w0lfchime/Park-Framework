@@ -25,6 +25,7 @@ public abstract class CharacterState
 	public bool? ClearFromQueueOnCharacterSetNewState;
 	public bool? ForceClearQueueOnEntry;
 	public int? DefaultPriority;
+	public int? CurrentPriority;
 
 	//Variables
 	#endregion psm
@@ -39,75 +40,18 @@ public abstract class CharacterState
 
 	//Duration Variables
 	public bool? StateComplete; //will cause state to push DefaultExitState if ExitOnStateComplete is true. 
+
+
 	#endregion duration
 
-
-
-
 	public bool? IsPhysical;
+
 
 	//=//----------------------------------------------------------------//=//
 	#endregion local_fields
 	/////////////////////////////////////////////////////////////////////////////
 
-
-
-
-	//======// /==/==/==/=||[LOCAL]||==/==/==/==/==/==/==/==/==/==/==/ //======//
-	#region local
-	//Methods for only this class 
-	//=//-----|Get & set|------------------------------------------------//=//
-	#region get_and_set
-
-	#endregion get_and_set
-	//=//-----|Debug|----------------------------------------------------//=//
-	#region debug
-	protected bool CheckStateForNullFields()
-	{
-		bool passed = true;
-		Type type = this.GetType();
-		List<string> unsetFields = new(); //TODO: setup as fuckin hash key value thing to clarify null locations
-		string failedMessage = $" unset field(s) in {type.Name}."; 
-		while (type != null && type != typeof(object))
-		{
-			FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-			foreach (FieldInfo field in fields)
-			{
-				object value = field.GetValue(this);
-				if (value == null)
-				{
-					passed = false;
-					string message = field.Name;
-					if (!unsetFields.Contains(message))
-					{
-						unsetFields.Add(message);
-					}
-
-				}
-			}
-			type = type.BaseType;
-		}
-		if (passed == false)
-		{
-			LogCore.Log("CriticalError", $"Check FAILED: {unsetFields.Count} {failedMessage}");
-			foreach (string str in unsetFields)
-			{
-				LogCore.Log(str);
-			}
-			DebugCore.StopGame();
-		}
-		return passed;
-	}
-	#endregion debug
-	//=//----------------------------------------------------------------//=//
-	#endregion local
-	/////////////////////////////////////////////////////////////////////////////
-
-
-
-
 	//======// /==/==/==/=||[BASE]||=/==/==/==/==/==/==/==/==/==/==/==/ //======//
-	//Methods from the base class, performance state.
 	#region base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region setup
@@ -115,13 +59,10 @@ public abstract class CharacterState
 	{
 		this.StateName = GetType().Name;
 		this.StateMachine = sm;
-		this.Ch = sm.machineOwner;
-		
-	}
-	public virtual void SetStateFields()
-	{
+		this.Ch = sm.MachineOwner;
+
 		SetOnEntry();
-		//...
+
 	}
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
@@ -146,6 +87,12 @@ public abstract class CharacterState
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
 	#region routing
+	public bool IsExitAllowed()
+	{
+		bool exitAllowed = CurrentFrame > MinimumStateDuration;
+
+		return exitAllowed;
+	}
 	protected void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
 	{
 		Ch.StatePushState(stateID, pushForce, lifeTime);
@@ -187,9 +134,45 @@ public abstract class CharacterState
 	{
 		return CheckStateForNullFields();
 	}
-	#endregion debug
-	//=//----------------------------------------------------------------//=//
-	#endregion base
-	/////////////////////////////////////////////////////////////////////////////
+    protected bool CheckStateForNullFields()
+    {
+        bool passed = true;
+        Type type = this.GetType();
+        List<string> unsetFields = new(); //TODO: setup as fuckin hash key value thing to clarify null locations
+        string failedMessage = $" unset field(s) in {type.Name}.";
+        while (type != null && type != typeof(object))
+        {
+            FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            foreach (FieldInfo field in fields)
+            {
+                object value = field.GetValue(this);
+                if (value == null)
+                {
+                    passed = false;
+                    string message = field.Name;
+                    if (!unsetFields.Contains(message))
+                    {
+                        unsetFields.Add(message);
+                    }
+
+                }
+            }
+            type = type.BaseType;
+        }
+        if (passed == false)
+        {
+            LogCore.Log("CriticalError", $"Check FAILED: {unsetFields.Count} {failedMessage}");
+            foreach (string str in unsetFields)
+            {
+                LogCore.Log(str);
+            }
+            DebugCore.StopGame();
+        }
+        return passed;
+    }
+    #endregion debug
+    //=//----------------------------------------------------------------//=//
+    #endregion base
+    /////////////////////////////////////////////////////////////////////////////
 
 }
