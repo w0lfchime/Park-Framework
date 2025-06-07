@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d109b0f0eaddf44ba56584b06460264, type: 3}
   m_Name: LogCategoriesMain
   m_EditorClassIdentifier: 
-  categories: []
+  categories:
+  - name: GameSetup
+    enabled: 1
+  - name: PhysicsSetup
+    enabled: 1

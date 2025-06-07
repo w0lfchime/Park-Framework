@@ -41,13 +41,23 @@ public static class LogCore
 
         messageCount++;
         string formattedMessage = $"({messageCount}) [{category}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
-
-        if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
+        if (category.Contains("Fatal", StringComparison.OrdinalIgnoreCase))
+        {
             Debug.LogError(formattedMessage);
+            DebugCore.StopGame();
+        }
+        else if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
+        {
+            Debug.LogError(formattedMessage);
+        }
         else if (category.Contains("Warning", StringComparison.OrdinalIgnoreCase))
+        {
             Debug.LogWarning(formattedMessage);
+        }
         else
+        {
             Debug.Log(formattedMessage);
+        }
 
         OnLog?.Invoke(formattedMessage);
 
