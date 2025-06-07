@@ -73,7 +73,7 @@ public abstract class CharacterState
 	}
 	protected virtual void ProcessInput()
 	{
-		//...
+		//HACK: LOL
 	}
 	protected virtual void EachFrame()
 	{
@@ -87,22 +87,24 @@ public abstract class CharacterState
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
 	#region routing
+	public int GetPriority()
+	{
+		return (int)CurrentPriority;
+	}
 	public bool IsExitAllowed()
 	{
 		bool exitAllowed = CurrentFrame > MinimumStateDuration;
 
+		//...
+
 		return exitAllowed;
 	}
+
 	protected void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
 	{
 		Ch.StatePushState(stateID, pushForce, lifeTime);
 	}
 	#endregion routing
-	//=//-----|Changing States|------------------------------------------//=//
-	#region changing_states
-
-
-	#endregion changing_states
 	//=//-----|Wrapper Events/Mono|--------------------------------------//=//
 	#region mono
 	public virtual void Enter()

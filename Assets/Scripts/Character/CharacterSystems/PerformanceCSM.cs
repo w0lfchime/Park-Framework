@@ -188,10 +188,6 @@ public class PerformanceCSM
 		LogCore.Log("PSM_Detail", $"Switched from {PreviousStateID} to {CurrentStateID}");
 	}
 
-	public void PSMUpdate()
-	{
-		CurrentState?.Update();
-	}
 
 	public void PSMFixedFrameUpdate()
 	{
@@ -200,10 +196,9 @@ public class PerformanceCSM
 		CurrentState?.FixedFrameUpdate();
 		ProcessStateQueue();
 	}
-
-	public void PSMFixedPhysicsUpdate()
+	public void PSMUpdate()
 	{
-		CurrentState?.FixedPhysicsUpdate();
+		CurrentState?.Update();
 	}
 
 	public void PSMLateUpdate()

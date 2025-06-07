@@ -5,19 +5,13 @@ using System.Runtime.CompilerServices;
 
 public static class LogCore
 {
-    private static HashSet<string> blacklistedCategories = new HashSet<string>
-    {
-        "PSM_Flow",
-        "PSM_Detail",
-    };
-
     private static int messageCount = 0;
 
     public static event Action<string> OnLog;
 
     private static LogCategories logCategoriesAsset;
 
-    public static bool loggingEnabled = true;   
+    public static bool loggingEnabled = true;
 
     static LogCore()
     {
@@ -26,9 +20,13 @@ public static class LogCore
 
     private static void LoadLogCategoriesAsset()
     {
-        logCategoriesAsset = Resources.Load<LogCategories>("Debug/logCategoriesRef");
+        var foundAssets = Resources.LoadAll<LogCategories>("");
 
-        if (logCategoriesAsset == null)
+        if (foundAssets.Length > 0)
+        {
+            logCategoriesAsset = foundAssets[0]; // or use LINQ to filter more specifically
+        }
+        else
         {
             Debug.LogWarning("No LogCategories asset found in Resources. Please create one.");
         }
@@ -39,46 +37,47 @@ public static class LogCore
         [CallerLineNumber] int line = 0,
         [CallerMemberName] string member = "")
     {
-        if (loggingEnabled && !blacklistedCategories.Contains(category))
-        {
-            messageCount++;
+        if (!loggingEnabled || !ShouldLogCategory(category)) return;
 
-            string formattedMessage = $"({messageCount}) [{category}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
+        messageCount++;
+        string formattedMessage = $"({messageCount}) [{category}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
 
-            if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
-            {
-                Debug.LogError(formattedMessage);
-            }
-            else if (category.Contains("Warning", StringComparison.OrdinalIgnoreCase))
-            {
-                Debug.LogWarning(formattedMessage);
-            }
-            else
-            {
-                Debug.Log(formattedMessage);
-            }
+        if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
+            Debug.LogError(formattedMessage);
+        else if (category.Contains("Warning", StringComparison.OrdinalIgnoreCase))
+            Debug.LogWarning(formattedMessage);
+        else
+            Debug.Log(formattedMessage);
 
-            OnLog?.Invoke(formattedMessage);
+        OnLog?.Invoke(formattedMessage);
 
-            // Save new category if not already logged
-            TrackNewCategory(category);
-        }
+        TrackNewCategory(category);
     }
 
-	public static void Log(string message)
-	{
-		if (loggingEnabled && !blacklistedCategories.Contains("NoCategory"))
-		{
-			Debug.Log(message);
-			OnLog?.Invoke(message);
-			TrackNewCategory("NoCategory");
-		}
-	}
-
-
-	private static void TrackNewCategory(string category)
+    public static void Log(string message)
     {
-        if (logCategoriesAsset != null && !logCategoriesAsset.categories.Contains(category))
+        const string defaultCategory = "NoCategory";
+        if (!loggingEnabled || !ShouldLogCategory(defaultCategory)) return;
+
+        Debug.Log(message);
+        OnLog?.Invoke(message);
+
+        TrackNewCategory(defaultCategory);
+    }
+
+    private static bool ShouldLogCategory(string category)
+    {
+        if (logCategoriesAsset == null) return true;
+
+        var cat = logCategoriesAsset.GetCategory(category);
+        return cat == null || cat.enabled; // default: log if not present
+    }
+
+    private static void TrackNewCategory(string category)
+    {
+        if (logCategoriesAsset == null) return;
+
+        if (!logCategoriesAsset.ContainsCategory(category))
         {
             logCategoriesAsset.AddCategory(category);
             SaveLoggedCategories();
@@ -91,20 +90,5 @@ public static class LogCore
         UnityEditor.EditorUtility.SetDirty(logCategoriesAsset);
         UnityEditor.AssetDatabase.SaveAssets();
 #endif
-    }
-
-    public static void BlacklistCategory(string category)
-    {
-        blacklistedCategories.Add(category);
-    }
-
-    public static void WhitelistCategory(string category)
-    {
-        blacklistedCategories.Remove(category);
-    }
-
-    public static bool IsCategoryBlacklisted(string category)
-    {
-        return blacklistedCategories.Contains(category);
     }
 }

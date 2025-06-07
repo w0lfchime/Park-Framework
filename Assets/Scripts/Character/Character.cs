@@ -88,9 +88,9 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	#endregion animation
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
-	[Header("Input")]
-	public PlayerInputHandler playerInputHandler;
-	private PlayerInput playerInput;
+	//[Header("Input")]
+	//public PlayerInputHandler playerInputHandler;
+	//private PlayerInput playerInput;
 
 	[Header("Input Variables")]
 	public bool inputEnabled = true;
@@ -104,12 +104,12 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	public int hitstopFramesRemaining;
 	public Vector3 hitstopStoredVelocity;
 
-    #endregion hitstop
-    //=//-----|Action Queue|------------------------------------------------------//=//
-    #region action_queue
+	#endregion hitstop
+	//=//-----|Action Queue|------------------------------------------------------//=//
+	#region action_queue
 
 
-    [Header("Action Queue")]
+	[Header("Action Queue")]
 	private readonly Queue<(int frame, Action action)> actionQueue = new();
 	private readonly Queue<(int frame, Action<object> action, object param)> paramActionQueue = new();
 	#endregion action_queue
@@ -125,10 +125,10 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 
 	[Header("Ground Checking Variables")]
 	public LayerMask groundLayer;
-	public bool isGrounded; 
-	public bool isGroundedByState; 
-	public bool onGrounding; 
-	public bool onUngrounding; 
+	public bool isGrounded;
+	public bool isGroundedByState;
+	public bool onGrounding;
+	public bool onUngrounding;
 	public float distanceToGround;
 	public float lastGroundedCheckTime = 0.0f;
 	public float timeSinceLastGrounding = 0.0f;
@@ -185,7 +185,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	{
 
 
-		ProcessInput(); 
+		ProcessInput();
 		UpdateCharacterData();
 		CharacterUpdate();
 		//...
@@ -196,7 +196,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		ProcessHitstop();
 		CharacterFixedFrameUpdate();
 		ProcessActionQueue();
-		csm.PSMFixedFrameUpdate();		
+		csm.PSMFixedFrameUpdate();
 		CSMDebugUpdate(); //HACK:
 	}
 	private void FixedUpdate() // FixedPhysicsUpdate
@@ -204,7 +204,6 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//...
 		HandleImpulseForce();
 		HandleRegularForce();
-		csm.PSMFixedPhysicsUpdate();
 	}
 	private void LateUpdate()
 	{
@@ -292,7 +291,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	public void CSMDebugUpdate()
 	{
 		requestQueueSize = csm.RequestQueue.Count;
-		currStateExitAllowed = csm.CurrentState.exitAllowed == true;
+		currStateExitAllowed = csm.CurrentState.IsExitAllowed() == true;
 	}
 	#endregion csm
 	//=//-----|Physics|----------------------------------------------------------//=//
@@ -311,9 +310,9 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		rigidBody.AddForce(appliedImpulseForce, ForceMode.Impulse);
 		appliedImpulseForce = Vector3.zero;
 	}
-    #endregion physics
-    //=//-----|Hitstop|----------------------------------------------------------//=//
-    #region hitstop
+	#endregion physics
+	//=//-----|Hitstop|----------------------------------------------------------//=//
+	#region hitstop
 	public void EnableHitstop()
 	{
 		if (isHitstopped)
@@ -339,24 +338,24 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		rigidBody.linearVelocity = hitstopStoredVelocity;
 		hitstopStoredVelocity = Vector3.zero;
 	}
-    public void AddHitstop(int frames)
-    {
+	public void AddHitstop(int frames)
+	{
 		if (frames <= 0)
 		{
 			return;
 		}
 		hitstopFramesRemaining += frames;
 
-    }
+	}
 
 	//Per fixed frame update
-    protected void ProcessHitstop()
+	protected void ProcessHitstop()
 	{
 		if (hitstopFramesRemaining <= 0)
 		{
 			DisableHitstop();
 			hitstopFramesRemaining = 0;
-		} 
+		}
 		else
 		{
 			EnableHitstop();
@@ -365,20 +364,20 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 
 
-    #endregion hitstop
-    //=//------------------------------------------------------------------------//=//
-    #endregion local
-    /////////////////////////////////////////////////////////////////////////////////////
+	#endregion hitstop
+	//=//------------------------------------------------------------------------//=//
+	#endregion local
+	/////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
-    //======// /==/==/==/=||[BASE]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
-    #region base 
-    //Base methods and their helpers 
-    //=//-----|Setup|------------------------------------------------------------//=//
-    #region setup
-    protected virtual void CharacterSetup()
+	//======// /==/==/==/=||[BASE]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
+	#region base 
+	//Base methods and their helpers 
+	//=//-----|Setup|------------------------------------------------------------//=//
+	#region setup
+	protected virtual void CharacterSetup()
 	{
 		//Local init functions
 		SetMemberVariables();
@@ -394,21 +393,21 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//wiring data (runs in update)
 		UpdateCharacterData();
 
-        //animation 
-        aapController = new AAPController(this);
-        aapController.Setup();
+		//animation 
+		aapController = new AAPController(this);
+		aapController.Setup();
 
 
 		//LAST
-        //state
-        csm = new PerformanceCSM(this); //special init proc
-		
+		//state
+		csm = new PerformanceCSM(this); //special init proc
+
 		LogCore.Log("Character", $"Character initialized: {InstanceName}");
 
 		//post setup
 		if (csm.Verified)
 		{
-			CharacterPushState(CStateID.Suspended, 9, 9); 
+			CharacterPushState(CStateID.Suspended, 9, 9);
 		}
 	}
 	protected virtual void RegisterCommands()
@@ -429,7 +428,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	protected virtual void SetReferences()
 	{
 		//input
-		playerInput = GetComponent<PlayerInput>();
+		//playerInput = GetComponent<PlayerInput>(); //HACK: Replace
 		//playerInputHandler = GetComponent<PlayerInputHandler>(); //HACK: replacing needed
 
 		//physics
@@ -452,39 +451,39 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	#region data
 	protected virtual void ProcessInput()
 	{
-		if (inputEnabled)
-		{
+		//if (inputEnabled)
+		//{
 
-			//reset
-			inputMoveDirection = playerInputHandler.MoveInput;
-			characterLookDirection = playerInputHandler.LookInput;
+		//	//reset
+		//	inputMoveDirection = playerInputHandler.MoveInput;
+		//	characterLookDirection = playerInputHandler.LookInput;
 
 
-			if (!facingRight)
-			{
-				characterLookDirection.x *= -1;
-			}
+		//	if (!facingRight)
+		//	{
+		//		characterLookDirection.x *= -1;
+		//	}
 
-			inputMoveDirection.Normalize();
-			characterLookDirection.Normalize();
-			//...
+		//	inputMoveDirection.Normalize();
+		//	characterLookDirection.Normalize();
+		//	//...
 
-		}
+		//}
 
-		if (Input.GetKeyDown(KeyCode.Alpha9))
-		{
-			SetDebug(!debug);
-		}
-		if (debug && Input.GetKeyDown(KeyCode.U))
-		{
-			UpdateACS();
-		}
-		if (debug && Input.GetKeyDown(KeyCode.H))
-		{
-			AddHitstop(60);
-		} 
-		
-		//...
+		//if (Input.GetKeyDown(KeyCode.Alpha9))
+		//{
+		//	SetDebug(!debug);
+		//}
+		//if (debug && Input.GetKeyDown(KeyCode.U))
+		//{
+		//	UpdateACS();
+		//}
+		//if (debug && Input.GetKeyDown(KeyCode.H))
+		//{
+		//	AddHitstop(60);
+		//}
+
+		////...
 	}
 	protected virtual void UpdateACS()
 	{
@@ -533,16 +532,16 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	protected abstract void CharacterFixedFrameUpdate();
 	protected abstract void CharacterFixedPhysicsUpdate();
 	protected abstract void CharacterLateUpdate();
-    #endregion mono_abstracts
+	#endregion mono_abstracts
 
-    //=//------------------------------------------------------------------------//=//
-    #endregion base
-    /////////////////////////////////////////////////////////////////////////////////////
+	//=//------------------------------------------------------------------------//=//
+	#endregion base
+	/////////////////////////////////////////////////////////////////////////////////////
 
 
-    //======// /==/==/==/=||[UTILITY]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
-    #region utility
-    public bool FlipCoin()
+	//======// /==/==/==/=||[UTILITY]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
+	#region utility
+	public bool FlipCoin()
 	{
 		int randomNumber = UnityEngine.Random.Range(0, 100);
 		return randomNumber < 50;
