@@ -18,7 +18,7 @@ public class LoadSceneUI : MonoBehaviour
 
 			btn.GetComponent<Button>().onClick.AddListener(() =>
 			{
-				SceneManager.LoadScene(sceneName);
+				AppManager.LoadScene(sceneName);
 			});
 		}
 	}

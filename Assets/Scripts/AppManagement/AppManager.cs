@@ -12,22 +12,35 @@ public class AppManager : MonoBehaviour
 	private string currentLoadedScene;
 
 
-	public string BootAppState;
-	private AppState currentState;
+	public string BootAppState = "HomeMenuAPS";
+	public static AppState CurrentState;
+
+
+	public static bool OpenPauseAllowed = true;
+
 
 	private void Awake()
 	{
+		if (Instance != null && Instance != this)
+		{
+			Destroy(this.gameObject); // Optional: protect against duplicates
+			return;
+		}
 
+		Instance = this;
 
-
-
+		SetAppState(BootAppState);
 	}
+
+
 
 	private void Update()
 	{
-		currentState?.OnUpdate();
+		CurrentState?.OnUpdate();
 	}
 
+
+	//scene management
 	public static void LoadScene(string sceneName)
 	{
 		Instance.StartCoroutine(Instance.LoadSceneRoutine(sceneName));
@@ -49,20 +62,33 @@ public class AppManager : MonoBehaviour
 		currentLoadedScene = newSceneName;
 	}
 
-	public void SetAppState(String newState)
-	{
 
-		System.Type newStateType = System.Type.GetType(BootAppState);
+
+	//appstate flow
+	public void SetAppState(string newStateName)
+	{
+		// Get the Type from the string
+		Type newStateType = Type.GetType(newStateName);
 
 		if (newStateType == null)
 		{
-			LogCore.Log("FatalError", $"Could not generate an AppState with {newState}.");
+			LogCore.Log("FatalError", $"Could not generate an AppState with name: {newStateName}");
+			return;
 		}
 
+		// Create an instance of the AppState
+		AppState newState = Activator.CreateInstance(newStateType) as AppState;
 
+		if (newState == null)
+		{
+			LogCore.Log("FatalError", $"Type {newStateName} is not a valid AppState.");
+			return;
+		}
 
-		currentState?.OnExit();
-		currentState = newState;
-		currentState?.OnEnter();
+		// Transition
+		CurrentState?.OnExit();
+		CurrentState = newState;
+		CurrentState?.OnEnter();
 	}
+
 }

@@ -1,13 +1,13 @@
 
 
 
-public class HomeMenu : AppState
+public class HomeMenuAPS : AppState
 {
 	public override void OnEnter()
 	{
 		base.OnEnter();
 
-		App.LoadScene("MainMenuScene");
+		AppManager.LoadScene("HomeMenu");
 	}
 
 	public override void OnUpdate()

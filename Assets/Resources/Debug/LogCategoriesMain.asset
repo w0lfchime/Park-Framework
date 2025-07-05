@@ -17,3 +17,7 @@ MonoBehaviour:
     enabled: 1
   - name: PhysicsSetup
     enabled: 1
+  - name: FatalError
+    enabled: 1
+  - name: AppFlow
+    enabled: 1

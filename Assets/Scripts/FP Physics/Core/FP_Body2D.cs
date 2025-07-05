@@ -21,8 +21,8 @@ public class FP_Body2D : MonoBehaviour
 
 
     // === Body State ===
-    public FixVec2 Position { get; private set; }
-    public FixVec2 Velocity { get; private set; }
+    public FixVec2 Position { get; set; }
+    public FixVec2 Velocity { get; set; }
     public Fix64 Mass => mass;
     public Fix64 InverseMass => mass.RawValue == 0 ? Fix64.Zero : Fix64.FromFloat(1f) / mass;
 

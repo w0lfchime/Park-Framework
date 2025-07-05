@@ -34,12 +34,25 @@ public struct FixVec2
         this.y = Fix64.FromFloat(vector.y);
     }
 
-    public UnityEngine.Vector3 ToVector3()
-    {
-        return new UnityEngine.Vector3(x.ToFloat(), y.ToFloat(), 0.0f);
-    }
+    //vector conversions 
+	public UnityEngine.Vector2 ToVector2()
+	{
+		return new UnityEngine.Vector2(x.ToFloat(), y.ToFloat());
+	}
+	public static FixVec2 FromVector2(UnityEngine.Vector2 v)
+	{
+		return new FixVec2(Fix64.FromFloat(v.x), Fix64.FromFloat(v.y));
+	}
+	public UnityEngine.Vector3 ToVector3()
+	{
+		return new UnityEngine.Vector3(x.ToFloat(), y.ToFloat(), 0f);
+	}
+	public static FixVec2 FromVector3(UnityEngine.Vector3 v)
+	{
+		return new FixVec2(Fix64.FromFloat(v.x), Fix64.FromFloat(v.y));
+	}
 
-    public static FixVec2 Normalize(FixVec2 v)
+	public static FixVec2 Normalize(FixVec2 v)
     {
         Fix64 mag = v.Magnitude;
         return mag > Fix64.Zero ? v / mag : zero;

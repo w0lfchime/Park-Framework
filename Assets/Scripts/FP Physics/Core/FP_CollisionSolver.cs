@@ -15,82 +15,55 @@ public class FP_CollisionSolver : MonoBehaviour
         Instance = this;
     }
 
-    public void CheckAndResolve(FP_BoxCollider2D a, FP_BoxCollider2D b)
-    {
-        if (a.IsTrigger || b.IsTrigger)
-        {
-            // TODO: Handle triggers later
-            return;
-        }
+	public void CheckAndResolve(FP_BoxCollider2D a, FP_BoxCollider2D b)
+	{
+		if (a.IsTrigger || b.IsTrigger) return;
 
-        var aMin = a.GetWorldPosition() - (a.Size * Fix64.FromFloat(0.5f));
-        var aMax = a.GetWorldPosition() + (a.Size * Fix64.FromFloat(0.5f));
+		// --- 1. Compute AABB overlap ---
+		var half = Fix64.FromFloat(0.5f);
+		var aMin = a.GetWorldPosition() - a.Size * half;
+		var aMax = a.GetWorldPosition() + a.Size * half;
+		var bMin = b.GetWorldPosition() - b.Size * half;
+		var bMax = b.GetWorldPosition() + b.Size * half;
 
-        var bMin = b.GetWorldPosition() - (b.Size * Fix64.FromFloat(0.5f));
-        var bMax = b.GetWorldPosition() + (b.Size * Fix64.FromFloat(0.5f));
+		if (aMin.x >= bMax.x || aMax.x <= bMin.x ||
+			aMin.y >= bMax.y || aMax.y <= bMin.y) return;        // no overlap
 
-        bool overlapX = aMin.x < bMax.x && aMax.x > bMin.x;
-        bool overlapY = aMin.y < bMax.y && aMax.y > bMin.y;
+		Fix64 dx = Fix64.Min(aMax.x - bMin.x, bMax.x - aMin.x);
+		Fix64 dy = Fix64.Min(aMax.y - bMin.y, bMax.y - aMin.y);
 
-        if (!(overlapX && overlapY))
-            return;
+		// --- 2. Pick MTV with the **correct sign** ---
+		FixVec2 mtv;
+		if (dx < dy)     // resolve on X
+			mtv = new FixVec2(a.GetWorldPosition().x < b.GetWorldPosition().x ? -dx : dx, Fix64.Zero);
+		else             // resolve on Y
+			mtv = new FixVec2(Fix64.Zero, a.GetWorldPosition().y < b.GetWorldPosition().y ? -dy : dy);
 
-        Fix64 overlapXAmt = Fix64.Min(aMax.x - bMin.x, bMax.x - aMin.x);
-        Fix64 overlapYAmt = Fix64.Min(aMax.y - bMin.y, bMax.y - aMin.y);
+		// --- 3. Decide who moves ---
+		FP_Body2D bodyA = a.ParentBody;
+		FP_Body2D bodyB = b.ParentBody;
 
-        FP_Body2D bodyA = a.ParentBody;
-        FP_Body2D bodyB = b.ParentBody;
+		FP_Body2D movable =
+			bodyA.IsStatic ? (bodyB.IsStatic ? null : bodyB) :
+			bodyB.IsStatic ? bodyA :
+			bodyA.IsDynamic && bodyB.IsDynamic ? null /* later: split 50-50 */ :
+			bodyA.IsDynamic ? bodyA : bodyB;     // dynamic vs kinematic
 
-        FP_Body2D movable = null;
-        FixVec2 resolution = FixVec2.zero;
+		if (movable == null) return;
 
+		// --- 4. Positional correction (one Move only) ---
+		movable.Move(mtv);
 
-        // Determine resolution direction
-        if (overlapXAmt < overlapYAmt)
-        {
-            resolution = new FixVec2(a.GetWorldPosition().x < b.GetWorldPosition().x ? overlapXAmt : -overlapXAmt, Fix64.Zero);
-        }
-        else
-        {
-            resolution = new FixVec2(Fix64.Zero, a.GetWorldPosition().y < b.GetWorldPosition().y ? overlapYAmt : -overlapYAmt);
-        }
+		// --- 5. Kill velocity into the surface ---
+		FixVec2 n = FixVec2.Normalize(mtv);
+		Fix64 vDot = FixVec2.Dot(movable.Velocity, n);
+		if (vDot < Fix64.Zero)
+			movable.Velocity -= n * vDot;
 
-        // === Resolution Logic Based on Body Types ===
-        if (bodyA.IsStatic && bodyB.IsStatic)
-        {
-            // Do nothing
-            return;
-        }
-        else if (bodyA.IsStatic && (bodyB.IsDynamic || bodyB.IsKinematic))
-        {
-            movable = bodyB;
-        }
-        else if (bodyB.IsStatic && (bodyA.IsDynamic || bodyA.IsKinematic))
-        {
-            movable = bodyA;
-        }
-        else if (bodyA.IsDynamic && bodyB.IsKinematic)
-        {
-            movable = bodyA;
-        }
-        else if (bodyB.IsDynamic && bodyA.IsKinematic)
-        {
-            movable = bodyB;
-        }
-        else if (bodyA.IsDynamic && bodyB.IsDynamic)
-        {
-            // Basic version: move bodyB (or you could split the resolution later)
-            movable = bodyB;
-        }
-        else if (bodyA.IsKinematic && bodyB.IsKinematic)
-        {
-            // Do nothing for now — you could support pushing other kinematics in special cases
-            return;
-        }
+		// Snap to ground if basically resting
+		if (n == FixVec2.up && Fix64.Abs(movable.Velocity.y) < Fix64.FromFloat(0.05f))
+			movable.Velocity = new FixVec2(movable.Velocity.x, Fix64.Zero);
+	}
 
-        resolution += FixVec2.Normalize(resolution) * Fix64.FromFloat(0.001f); // small nudge to prevent re-penetration
-        // Apply correction
-        movable?.Move(resolution);
-    }
 
 }

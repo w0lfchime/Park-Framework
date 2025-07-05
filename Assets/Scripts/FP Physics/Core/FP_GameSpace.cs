@@ -115,21 +115,26 @@ public class FP_GameSpace : MonoBehaviour
         foreach (var body in bodies)
             body.Integrate(DeltaTime);
 
-        // 3. Collision detection (include all bodies)
-        for (int i = 0; i < colliders.Count; i++)
-        {
-            for (int j = i + 1; j < colliders.Count; j++)
-            {
-                var a = colliders[i];
-                var b = colliders[j];
+		// 3. Collision detection (include all bodies)
+	    int solverIterations = 4;
+		for (int k = 0; k < solverIterations; k++)
+		{
+			for (int i = 0; i < colliders.Count; i++)
+			{
+				for (int j = i + 1; j < colliders.Count; j++)
+				{
+					var a = colwliders[i];
+					var b = colliders[j];
 
-                if (a.IsActive && b.IsActive)
-                    FP_CollisionSolver.Instance.CheckAndResolve(a, b);
-            }
-        }
+					if (a.IsActive && b.IsActive)
+						FP_CollisionSolver.Instance.CheckAndResolve(a, b);
+				}
+			}
+		}
 
-        // 4. Sync all bodies for rendering
-        foreach (var body in bodies)
+
+		// 4. Sync all bodies for rendering
+		foreach (var body in bodies)
             body.SyncTransform();
     }
 
