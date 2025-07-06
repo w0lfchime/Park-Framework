@@ -14,7 +14,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using System;
 
-public class Ric : Character
+public class Ric_OLD : Character
 {
     //======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
     #region fields

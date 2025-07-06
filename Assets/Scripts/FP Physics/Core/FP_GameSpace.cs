@@ -123,7 +123,7 @@ public class FP_GameSpace : MonoBehaviour
 			{
 				for (int j = i + 1; j < colliders.Count; j++)
 				{
-					var a = colwliders[i];
+					var a = colliders[i];
 					var b = colliders[j];
 
 					if (a.IsActive && b.IsActive)
