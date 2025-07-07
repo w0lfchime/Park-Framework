@@ -6,16 +6,19 @@ public interface IGameUpdate
 	void FixedFrameUpdate();
 }
 
-public class GameUpdateDriver : MonoBehaviour
+public class FixedGameUpdateManager
 {
 	private const float TargetDeltaTime = 1f / 60f; // 60Hz
 	private float accumulatedTime = 0f;
 	private static List<IGameUpdate> fixedUpdateObjects = new List<IGameUpdate>();
 
+
+
+
 	public static void Register(IGameUpdate obj) 
 	{
 		fixedUpdateObjects.Add(obj);
-		LogCore.Log("GameUpdateDriver", $"Registered a {obj.GetType().Name} to the GameUpdateDriver.");
+		LogCore.Log("FixedGameUpdateManager", $"Registered a {obj.GetType().Name} to the FixedGameUpdateManager.");
 	}
 	
 	
@@ -23,7 +26,7 @@ public class GameUpdateDriver : MonoBehaviour
 	public static void Unregister(IGameUpdate obj)
 	{
 		fixedUpdateObjects.Remove(obj);
-		LogCore.Log("GameUpdateDriver", $"Unregistered a {obj.GetType().Name} from the GameUpdateDriver.");
+		LogCore.Log("FixedGameUpdateManager", $"Unregistered a {obj.GetType().Name} from the FixedGameUpdateManager.");
 	}
 		
 
@@ -41,6 +44,8 @@ public class GameUpdateDriver : MonoBehaviour
 
 	private void RunFixedGameUpdate()
 	{
+		AppManager.Instance.FixedGameUpdate();
+
 		for (int i = 0; i < fixedUpdateObjects.Count; i++)
 		{
 			fixedUpdateObjects[i].FixedFrameUpdate();

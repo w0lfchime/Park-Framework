@@ -21,3 +21,7 @@ MonoBehaviour:
     enabled: 1
   - name: AppFlow
     enabled: 1
+  - name: GameUpdateDriver
+    enabled: 1
+  - name: GameTickManager
+    enabled: 1

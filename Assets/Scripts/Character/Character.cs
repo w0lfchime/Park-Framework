@@ -43,16 +43,11 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	public string StandardClassPrefix;
 	public bool nonPlayer = false;
 
-	[Header("Component Refs")]
-	public Rigidbody rigidBody;
-	public CapsuleCollider capsuleCollider;
-
 	[Header("Debug")]
 	public bool debug;
 	public bool characterDebug = true;
 	public Transform debugParentTransform;
 	public TextMeshPro stateText;
-	public VectorRenderManager vrm;
 	public TextMeshPro debugTextPlus;
 
 	[Header("Stats")]
@@ -63,6 +58,14 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	[Header("Time")]
 	private int currentFrame = 0;
 	#endregion general
+	//=//-----|Physics|-----------------------------------------------------------//=//
+	#region physics
+	[Header("Component Refs")]
+	public FP_Body2D FPBody;
+	public FP_BoxCollider2D bc2d;
+	
+
+	#endregion physics
 	//=//-----|State|-------------------------------------------------------------//=//
 	#region state
 	[Header("State Machine")]
@@ -173,13 +176,13 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	private void OnEnable()
 	{
-		GameUpdateDriver.Register(this);
+		FixedGameUpdateManager.Register(this);
 		//...
 	}
 	private void OnDisable()
 	{
 		//...
-		GameUpdateDriver.Unregister(this);
+		FixedGameUpdateManager.Unregister(this);
 	}
 	private void Update()
 	{
@@ -300,14 +303,14 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	{
 		if (!isHitstopped)
 		{
-			rigidBody.AddForce(appliedForce, ForceMode.Force);
+			//rigidBody.AddForce(appliedForce, ForceMode.Force);
 		}
 
 		appliedForce = Vector3.zero;
 	}
 	private void HandleImpulseForce()
 	{
-		rigidBody.AddForce(appliedImpulseForce, ForceMode.Impulse);
+		//rigidBody.AddForce(appliedImpulseForce, ForceMode.Impulse);
 		appliedImpulseForce = Vector3.zero;
 	}
 	#endregion physics
@@ -321,9 +324,9 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		}
 		isHitstopped = true;
 
-		hitstopStoredVelocity = rigidBody.linearVelocity;
-		rigidBody.linearVelocity = Vector3.zero;
-		rigidBody.isKinematic = true;
+		//hitstopStoredVelocity = rigidBody.linearVelocity;
+		//rigidBody.linearVelocity = Vector3.zero;
+		//rigidBody.isKinematic = true;
 
 	}
 	public void DisableHitstop()
@@ -334,8 +337,8 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		}
 		isHitstopped = false;
 
-		rigidBody.isKinematic = false;
-		rigidBody.linearVelocity = hitstopStoredVelocity;
+		//rigidBody.isKinematic = false;
+		//rigidBody.linearVelocity = hitstopStoredVelocity;
 		hitstopStoredVelocity = Vector3.zero;
 	}
 	public void AddHitstop(int frames)
@@ -432,8 +435,8 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//playerInputHandler = GetComponent<PlayerInputHandler>(); //HACK: replacing needed
 
 		//physics
-		rigidBody = GetComponent<Rigidbody>();
-		capsuleCollider = GetComponent<CapsuleCollider>();
+		//rigidBody = GetComponent<Rigidbody>();
+		//capsuleCollider = GetComponent<CapsuleCollider>();
 		groundLayer = LayerMask.GetMask("Ground");
 
 		//animation
@@ -442,8 +445,6 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//debug
 		debugParentTransform = transform.Find("Debug");
 		stateText = debugParentTransform.Find("CharacterStateText")?.GetComponent<TextMeshPro>();
-
-		this.vrm = ServiceLocator.GetService<VectorRenderManager>();
 
 	}
 	#endregion setup
@@ -521,7 +522,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	protected virtual void UpdateCharacterData() //TODO: better name 
 	{
-		this.characterHeight = capsuleCollider.height;
+		//this.characterHeight = capsuleCollider.height;
 	}
 	#endregion data
 	//=//-----|Mono|-------------------------------------------------------------//=//
@@ -593,24 +594,6 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		}
 	}
 	#endregion state
-	//=//-----|Debug Vectors|----------------------------------------------------//=//
-	#region debug_vectors
-	public void UpdateDebugVector(string name, Vector3 vector, Color color)
-	{
-		if (debug)
-		{
-			vrm.UpdateVector(CName(name), debugParentTransform, Vector3.zero, vector, color);
-		}
-
-	}
-	public void StampDebugVector(string name, Vector3 vector, Color color)
-	{
-		if (debug)
-		{
-			vrm.StampVector(name, transform.position, vector, color, 1.0f);
-		}
-	}
-	#endregion debug_vectors
 	//=//------------------------------------------------------------------------//=//
 	#endregion debug 
 	/////////////////////////////////////////////////////////////////////////////////////

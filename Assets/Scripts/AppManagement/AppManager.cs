@@ -8,35 +8,62 @@ public class AppManager : MonoBehaviour
 {
 	public static AppManager Instance { get; private set; }
 
+	//services
+	public SysInputManager systemInputManager { get; private set; }
+	public FixedGameUpdateManager fgUpdate {  get; private set; }
 
+	//appstate
 	private string currentLoadedScene;
-
 
 	public string BootAppState = "HomeMenuAPS";
 	public static AppState CurrentState;
 
-
 	public static bool OpenPauseAllowed = true;
+
+
+	//Core Scene references
+	public GameObject c_canvas;
+	public GameObject c_camera;
 
 
 	private void Awake()
 	{
+		//meta
 		if (Instance != null && Instance != this)
 		{
 			Destroy(this.gameObject); // Optional: protect against duplicates
 			return;
 		}
-
 		Instance = this;
 
+
+		//core scene
+		c_canvas = GameObject.Find("C_Canvas");
+		c_camera = GameObject.Find("C_Camera");
+
+
+		//services 
+		systemInputManager = new SysInputManager();
+		fgUpdate = new FixedGameUpdateManager();
+
+		//appstate
 		SetAppState(BootAppState);
+
 	}
 
 
 
 	private void Update()
 	{
+		systemInputManager.Update();
+
 		CurrentState?.OnUpdate();
+		
+	}
+
+	public void FixedGameUpdate()
+	{
+		systemInputManager.FixedGameUpdate();
 	}
 
 

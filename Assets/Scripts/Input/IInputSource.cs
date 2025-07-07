@@ -2,5 +2,6 @@ using UnityEngine;
 
 public class IInputSource
 {
-    InputFrameData GetInputForFrame;
+	bool HasNewInput(); // Only returns true if a fresh input happened this frame
+	InputFrameData GetInputForFrame(int frame); // Should be deterministic
 }

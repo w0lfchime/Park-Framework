@@ -61,7 +61,7 @@ public class FP_GameSpace : MonoBehaviour
                 // Find all GameObjects in the scene
                 foreach (var go in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
                 {
-                    if (go.layer != layer)
+                    if (go.layer != layer || go.GetComponent<Rigidbody2D>() == null)
                         continue;
 
                     // Only assign if it doesn't already have one

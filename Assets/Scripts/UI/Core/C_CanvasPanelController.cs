@@ -8,7 +8,16 @@ public class C_CanvasPanelController : MonoBehaviour
 	public CanvasGroup PauseMenu;
 
 	private bool isDebugVisible = true;
-	private bool isPauseMenuVisible = true;
+	private bool isPauseMenuVisible = false;
+
+	private void Awake()
+	{
+		DebugView1.gameObject.SetActive(true);
+		PauseMenu.gameObject.SetActive(true);
+
+		SetCanvasGroupActive(DebugView1, true);
+		SetCanvasGroupActive(PauseMenu, false);
+	}
 
 	void Update()
 	{

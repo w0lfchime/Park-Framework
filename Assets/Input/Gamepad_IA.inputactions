@@ -1,8 +1,8 @@
 {
-    "name": "GamepadControls",
+    "name": "Gamepad_IA",
     "maps": [
         {
-            "name": "CharacterActions",
+            "name": "Character",
             "id": "5c8b7208-d2f1-4581-94ca-322b9b8ee1d3",
             "actions": [
                 {
@@ -111,7 +111,7 @@
                 {
                     "name": "",
                     "id": "e2db8373-cfcd-4156-83f2-d451a23f93f1",
-                    "path": "",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -121,19 +121,8 @@
                 },
                 {
                     "name": "",
-                    "id": "903cb0b8-b2be-495e-bd76-ec1602eb0d8b",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Block",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e5a307cb-744e-465b-b26d-fd9f0afa5323",
-                    "path": "",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -144,7 +133,7 @@
                 {
                     "name": "",
                     "id": "71f572ea-a744-4a05-86fd-f3e061ccee5d",
-                    "path": "",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -188,7 +177,7 @@
                 {
                     "name": "",
                     "id": "23de56ee-43a6-4893-bf6b-d7ca12f8a9b2",
-                    "path": "",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
@@ -204,6 +193,96 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6bb25c12-659b-4904-b751-99c9f6c4afd8",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Cursor",
+            "id": "0a0f9a23-e654-4956-a3f7-6bb0fbdc3bc7",
+            "actions": [
+                {
+                    "name": "CursorMotion",
+                    "type": "Value",
+                    "id": "8e64dd18-6831-4d34-9228-d6f61822e73a",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "03598a6d-6628-4ac8-ad1b-4c73575929ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Return",
+                    "type": "Button",
+                    "id": "44f4ff31-3a08-4104-83c8-acb2a2cde8a2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8fa0440a-8429-4f17-b84a-598df4fb1470",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorMotion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed41ed96-586a-45c4-908a-874f378fdf05",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorMotion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1fe1c683-511a-4474-866e-39384a114609",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7cfc762-d58b-4308-a863-bba9865f91ea",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

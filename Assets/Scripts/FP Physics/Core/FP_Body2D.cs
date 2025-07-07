@@ -79,6 +79,8 @@ public class FP_Body2D : MonoBehaviour
             Destroy(box);
         }
     }
+
+
     public void ApplyForces(Fix64 deltaTime)
     {
         if (!IsDynamic) return;
@@ -95,11 +97,16 @@ public class FP_Body2D : MonoBehaviour
         ClearForces();
     }
 
+
+
     public void Integrate(Fix64 deltaTime)
     {
         if (!IsDynamic) return;
         Position += Velocity * deltaTime;
     }
+
+
+
 
     public void Move(FixVec2 delta)
     {
@@ -108,24 +115,36 @@ public class FP_Body2D : MonoBehaviour
     }
 
 
+
     public void ApplyForce(FixVec2 force)
     {
         accumulatedForces += force;
     }
+
+
+
     public void ClearForces()
     {
         accumulatedForces = FixVec2.zero;
     }
+
+
+
     public void SetVelocity(FixVec2 newVelocity)
     {
         if (IsKinematic)
             Velocity = newVelocity;
     }
 
+
+
+
     public void SyncTransform()
     {
         transform.position = Position.ToVector3();
     }
+
+
 
 
     //debug
