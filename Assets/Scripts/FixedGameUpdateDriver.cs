@@ -6,32 +6,25 @@ public interface IGameUpdate
 	void FixedFrameUpdate();
 }
 
-public class FixedGameUpdateManager
+public static class FixedGameUpdateDriver
 {
 	private const float TargetDeltaTime = 1f / 60f; // 60Hz
-	private float accumulatedTime = 0f;
+	private static float accumulatedTime = 0f;
 	private static List<IGameUpdate> fixedUpdateObjects = new List<IGameUpdate>();
 
-
-
-
-	public static void Register(IGameUpdate obj) 
+	public static void Register(IGameUpdate obj)
 	{
 		fixedUpdateObjects.Add(obj);
-		LogCore.Log("FixedGameUpdateManager", $"Registered a {obj.GetType().Name} to the FixedGameUpdateManager.");
+		LogCore.Log("FixedGameUpdateDriver", $"Registered a {obj.GetType().Name} to the FixedGameUpdateDriver.");
 	}
-	
-	
 
 	public static void Unregister(IGameUpdate obj)
 	{
 		fixedUpdateObjects.Remove(obj);
-		LogCore.Log("FixedGameUpdateManager", $"Unregistered a {obj.GetType().Name} from the FixedGameUpdateManager.");
+		LogCore.Log("FixedGameUpdateDriver", $"Unregistered a {obj.GetType().Name} from the FixedGameUpdateDriver.");
 	}
-		
 
-
-	void Update()
+	public static void Update()
 	{
 		accumulatedTime += Time.deltaTime;
 
@@ -42,7 +35,7 @@ public class FixedGameUpdateManager
 		}
 	}
 
-	private void RunFixedGameUpdate()
+	private static void RunFixedGameUpdate()
 	{
 		AppManager.Instance.FixedGameUpdate();
 

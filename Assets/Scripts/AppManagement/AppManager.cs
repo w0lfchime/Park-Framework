@@ -10,7 +10,6 @@ public class AppManager : MonoBehaviour
 
 	//services
 	public SysInputManager systemInputManager { get; private set; }
-	public FixedGameUpdateManager fgUpdate {  get; private set; }
 
 	//appstate
 	private string currentLoadedScene;
@@ -44,7 +43,7 @@ public class AppManager : MonoBehaviour
 
 		//services 
 		systemInputManager = new SysInputManager();
-		fgUpdate = new FixedGameUpdateManager();
+		fgUpdate = new FixedGameUpdateDriver();
 
 		//appstate
 		SetAppState(BootAppState);
@@ -55,8 +54,10 @@ public class AppManager : MonoBehaviour
 
 	private void Update()
 	{
-		systemInputManager.Update();
+		FixedGameUpdateDriver.Update();
 
+
+		systemInputManager.Update();
 		CurrentState?.OnUpdate();
 		
 	}

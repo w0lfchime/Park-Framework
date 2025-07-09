@@ -176,13 +176,13 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	private void OnEnable()
 	{
-		FixedGameUpdateManager.Register(this);
+		FixedGameUpdateDriver.Register(this);
 		//...
 	}
 	private void OnDisable()
 	{
 		//...
-		FixedGameUpdateManager.Unregister(this);
+		FixedGameUpdateDriver.Unregister(this);
 	}
 	private void Update()
 	{

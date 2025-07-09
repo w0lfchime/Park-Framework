@@ -1,7 +1,11 @@
-using UnityEngine;
 
-public class IInputSource
+
+
+
+
+public interface IInputSource
 {
-	bool HasNewInput(); // Only returns true if a fresh input happened this frame
-	InputFrameData GetInputForFrame(int frame); // Should be deterministic
+	bool HasNewInput(); // True if a new input occurred this frame
+	InputFrameData GetInputForFrame(int frame); // Deterministic input
+	void UpdateInput(int frame); // Called each frame to sample new data
 }

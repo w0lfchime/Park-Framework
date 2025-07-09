@@ -6,60 +6,6 @@
             "id": "5c8b7208-d2f1-4581-94ca-322b9b8ee1d3",
             "actions": [
                 {
-                    "name": "BasicAttack",
-                    "type": "Button",
-                    "id": "a2ec30f0-30d5-47f4-be8e-303f60c1fd71",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SpecialAttack",
-                    "type": "Button",
-                    "id": "3f819958-311b-4d7e-b071-b060aea67b55",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Block",
-                    "type": "Button",
-                    "id": "81bfbe66-f6b4-49dc-94a6-3f1f1783f23c",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Grab",
-                    "type": "Button",
-                    "id": "e4dabb03-475c-4b3e-a112-21cc3f36c907",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Slide",
-                    "type": "Button",
-                    "id": "6be68341-b9dd-4c73-af7a-3795007c18c7",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "a1f1f618-6e1a-4098-9cb2-67f7b9f887c6",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Move",
                     "type": "Value",
                     "id": "999aeebd-9782-4dce-b31d-6dcd0e4fcaa8",
@@ -78,9 +24,54 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Run",
+                    "name": "BasicAttack",
                     "type": "Button",
-                    "id": "8fb252f2-cb2a-4514-a40c-9643956da87d",
+                    "id": "a2ec30f0-30d5-47f4-be8e-303f60c1fd71",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpecialAttack",
+                    "type": "Button",
+                    "id": "3f819958-311b-4d7e-b071-b060aea67b55",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "a1f1f618-6e1a-4098-9cb2-67f7b9f887c6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slide",
+                    "type": "Button",
+                    "id": "93743cf0-fa35-4f55-bd66-d2fbc55bb4b7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Guard1",
+                    "type": "Button",
+                    "id": "81bfbe66-f6b4-49dc-94a6-3f1f1783f23c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Guard2",
+                    "type": "Button",
+                    "id": "e4dabb03-475c-4b3e-a112-21cc3f36c907",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -89,7 +80,88 @@
                 {
                     "name": "Sneak",
                     "type": "Button",
+                    "id": "6be68341-b9dd-4c73-af7a-3795007c18c7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Grab",
+                    "type": "Button",
                     "id": "190df9b1-8d24-48c9-abb6-0534f77bac8f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MoveAlt",
+                    "type": "Button",
+                    "id": "8fb252f2-cb2a-4514-a40c-9643956da87d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LookAlt",
+                    "type": "Button",
+                    "id": "d492b190-89ee-44f2-99d1-5c927762c058",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Misc1",
+                    "type": "Button",
+                    "id": "c000e87a-2685-4db1-9c9c-0f4dd001a1fd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Misc2",
+                    "type": "Button",
+                    "id": "a4b3ed33-c677-4e5a-bc7c-fbeeaf7ef109",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Misc3",
+                    "type": "Button",
+                    "id": "dcd1d724-abc7-46f8-bd7d-a46221bf0a46",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Misc4",
+                    "type": "Button",
+                    "id": "b1f52604-a871-4368-8e5c-22b958134bdb",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Menu",
+                    "type": "Button",
+                    "id": "c6eaaca0-5d24-4e7f-9db5-21522aaa2a57",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MenuAlt",
+                    "type": "Button",
+                    "id": "db8f5878-ba4f-4332-96be-124dff286276",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -126,7 +198,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Grab",
+                    "action": "Guard2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -137,7 +209,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Slide",
+                    "action": "Sneak",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -170,7 +242,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Run",
+                    "action": "MoveAlt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -181,7 +253,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Sneak",
+                    "action": "Grab",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -203,86 +275,95 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Block",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Cursor",
-            "id": "0a0f9a23-e654-4956-a3f7-6bb0fbdc3bc7",
-            "actions": [
-                {
-                    "name": "CursorMotion",
-                    "type": "Value",
-                    "id": "8e64dd18-6831-4d34-9228-d6f61822e73a",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Select",
-                    "type": "Button",
-                    "id": "03598a6d-6628-4ac8-ad1b-4c73575929ec",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Return",
-                    "type": "Button",
-                    "id": "44f4ff31-3a08-4104-83c8-acb2a2cde8a2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "8fa0440a-8429-4f17-b84a-598df4fb1470",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CursorMotion",
+                    "action": "Guard1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "ed41ed96-586a-45c4-908a-874f378fdf05",
-                    "path": "<Gamepad>/leftStick",
+                    "id": "c7e370b4-41cf-45b4-a407-1e9f63457ee3",
+                    "path": "<Gamepad>/dpad/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CursorMotion",
+                    "action": "Misc1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "1fe1c683-511a-4474-866e-39384a114609",
-                    "path": "<Gamepad>/buttonEast",
+                    "id": "2f4bd8e8-f791-43fc-9df7-ac5668c8f725",
+                    "path": "<Gamepad>/dpad/right",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Select",
+                    "action": "Misc2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "f7cfc762-d58b-4308-a863-bba9865f91ea",
-                    "path": "<Gamepad>/buttonSouth",
+                    "id": "3ddd79f1-b2f1-42ca-86f3-a6c342934933",
+                    "path": "<Gamepad>/dpad/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Return",
+                    "action": "Misc3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5fd5258-e59f-4192-ac29-3a090c84fb8e",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Misc4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8259302a-0f8a-4e69-b8b5-dad371522d81",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78ee1afd-d524-449b-b18b-4fa03f05a125",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8b1b0ff-031f-4ec7-8bf6-719834c7f2f4",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d46e5317-9601-4b0a-b851-2ef98d29dafa",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MenuAlt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
