@@ -109,23 +109,23 @@ public class PerformanceCSM
 		{
 			if (StateSet[i] == null)
 			{
-				LogCore.Log("CSM_Error", $"Index {i} of {MachineOwner.InstanceName}'s stateArray is null.");
+				LogCore.Log(LogType.CSM_Error, $"Index {i} of {MachineOwner.InstanceName}'s stateArray is null.");
 				passed = false;
 			}
 			else if (!StateSet[i].VerifyState())
 			{
-				LogCore.Log("CSM_Error", $"State {StateSet[i].StateName} is invalid.");
+				LogCore.Log(LogType.CSM_Error, $"State {StateSet[i].StateName} is invalid.");
 				passed = false;
 			} 
 			else
 			{
-				LogCore.Log("CSM_Setup", $"Verified state {StateSet[i].StateName}");
+				LogCore.Log(LogType.CSM_Setup, $"Verified state {StateSet[i].StateName}");
 			}
 		}
 
 		Verified = passed;
 
-		LogCore.Log(passed ? "CSM_Setup" : "CSM_Error",
+		LogCore.Log(passed ? LogType.CSM_Setup : LogType.CSM_Error,
 			passed ? "Successfully verified all registered character states."
 				   : "Failed to verify all registered character states.");
 	}
@@ -137,7 +137,7 @@ public class PerformanceCSM
 	protected void SetStateArrayState(CStateID stateID, CharacterState state)
 	{
 		int index = (int)stateID;
-		LogCore.Log("CSM_Setup", $"Setting index {index} of state array to state {state.StateName}.");
+		LogCore.Log(LogType.CSM_Setup, $"Setting index {index} of state array to state {state.StateName}.");
 		StateSet[index] = state;
 	}
 
@@ -185,7 +185,7 @@ public class PerformanceCSM
 
 		MachineOwner.OnStateSet();
 
-		LogCore.Log("PSM_Detail", $"Switched from {PreviousStateID} to {CurrentStateID}");
+		LogCore.Log(LogType.CSM_Flow, $"Switched from {PreviousStateID} to {CurrentStateID}");
 	}
 
 

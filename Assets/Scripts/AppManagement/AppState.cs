@@ -6,11 +6,11 @@ public abstract class AppState
 
 	public virtual void OnEnter() 
 	{
-		LogCore.Log("AppFlow", $"Entering AppState: {GetType().Name}");
+		LogCore.Log(LogType.AppState, $"Entering AppState: {GetType().Name}");
 	}
 	public virtual void OnExit()
 	{
-		LogCore.Log("AppFlow", $"Exiting AppState: {GetType().Name}");
+		LogCore.Log(LogType.AppState, $"Exiting AppState: {GetType().Name}");
 	}
 
 

@@ -109,13 +109,13 @@ public abstract class CharacterState
 	#region mono
 	public virtual void Enter()
 	{
-		LogCore.Log("CSM_Flow", $"Entering State {StateName}.");
+		LogCore.Log(LogType.CSM_Flow, $"Entering State {StateName}.");
 		SetOnEntry();
 		//...
 	}
 	public virtual void Exit()
 	{
-		LogCore.Log("CSM_Flow", $"Exting State {StateName}.");
+		LogCore.Log(LogType.CSM_Flow, $"Exting State {StateName}.");
 		//...
 	}
 	public virtual void FixedFrameUpdate()
@@ -163,7 +163,7 @@ public abstract class CharacterState
         }
         if (passed == false)
         {
-            LogCore.Log("CriticalError", $"Check FAILED: {unsetFields.Count} {failedMessage}");
+            LogCore.Log(LogType.Fatal, $"Check FAILED: {unsetFields.Count} {failedMessage}");
             foreach (string str in unsetFields)
             {
                 LogCore.Log(str);

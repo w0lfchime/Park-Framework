@@ -47,6 +47,10 @@ public class AppManager : MonoBehaviour
 		//appstate
 		SetAppState(BootAppState);
 
+
+
+
+
 	}
 
 
@@ -100,7 +104,7 @@ public class AppManager : MonoBehaviour
 
 		if (newStateType == null)
 		{
-			LogCore.Log("FatalError", $"Could not generate an AppState with name: {newStateName}");
+			LogCore.Log(LogType.AppState, $"Could not generate an AppState with name: {newStateName}");
 			return;
 		}
 
@@ -109,7 +113,7 @@ public class AppManager : MonoBehaviour
 
 		if (newState == null)
 		{
-			LogCore.Log("FatalError", $"Type {newStateName} is not a valid AppState.");
+			LogCore.Log(LogType.Fatal, $"Type {newStateName} is not a valid AppState.");
 			return;
 		}
 

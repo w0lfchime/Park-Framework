@@ -14,11 +14,11 @@ public static class ServiceLocator
         {
             services[serviceType] = service;
 
-            LogCore.Log("ServiceLocator", $"Registered service: {serviceName}");
+            LogCore.Log(LogType.ServiceLocator, $"Registered service: {serviceName}");
         }
         else
         {
-            LogCore.Log("ServiceLocator", $"Serivce already registered: {serviceName}");
+            LogCore.Log(LogType.ServiceLocator, $"Serivce already registered: {serviceName}");
         }
     }
 
@@ -41,7 +41,7 @@ public static class ServiceLocator
         if (services.ContainsKey(serviceType))
         {
             services.Remove(serviceType);
-            LogCore.Log("ServiceLocator", $"Removed service: {serviceType.Name}");
+            LogCore.Log(LogType.ServiceLocator, $"Removed service: {serviceType.Name}");
         }
     }
 }

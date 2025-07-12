@@ -33,7 +33,7 @@ public class FP_GameSpace : MonoBehaviour
     private void GenerateGameSpace()
     {
 
-        LogCore.Log("GameSetup", "Generating gamespace...");
+        LogCore.Log(LogType.GameSetup, "Generating gamespace...");
         AssignBodiesFromLayer("FP_Player");
         AssignBodiesFromLayer("FP_Ground");
         AssignBodiesFromLayer("FP_Platform");
@@ -74,7 +74,7 @@ public class FP_GameSpace : MonoBehaviour
                         count++;
                         bodies.Add(body);
                 }
-                LogCore.Log("PhysicsSetup", $"Found {count} objects in layer {layerName}");
+                LogCore.Log(LogType.PhysicsSetup, $"Found {count} objects in layer {layerName}");
                 break;
         }
 

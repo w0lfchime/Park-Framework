@@ -3,102 +3,110 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.CompilerServices;
 
+
+public enum LogType
+{
+	NoCategory,
+	Fatal,
+	Error,
+	Warning,
+	AppState,
+	CSM_Error,
+	CSM_Setup,
+	CSM_Flow,
+	Character,
+	GameSetup,
+	PhysicsSetup,
+	ServiceLocator,
+
+}
+
+
 public static class LogCore
 {
-    private static int messageCount = 0;
+	private static int messageCount = 0;
+	public static bool loggingEnabled = true;
 
-    public static event Action<string> OnLog;
+	public static event Action<string> OnLog;
 
-    private static LogCategories logCategoriesAsset;
+	private static Dictionary<LogType, bool> logTypeStates = new();
 
-    public static bool loggingEnabled = true;
+	static LogCore()
+	{
+		foreach (LogType type in Enum.GetValues(typeof(LogType)))
+		{
+			logTypeStates[type] = true; // Enable all by default
+		}
+	}
 
-    static LogCore()
-    {
-        LoadLogCategoriesAsset();
-    }
+	// === Public API ===
 
-    private static void LoadLogCategoriesAsset()
-    {
-        var foundAssets = Resources.LoadAll<LogCategories>("");
+	public static void Log(LogType type, string message,
+		[CallerFilePath] string file = "",
+		[CallerLineNumber] int line = 0,
+		[CallerMemberName] string member = "")
+	{
+		if (!loggingEnabled || !IsLogTypeEnabled(type)) return;
 
-        if (foundAssets.Length > 0)
-        {
-            logCategoriesAsset = foundAssets[0]; // or use LINQ to filter more specifically
-        }
-        else
-        {
-            Debug.LogWarning("No LogCategories asset found in Resources. Please create one.");
-        }
-    }
+		messageCount++;
+		string typeName = type.ToString();
+		string formattedMessage = $"({messageCount}) [{typeName}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
 
-    public static void Log(string category, string message,
-        [CallerFilePath] string file = "",
-        [CallerLineNumber] int line = 0,
-        [CallerMemberName] string member = "")
-    {
-        if (!loggingEnabled || !ShouldLogCategory(category)) return;
+		// Convert enum to string and decide logging severity
+		if (typeName.Contains("Fatal"))
+		{
+			Debug.LogError(formattedMessage);
+			DebugCore.StopGame();
+		}
+		else if (typeName.Contains("Error"))
+		{
+			Debug.LogError(formattedMessage);
+		}
+		else if (typeName.Contains("Warning"))
+		{
+			Debug.LogWarning(formattedMessage);
+		}
+		else
+		{
+			Debug.Log(formattedMessage);
+		}
 
-        messageCount++;
-        string formattedMessage = $"({messageCount}) [{category}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
-        if (category.Contains("Fatal", StringComparison.OrdinalIgnoreCase))
-        {
-            Debug.LogError(formattedMessage);
-            DebugCore.StopGame();
-        }
-        else if (category.Contains("Error", StringComparison.OrdinalIgnoreCase))
-        {
-            Debug.LogError(formattedMessage);
-        }
-        else if (category.Contains("Warning", StringComparison.OrdinalIgnoreCase))
-        {
-            Debug.LogWarning(formattedMessage);
-        }
-        else
-        {
-            Debug.Log(formattedMessage);
-        }
+		OnLog?.Invoke(formattedMessage);
+	}
 
-        OnLog?.Invoke(formattedMessage);
 
-        TrackNewCategory(category);
-    }
+	public static void Log(string message)
+	{
+		Log(LogType.NoCategory, message);
+	}
 
-    public static void Log(string message)
-    {
-        const string defaultCategory = "NoCategory";
-        if (!loggingEnabled || !ShouldLogCategory(defaultCategory)) return;
+	public static void SetLogTypeEnabled(LogType type, bool enabled)
+	{
+		logTypeStates[type] = enabled;
+	}
 
-        Debug.Log(message);
-        OnLog?.Invoke(message);
+	public static bool IsLogTypeEnabled(LogType type)
+	{
+		return logTypeStates.TryGetValue(type, out var enabled) && enabled;
+	}
 
-        TrackNewCategory(defaultCategory);
-    }
+	public static void EnableAllLogTypes()
+	{
+		foreach (LogType type in Enum.GetValues(typeof(LogType)))
+			logTypeStates[type] = true;
+	}
 
-    private static bool ShouldLogCategory(string category)
-    {
-        if (logCategoriesAsset == null) return true;
+	public static void DisableAllLogTypes()
+	{
+		foreach (LogType type in Enum.GetValues(typeof(LogType)))
+			logTypeStates[type] = false;
+	}
 
-        var cat = logCategoriesAsset.GetCategory(category);
-        return cat == null || cat.enabled; // default: log if not present
-    }
-
-    private static void TrackNewCategory(string category)
-    {
-        if (logCategoriesAsset == null) return;
-
-        if (!logCategoriesAsset.ContainsCategory(category))
-        {
-            logCategoriesAsset.AddCategory(category);
-            SaveLoggedCategories();
-        }
-    }
-
-    private static void SaveLoggedCategories()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorUtility.SetDirty(logCategoriesAsset);
-        UnityEditor.AssetDatabase.SaveAssets();
-#endif
-    }
+	public static void PrintLogTypeStatus()
+	{
+		foreach (var kvp in logTypeStates)
+		{
+			Debug.Log($"[LogCore] {kvp.Key}: {(kvp.Value ? "ENABLED" : "DISABLED")}");
+		}
+	}
 }

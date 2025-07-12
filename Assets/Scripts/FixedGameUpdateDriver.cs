@@ -2,10 +2,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public interface IGameUpdate
-{
-	void FixedFrameUpdate();
-}
 
 public static class FixedGameUpdateDriver
 {
@@ -16,7 +12,7 @@ public static class FixedGameUpdateDriver
 	public static bool ClockEnabled = false;
 	private static int pauseDuration;
 
-	public static void Update()
+	public static void Update() //called by monobehaviour AppManager
 	{
 		accumulatedTime += Time.deltaTime;
 
@@ -29,7 +25,7 @@ public static class FixedGameUpdateDriver
 
 	private static void RunFixedGameUpdate()
 	{
-		AppManager.Instance.FixedGameUpdate();
+		AppManager.Instance.FixedGameUpdate(); //circular calling, dont worry about it, just feels the best for me
 
 		ClockUpdateLogic();
 		

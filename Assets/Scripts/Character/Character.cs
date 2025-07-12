@@ -31,7 +31,7 @@ public enum CStateID //Standard state types
 
 }
 
-public abstract class Character : MonoBehaviour, IGameUpdate
+public abstract class Character : MonoBehaviour
 {
 	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
 	#region fields
@@ -176,13 +176,13 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 	}
 	private void OnEnable()
 	{
-		FixedGameUpdateDriver.Register(this);
+		//FixedGameUpdateDriver.Register(this);
 		//...
 	}
 	private void OnDisable()
 	{
 		//...
-		FixedGameUpdateDriver.Unregister(this);
+		//FixedGameUpdateDriver.Unregister(this);
 	}
 	private void Update()
 	{
@@ -405,7 +405,7 @@ public abstract class Character : MonoBehaviour, IGameUpdate
 		//state
 		csm = new PerformanceCSM(this); //special init proc
 
-		LogCore.Log("Character", $"Character initialized: {InstanceName}");
+		LogCore.Log(LogType.Character, $"Character initialized: {InstanceName}");
 
 		//post setup
 		if (csm.Verified)
