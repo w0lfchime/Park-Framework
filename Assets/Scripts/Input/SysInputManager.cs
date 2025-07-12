@@ -17,54 +17,31 @@ public struct InputFrameData
 
 public enum SysInputManagerState
 {
-    Disabled,
-    Pairing,
-    CursorsOnly,
-    CharactersOnly,
+	Disabled,
+	Pairing,
+	CursorsOnly,
+	CharactersOnly,
 }
 
 public class SysInputManager
 {
-    //players up to 4 or 8 total
-    private Dictionary<int, IInputSource> inputSources = new();
+	//players up to 4 or 8 total
+	private Dictionary<int, IInputSource> inputSources = new();
 	private Dictionary<int, SortedDictionary<int, InputFrameData>> inputHistory = new();
 
 	//state, placeholder code
 	public SysInputManagerState currentState;
 
-    public bool recordingInput;
+	public bool recordingInput;
 
-    public SysInputManager()
-    {
-        currentState = SysInputManagerState.Disabled;
-    }
+	public SysInputManager()
+	{
+		currentState = SysInputManagerState.Disabled;
+	}
 
 
-    public void Update()
-    {
-        switch (currentState)
-        {
-            case SysInputManagerState.Disabled:
-
-                break;  
-            case SysInputManagerState.Pairing:
-
-                break;
-            case SysInputManagerState.CursorsOnly:
-
-                break;
-            case SysInputManagerState.CharactersOnly:
-
-                break;
-            default:
-                break;
-        }
-
-        
-    }
-
-    public void FixedGameUpdate() //runs at 60hz, gets called by AppManager
-    {
+	public void Update()
+	{
 		switch (currentState)
 		{
 			case SysInputManagerState.Disabled:
@@ -84,30 +61,40 @@ public class SysInputManager
 		}
 
 
-        if (recordingInput)
-        {
-            RecordInputs();
-        }
+	}
+
+	public void FixedGameUpdate() //runs at 60hz, gets called by AppManager
+	{
+		switch (currentState)
+		{
+			case SysInputManagerState.Disabled:
+
+				break;
+			case SysInputManagerState.Pairing:
+
+				break;
+			case SysInputManagerState.CursorsOnly:
+
+				break;
+			case SysInputManagerState.CharactersOnly:
+
+				break;
+			default:
+				break;
+		}
+
+
+		if (recordingInput)
+		{
+			RecordInputs();
+		}
 
 
 	}
 
 	private void RecordInputs()
 	{
-		int currentFrame = GameClock.CurrentFrame; // You must provide this value somehow. -ChatGPT
-		//-my response: the systeminputmanager is persistent across scenes, so I'm trying to figure out 
-		//if I should always be clocking frames, or only during a game. Supposedly, we would want to start 
-		//clocking frames right as a match starts. 
-
-		//I currently aim to have AppManager function as a state machine on "AppStates", which are their own classes.
-		//Appstates will basically hard manage what actually happens, such as loading a level, managing inputs, netcode,
-		//setup, etc.etc.etc. 
-
-		//This means that SystemInputManager should remain a system alone that appstates can use in various ways to 
-		//make the game happen. 
-
-		//Does that sound like a good plan? If so, I assume we should add various methods like "ResetInputHistory",
-		//"GetInputHistory" "EnablingRecording" (im not quite sure yet.) Give me your thoughts.
+		int currentFrame = GameClock.CurrentFrame; 
 
 		foreach (var kvp in inputSources)
 		{
@@ -127,10 +114,10 @@ public class SysInputManager
 
 
 	public void RegisterPlayer(int playerId, IInputSource source)
-    {
-        inputSources[playerId] = source;
+	{
+		inputSources[playerId] = source;
 
-    }
+	}
 
 	public void PollInputs(int frame)
 	{

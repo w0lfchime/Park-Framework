@@ -43,7 +43,6 @@ public class AppManager : MonoBehaviour
 
 		//services 
 		systemInputManager = new SysInputManager();
-		fgUpdate = new FixedGameUpdateDriver();
 
 		//appstate
 		SetAppState(BootAppState);
@@ -62,6 +61,7 @@ public class AppManager : MonoBehaviour
 		
 	}
 
+	//Called by fixed game update driver. circular calling
 	public void FixedGameUpdate()
 	{
 		systemInputManager.FixedGameUpdate();

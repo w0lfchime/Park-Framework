@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public interface IGameUpdate
@@ -10,19 +11,10 @@ public static class FixedGameUpdateDriver
 {
 	private const float TargetDeltaTime = 1f / 60f; // 60Hz
 	private static float accumulatedTime = 0f;
-	private static List<IGameUpdate> fixedUpdateObjects = new List<IGameUpdate>();
 
-	public static void Register(IGameUpdate obj)
-	{
-		fixedUpdateObjects.Add(obj);
-		LogCore.Log("FixedGameUpdateDriver", $"Registered a {obj.GetType().Name} to the FixedGameUpdateDriver.");
-	}
-
-	public static void Unregister(IGameUpdate obj)
-	{
-		fixedUpdateObjects.Remove(obj);
-		LogCore.Log("FixedGameUpdateDriver", $"Unregistered a {obj.GetType().Name} from the FixedGameUpdateDriver.");
-	}
+	public static int Clock; 
+	public static bool ClockEnabled = false;
+	private static int pauseDuration;
 
 	public static void Update()
 	{
@@ -39,9 +31,39 @@ public static class FixedGameUpdateDriver
 	{
 		AppManager.Instance.FixedGameUpdate();
 
-		for (int i = 0; i < fixedUpdateObjects.Count; i++)
+		ClockUpdateLogic();
+		
+	}
+
+	private static void ClockUpdateLogic()
+	{
+		if (ClockEnabled && pauseDuration == 0)
 		{
-			fixedUpdateObjects[i].FixedFrameUpdate();
+			Clock++;
 		}
+		else if (pauseDuration > 0)
+		{
+			pauseDuration--;
+		}
+		else
+		{
+			pauseDuration = 0;
+		}
+	}
+
+	public static void PauseClock()
+	{
+		ClockEnabled = false;
+	}
+	public static void PauseClock(int pauseFrameCount)
+	{
+		pauseDuration = pauseFrameCount;
+	}
+
+
+	public static void UnpauseClock()
+	{
+		ClockEnabled = true;
+		pauseDuration = 0;
 	}
 }
