@@ -23,18 +23,19 @@ public class ConsoleManager : MonoBehaviour
     [Header("Local Variables")]
     [SerializeField] private bool consoleIsOpen;
 
-    private void Start()
-    {
-        sendButton.onClick.AddListener(SendCommand);
-        refreshButton.onClick.AddListener(ClearConsole);
-        exitButton.onClick.AddListener(() => SetConsoleOpen(false));
+	private void Start()
+	{
+		sendButton.onClick.AddListener(SendCommand);
+		refreshButton.onClick.AddListener(ClearConsole);
+		exitButton.onClick.AddListener(() => SetConsoleOpen(false));
 
-        LogCore.OnLog += LogMessage;
+		// TMP InputField's onSubmit works with Enter key
+		inputField.onSubmit.AddListener(_ => SendCommand());
 
+		LogCore.OnLog += LogMessage;
+	}
 
-    }
-
-    private void Update()
+	private void Update()
     {
         // Toggle console with ~ key
         if (Input.GetKeyDown(KeyCode.BackQuote)) // ~ key is typically `BackQuote`
@@ -46,12 +47,6 @@ public class ConsoleManager : MonoBehaviour
             {
                 inputField.ActivateInputField(); // Focus input field when opened
             }
-        }
-
-        // Send command with Enter key
-        if (consoleIsOpen && Input.GetKeyDown(KeyCode.Return)) // Enter key
-        {
-            SendCommand();
         }
     }
 

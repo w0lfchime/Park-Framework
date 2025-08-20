@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 
@@ -9,7 +10,7 @@ public class AppManager : MonoBehaviour
 	public static AppManager Instance { get; private set; }
 
 	//services
-	public SysInputManager systemInputManager { get; private set; }
+	public SysInputManager SystemInputManager { get; private set; }
 
 	//appstate
 	private string currentLoadedScene;
@@ -21,8 +22,16 @@ public class AppManager : MonoBehaviour
 
 
 	//Core Scene references
-	public GameObject c_canvas;
-	public GameObject c_camera;
+	public GameObject app_canvas;
+	public GameObject app_camera;
+
+
+
+
+	//players
+
+	public List<Player> PlayerList = new();
+
 
 
 	private void Awake()
@@ -36,13 +45,16 @@ public class AppManager : MonoBehaviour
 		Instance = this;
 
 
+		
+
 		//core scene
-		c_canvas = GameObject.Find("C_Canvas");
-		c_camera = GameObject.Find("C_Camera");
+		app_canvas = GameObject.Find("C_Canvas");
+		app_camera = GameObject.Find("C_Camera");
 
 
 		//services 
-		systemInputManager = new SysInputManager();
+		SystemInputManager = new SysInputManager();
+
 
 		//appstate
 		SetAppState(BootAppState);
@@ -60,7 +72,7 @@ public class AppManager : MonoBehaviour
 		FixedGameUpdateDriver.Update();
 
 
-		systemInputManager.Update();
+		SystemInputManager.Update();
 		CurrentState?.OnUpdate();
 		
 	}
@@ -68,7 +80,7 @@ public class AppManager : MonoBehaviour
 	//Called by fixed game update driver. circular calling
 	public void FixedGameUpdate()
 	{
-		systemInputManager.FixedGameUpdate();
+		SystemInputManager.FixedGameUpdate();
 	}
 
 

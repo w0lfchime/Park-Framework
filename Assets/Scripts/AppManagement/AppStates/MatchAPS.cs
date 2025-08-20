@@ -1,7 +1,13 @@
 
+public enum MatchState
+{
+	Null,
+	Cinematic,
+	Gameplay,
 
+}
 
-public class HomeMenuAPS : AppState
+public class MatchAPS : AppState
 {
 	public override void OnEnter()
 	{

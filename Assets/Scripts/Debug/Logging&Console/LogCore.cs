@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 public enum LogType
 {
 	NoCategory,
+	General,
 	Fatal,
 	Error,
 	Warning,
@@ -18,6 +19,8 @@ public enum LogType
 	GameSetup,
 	PhysicsSetup,
 	ServiceLocator,
+	CommandMeta,
+	Response,
 
 }
 
@@ -37,6 +40,9 @@ public static class LogCore
 		{
 			logTypeStates[type] = true; // Enable all by default
 		}
+
+		//disable logtypes here 
+		//TODO: Active logtype filtering by command
 	}
 
 	// === Public API ===

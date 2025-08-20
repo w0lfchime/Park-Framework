@@ -39,7 +39,7 @@ public class HomeMenuManager : MonoBehaviour
 		bool pushToStack = true;
 		if (!stateDict.TryGetValue(stateName, out var newState))
 		{
-			Debug.LogWarning($"Menu state '{stateName}' not found.");
+			Debug.LogWarning($"MoveFlick state '{stateName}' not found.");
 			return;
 		}
 

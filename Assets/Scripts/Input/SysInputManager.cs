@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 [System.Serializable]
 public struct InputFrameData
@@ -30,11 +34,68 @@ public class SysInputManager
 	public SysInputManagerState currentState = SysInputManagerState.Disabled;
 	public bool recordingInput = true;
 
+	//players and pairing 
+	private Dictionary<InputDevice, int> deviceToPlayer = new();
+	private int nextPlayerId = 1; // Start with Player 1
+	private const int MaxPlayers = 4;
+
+	public static event Action<int, InputDevice> OnPlayerPaired;
+	public static event Action<int> OnPlayerUnpaired;
+
+
+	public SysInputManager()
+	{
+		// Register the command
+		CommandHandler.RegisterCommand("listdevices", args =>
+		{
+			if (InputSystem.devices.Count == 0)
+			{
+				LogCore.Log(LogType.Response, "No input devices detected.");
+				return;
+			}
+
+			LogCore.Log(LogType.Response, $"Detected {InputSystem.devices.Count} input devices:");
+
+			foreach (var device in InputSystem.devices)
+			{
+				LogCore.Log(LogType.Response, $"- {device.displayName} ({device.deviceId}, {device.description.interfaceName})");
+			}
+		});
+	}
+
+
 	public void Update()
 	{
 		// Optional: input detection for pairing or UI actions
-	}
 
+		foreach (var kvp in inputSources)
+		{
+			int playerId = kvp.Key;
+			IInputSource source = kvp.Value;
+
+			source.Update();
+		}
+
+
+		switch (currentState)
+		{
+			case SysInputManagerState.Disabled:
+				return;
+
+			case SysInputManagerState.Debug:
+
+				break;
+			case SysInputManagerState.Pairing:
+				CheckForPairingInput();
+				break;
+			case SysInputManagerState.CursorsOnly:
+
+				break;
+			case SysInputManagerState.CharactersOnly:
+
+				break;
+		}
+	}
 
 
 	public void ClearHistory()
@@ -83,10 +144,13 @@ public class SysInputManager
 	}
 
 
-
-
 	public void SetState(SysInputManagerState newstate)
 	{
+		if (newstate == currentState)
+		{
+			return; 
+		}
+
 
 		//on exit
 		switch (currentState)
@@ -119,7 +183,10 @@ public class SysInputManager
 
 				break;
 			case SysInputManagerState.Pairing:
-				// Optional: add pairing logic
+
+				nextPlayerId = 1;
+				deviceToPlayer.Clear();
+				
 				break;
 			case SysInputManagerState.CursorsOnly:
 
@@ -130,6 +197,40 @@ public class SysInputManager
 		}
 
 		currentState = newstate;
+	}
+
+	private void PairDevice(InputDevice device)
+	{
+		int playerId = nextPlayerId++;
+		deviceToPlayer[device] = playerId;
+
+		IInputSource source = new InputSource_UnityGamepad(new InputActionMap("Player" + playerId));
+		RegisterPlayer(playerId, source);
+
+		LogCore.Log(LogType.General, $"Paired {device.displayName} to Player {playerId}");
+
+		OnPlayerPaired?.Invoke(playerId, device); // <-- notify UI
+	}
+
+	private void CheckForPairingInput()
+	{
+		if (nextPlayerId > MaxPlayers) return; // All players paired
+
+		foreach (var device in InputSystem.devices)
+		{
+			if (deviceToPlayer.ContainsKey(device))
+				continue; // Already paired
+
+			// Check if any control on this device is actuated
+			foreach (var control in device.allControls)
+			{
+				if (control is ButtonControl button && button.wasPressedThisFrame)
+				{
+					PairDevice(device);
+					return; // One device per frame is enough
+				}
+			}
+		}
 	}
 
 	private void RecordInputs(int frame)

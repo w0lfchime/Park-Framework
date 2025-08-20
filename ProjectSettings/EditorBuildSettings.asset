@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/General/HomeMenu.unity
     guid: 5d9a375deeb0c8e499cccf4e32b5796d
   - enabled: 1
-    path: Assets/Scenes/General/CharacterSelect.unity
+    path: Assets/Scenes/General/CharSelect.unity
     guid: 9de36095679fc864cb6fe2213c495bf8
   - enabled: 1
     path: Assets/Scenes/Developer/FixedPointTesting.unity

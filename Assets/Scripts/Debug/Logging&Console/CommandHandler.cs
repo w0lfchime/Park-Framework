@@ -11,11 +11,11 @@ public static class CommandHandler
         if (!commands.ContainsKey(command))
         {
             commands.Add(command, callback);
-            //LogCore.Log("CommandMeta", $"Command '{command}' registered.");
+            LogCore.Log(LogType.CommandMeta, $"Command '{command}' registered.");
         }
         else
         {
-            //LogCore.Log("CommandMeta", $"Command '{command}' is already registered.");
+            LogCore.Log(LogType.CommandMeta, $"Command '{command}' is already registered.");
         }
     }
 
@@ -23,14 +23,14 @@ public static class CommandHandler
     {
         if (string.IsNullOrWhiteSpace(commandInput))
         {
-            //LogCore.Log("CommandMeta", "Command cannot be empty.");
+            LogCore.Log(LogType.Response, "Command cannot be empty.");
             return;
         }
 
         // Check if the command starts with a slash
         if (!commandInput.StartsWith("/"))
         {
-            //LogCore.Log("CommandMeta", "Invalid command. All commands must start with a '/'.");
+            LogCore.Log(LogType.Response, "Invalid command. All commands must start with a '/'.");
             return;
         }
 
@@ -48,7 +48,7 @@ public static class CommandHandler
         }
         else
         {
-            //LogCore.Log("CommandMeta", $"Command '{command}' not recognized.");
+            LogCore.Log(LogType.Response, $"Command '{command}' not recognized.");
         }
     }
 
