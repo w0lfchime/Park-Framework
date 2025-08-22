@@ -29,8 +29,7 @@ public class AppManager : MonoBehaviour
 
 
 	//players
-
-	public List<Player> PlayerList = new();
+	//I need a list of "Player"s
 
 
 

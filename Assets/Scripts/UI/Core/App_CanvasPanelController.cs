@@ -10,6 +10,8 @@ public class App_CanvasPanelController : MonoBehaviour
 
 	private bool isDebugVisible = true;
 	private bool isPauseMenuVisible = false;
+	private bool isPairingMenuVisible = false;
+
 	private bool currentlyPairing = false;
 
 	private void Awake()
@@ -46,6 +48,10 @@ public class App_CanvasPanelController : MonoBehaviour
 					SetCanvasGroupActive(PauseMenu, isPauseMenuVisible);
 				}
 			}
+		} 
+		else
+		{
+
 		}
 	}
 
@@ -58,6 +64,10 @@ public class App_CanvasPanelController : MonoBehaviour
 		}
 
 		currentlyPairing = true;
+
+		SetCanvasGroupActive(PairMenu, true);
+
+		isPairingMenuVisible = true;
 
 		AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
 	}
@@ -72,25 +82,5 @@ public class App_CanvasPanelController : MonoBehaviour
 		group.blocksRaycasts = active;
 	}
 
-	//private void OnEnable()
-	//{
-	//	SysInputManager.OnPlayerPaired += HandlePlayerPaired;
-	//	SysInputManager.OnPlayerUnpaired += HandlePlayerUnpaired;
-	//}
 
-	//private void OnDisable()
-	//{
-	//	SysInputManager.OnPlayerPaired -= HandlePlayerPaired;
-	//	SysInputManager.OnPlayerUnpaired -= HandlePlayerUnpaired;
-	//}
-
-	//private void HandlePlayerPaired(int playerId, InputDevice device)
-	//{
-	//	playerSlots[playerId - 1].text = $"Player {playerId}: {device.displayName}";
-	//}
-
-	//private void HandlePlayerUnpaired(int playerId)
-	//{
-	//	playerSlots[playerId - 1].text = $"Player {playerId}: <empty>";
-	//}
 }
