@@ -15,7 +15,7 @@ public class MatchAPS : AppState
 
 		AppManager.LoadScene("HomeMenu");
 
-		AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Debug);
+		
 	}
 
 	public override void OnUpdate()

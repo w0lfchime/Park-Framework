@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class App_CanvasPanelController : MonoBehaviour
 {
@@ -8,6 +9,17 @@ public class App_CanvasPanelController : MonoBehaviour
 	public CanvasGroup PauseMenu;
 	public CanvasGroup PairMenu;
 	public CanvasGroup PairingModeUI;
+
+	[Header("Buttons")]
+	public Button AddPlayerButton;
+	public Button RemovePlayerButton;
+
+	[Header("Player UI Slots")]
+	public List<CanvasGroup> playerSlots = new List<CanvasGroup>(); // Assign 4 slots in inspector
+
+	[Header("Player Settings")]
+	public int MaxPlayers = 4;
+	public int PlayerCount = 1;
 
 	private bool isDebugVisible = true;
 	private bool isPauseMenuVisible = false;
@@ -19,13 +31,20 @@ public class App_CanvasPanelController : MonoBehaviour
 	{
 		DebugView1.gameObject.SetActive(true);
 		PauseMenu.gameObject.SetActive(true);
-		PairMenu.gameObject.SetActive(true);	
+		PairMenu.gameObject.SetActive(true);
 		PairingModeUI.gameObject.SetActive(true);
 
 		SetCanvasGroupActive(DebugView1, true);
 		SetCanvasGroupActive(PauseMenu, false);
 		SetCanvasGroupActive(PairMenu, false);
 		SetCanvasGroupActive(PairingModeUI, false);
+
+		// Initialize player slots
+		for (int i = 0; i < playerSlots.Count; i++)
+		{
+			if (i == 0) SetPlayerSlotActive(playerSlots[i], true); // First player always active
+			else SetPlayerSlotActive(playerSlots[i], false);
+		}
 	}
 
 	void Update()
@@ -51,20 +70,13 @@ public class App_CanvasPanelController : MonoBehaviour
 					SetCanvasGroupActive(PauseMenu, isPauseMenuVisible);
 				}
 			}
-		} 
-		else
-		{
-
 		}
 	}
 
 	//function exposed for unity button to access:
 	public void EnterPairingMenu()
 	{
-		if (currentlyPairing || isPairingMenuVisible)
-		{
-			return;
-		}
+		if (currentlyPairing || isPairingMenuVisible) return;
 
 		isPairingMenuVisible = true;
 		SetCanvasGroupActive(PairMenu, true);
@@ -72,6 +84,7 @@ public class App_CanvasPanelController : MonoBehaviour
 		currentlyPairing = false;
 		SetCanvasGroupActive(PairingModeUI, false);
 
+		CheckAddRemoveButtonUsageAllowed();
 	}
 
 	public void ExitPairingMenu()
@@ -84,15 +97,11 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		isPairingMenuVisible = false;
 		SetCanvasGroupActive(PairMenu, false);
-
 	}
 
 	public void EnterPairingMode()
 	{
-		if (currentlyPairing)
-		{
-			return;
-		}
+		if (currentlyPairing) return;
 
 		isPairingMenuVisible = true;
 		SetCanvasGroupActive(PairMenu, true);
@@ -100,27 +109,78 @@ public class App_CanvasPanelController : MonoBehaviour
 		currentlyPairing = true;
 		SetCanvasGroupActive(PairingModeUI, true);
 
-		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+		SetButtonActive(AddPlayerButton, false);
+		SetButtonActive(RemovePlayerButton, false);
 
-		//enter pairing
+		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
 	}
 
 	public void ExitPairingMode()
 	{
-        if (!isPairingMenuVisible || !currentlyPairing)
-        {
-			return;
-        }
-
+		if (!isPairingMenuVisible || !currentlyPairing) return;
 
 		currentlyPairing = false;
 		SetCanvasGroupActive(PairingModeUI, false);
 
-		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+		SetButtonActive(AddPlayerButton, true);
+		SetButtonActive(RemovePlayerButton, true);
 
-		//exit pairing
+		CheckAddRemoveButtonUsageAllowed();
+
+
+		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Disabled);
 	}
 
+	// -------------------
+	// PLAYER SLOT LOGIC
+	// -------------------
+	public void SetPlayerSlotActive(CanvasGroup player, bool active)
+	{
+		if (player == null) return;
+		player.alpha = active ? 1f : 0.05f; // full opacity if active, faded if inactive
+		player.interactable = active;
+		player.blocksRaycasts = active;
+	}
+
+	public void AddPlayer()
+	{
+		if (PlayerCount >= MaxPlayers) return; // already max
+
+		PlayerCount++;
+		SetPlayerSlotActive(playerSlots[PlayerCount - 1], true);
+
+		CheckAddRemoveButtonUsageAllowed();
+	}
+
+	public void RemovePlayer()
+	{
+		if (PlayerCount <= 1) return; // at least one player must exist
+
+		SetPlayerSlotActive(playerSlots[PlayerCount - 1], false);
+		PlayerCount--;
+
+		CheckAddRemoveButtonUsageAllowed();
+	}
+
+	public void CheckAddRemoveButtonUsageAllowed()
+	{
+		if (PlayerCount > 1)
+		{
+			SetButtonActive(RemovePlayerButton, true);
+		} 
+		else
+		{
+			SetButtonActive(RemovePlayerButton, false);
+		}
+		if (PlayerCount < MaxPlayers)
+		{
+			SetButtonActive(AddPlayerButton, true);
+		}
+		else
+		{
+			SetButtonActive(AddPlayerButton, false);
+		}
+	}
 
 	private void SetCanvasGroupActive(CanvasGroup group, bool active)
 	{
@@ -130,6 +190,21 @@ public class App_CanvasPanelController : MonoBehaviour
 		group.interactable = active;
 		group.blocksRaycasts = active;
 	}
+	public void SetButtonActive(Button button, bool active)
+	{
+		if (button == null) return;
 
+		// Get the CanvasGroup attached to the button
+		CanvasGroup group = button.GetComponent<CanvasGroup>();
+		if (group == null) return;
+
+		// Visual state
+		group.alpha = active ? 1f : 0.3f;
+		group.interactable = active;
+		group.blocksRaycasts = active;
+
+		// Explicitly disable/enable the Button component
+		button.interactable = active;
+	}
 
 }

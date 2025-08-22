@@ -152,20 +152,6 @@ public class SysInputManager
 	}
 
 
-	private void PairDevice(InputDevice device)
-	{
-		if (players.Count >= MaxPlayers) return;
-
-		int playerId = nextPlayerId++;
-		var source = new InputSource_UnityGamepad(new InputActionMap("Player" + playerId));
-		var player = new Player(playerId, device, source);
-
-		players[playerId] = player;
-
-		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} to Player {playerId}");
-		OnPlayerPaired?.Invoke(player);
-	}
-
 	private void CheckForPairingInput()
 	{
 		foreach (var device in InputSystem.devices)
