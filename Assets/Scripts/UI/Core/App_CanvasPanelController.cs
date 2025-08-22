@@ -7,6 +7,7 @@ public class App_CanvasPanelController : MonoBehaviour
 	public CanvasGroup DebugView1;
 	public CanvasGroup PauseMenu;
 	public CanvasGroup PairMenu;
+	public CanvasGroup PairingModeUI;
 
 	private bool isDebugVisible = true;
 	private bool isPauseMenuVisible = false;
@@ -19,10 +20,12 @@ public class App_CanvasPanelController : MonoBehaviour
 		DebugView1.gameObject.SetActive(true);
 		PauseMenu.gameObject.SetActive(true);
 		PairMenu.gameObject.SetActive(true);	
+		PairingModeUI.gameObject.SetActive(true);
 
 		SetCanvasGroupActive(DebugView1, true);
 		SetCanvasGroupActive(PauseMenu, false);
 		SetCanvasGroupActive(PairMenu, false);
+		SetCanvasGroupActive(PairingModeUI, false);
 	}
 
 	void Update()
@@ -56,6 +59,34 @@ public class App_CanvasPanelController : MonoBehaviour
 	}
 
 	//function exposed for unity button to access:
+	public void EnterPairingMenu()
+	{
+		if (currentlyPairing || isPairingMenuVisible)
+		{
+			return;
+		}
+
+		isPairingMenuVisible = true;
+		SetCanvasGroupActive(PairMenu, true);
+
+		currentlyPairing = false;
+		SetCanvasGroupActive(PairingModeUI, false);
+
+	}
+
+	public void ExitPairingMenu()
+	{
+		if (currentlyPairing)
+		{
+			ExitPairingMode();
+			return;
+		}
+
+		isPairingMenuVisible = false;
+		SetCanvasGroupActive(PairMenu, false);
+
+	}
+
 	public void EnterPairingMode()
 	{
 		if (currentlyPairing)
@@ -63,13 +94,31 @@ public class App_CanvasPanelController : MonoBehaviour
 			return;
 		}
 
-		currentlyPairing = true;
-
+		isPairingMenuVisible = true;
 		SetCanvasGroupActive(PairMenu, true);
 
-		isPairingMenuVisible = true;
+		currentlyPairing = true;
+		SetCanvasGroupActive(PairingModeUI, true);
 
-		AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+
+		//enter pairing
+	}
+
+	public void ExitPairingMode()
+	{
+        if (!isPairingMenuVisible || !currentlyPairing)
+        {
+			return;
+        }
+
+
+		currentlyPairing = false;
+		SetCanvasGroupActive(PairingModeUI, false);
+
+		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+
+		//exit pairing
 	}
 
 

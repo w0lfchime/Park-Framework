@@ -21,6 +21,7 @@ public enum LogType
 	ServiceLocator,
 	CommandMeta,
 	Response,
+	Pairing,
 
 }
 

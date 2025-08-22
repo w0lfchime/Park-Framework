@@ -4,6 +4,7 @@ using System;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem;
 using System.Linq;
+using UnityEditor.PackageManager.Requests;
 
 [System.Serializable]
 public struct InputFrameData
@@ -20,7 +21,6 @@ public struct InputFrameData
 public enum SysInputManagerState
 {
 	Disabled,
-	Debug,
 	Pairing,
 	CursorsOnly,
 	CharactersOnly,
@@ -28,6 +28,8 @@ public enum SysInputManagerState
 
 public class SysInputManager
 {
+	public bool InputLogging;
+
 	private Dictionary<int, Player> players = new();
 	private int nextPlayerId = 1;
 	private const int MaxPlayers = 4;
@@ -40,6 +42,7 @@ public class SysInputManager
 
 	public SysInputManager()
 	{
+		InputLogging = true; 
 		CommandHandler.RegisterCommand("listdevices", args =>
 		{
 			if (InputSystem.devices.Count == 0)
@@ -63,11 +66,12 @@ public class SysInputManager
 
 		switch (currentState)
 		{
+			case SysInputManagerState.Disabled:
+				break;
 			case SysInputManagerState.Pairing:
 				CheckForPairingInput();
 				break;
-			case SysInputManagerState.Debug:
-				break;
+
 		}
 	}
 
@@ -81,9 +85,57 @@ public class SysInputManager
 				player.RecordFrame(frame);
 		}
 
-		if (currentState == SysInputManagerState.Debug)
+		if (InputLogging)
 			DebugLogInputs(frame);
 	}
+
+	public void EnterPairingMode()
+	{
+		if (currentState == SysInputManagerState.Pairing)
+		{
+			return;
+		}
+
+		LogCore.Log(LogType.Pairing, "Entering pairing mode...");
+
+		ClearAllPlayers();
+
+		SetState(SysInputManagerState.Pairing);
+	}
+
+	public void ExitPairingMode()
+	{
+		if (currentState != SysInputManagerState.Pairing)
+		{
+			return;
+		}
+
+		LogCore.Log(LogType.Pairing, "Exiting pairing mode...");
+
+		SetState(SysInputManagerState.CursorsOnly);
+	}
+
+	public void ClearAllPlayers()
+	{
+		//this only clears player's inputs/input sources. It should not clear players or player input history. 
+
+
+	}
+
+	private void PairDevice(InputDevice device)
+	{
+		if (players.Count >= MaxPlayers) return;
+
+		int playerId = nextPlayerId++;
+		var source = new InputSource_UnityGamepad(new InputActionMap("Player" + playerId));
+		var player = new Player(playerId, device, source);
+
+		players[playerId] = player;
+
+		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} to Player {playerId}");
+		OnPlayerPaired?.Invoke(player);
+	}
+
 
 	public void SetState(SysInputManagerState newstate)
 	{
@@ -99,6 +151,7 @@ public class SysInputManager
 		currentState = newstate;
 	}
 
+
 	private void PairDevice(InputDevice device)
 	{
 		if (players.Count >= MaxPlayers) return;
@@ -109,7 +162,7 @@ public class SysInputManager
 
 		players[playerId] = player;
 
-		LogCore.Log(LogType.General, $"Paired {device.displayName} to Player {playerId}");
+		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} to Player {playerId}");
 		OnPlayerPaired?.Invoke(player);
 	}
 
