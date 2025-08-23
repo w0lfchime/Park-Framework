@@ -27,6 +27,7 @@ public class App_CanvasPanelController : MonoBehaviour
 
 	private bool currentlyPairing = false;
 
+
 	private void Awake()
 	{
 		DebugView1.gameObject.SetActive(true);
@@ -34,7 +35,7 @@ public class App_CanvasPanelController : MonoBehaviour
 		PairMenu.gameObject.SetActive(true);
 		PairingModeUI.gameObject.SetActive(true);
 
-		SetCanvasGroupActive(DebugView1, true);
+		SetCanvasGroupActive(DebugView1, false);
 		SetCanvasGroupActive(PauseMenu, false);
 		SetCanvasGroupActive(PairMenu, false);
 		SetCanvasGroupActive(PairingModeUI, false);
@@ -52,20 +53,21 @@ public class App_CanvasPanelController : MonoBehaviour
 		if (!currentlyPairing)
 		{
 			// Toggle DebugView1 with ~
-			if (Input.GetKeyDown(KeyCode.BackQuote))
-			{
-				if (GlobalDebugFlags.GlobalDebug)
-				{
-					isDebugVisible = !isDebugVisible;
-					SetCanvasGroupActive(DebugView1, isDebugVisible);
-				}
-			}
+			//if (Input.GetKeyDown(KeyCode.BackQuote))
+			//{
+			//	if (GlobalDebugFlags.GlobalDebug)
+			//	{
+			//		isDebugVisible = !isDebugVisible;
+			//		SetCanvasGroupActive(DebugView1, isDebugVisible);
+			//	}
+			//}
 
 			// Toggle PauseMenu with Esc
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
 				if (AppManager.OpenPauseAllowed)
 				{
+					ExitPairingMenu();
 					isPauseMenuVisible = !isPauseMenuVisible;
 					SetCanvasGroupActive(PauseMenu, isPauseMenuVisible);
 				}
@@ -149,6 +151,8 @@ public class App_CanvasPanelController : MonoBehaviour
 		PlayerCount++;
 		SetPlayerSlotActive(playerSlots[PlayerCount - 1], true);
 
+		AppManager.Instance.SystemInputManager.AddPlayer();
+
 		CheckAddRemoveButtonUsageAllowed();
 	}
 
@@ -158,6 +162,8 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		SetPlayerSlotActive(playerSlots[PlayerCount - 1], false);
 		PlayerCount--;
+
+		AppManager.Instance.SystemInputManager.RemovePlayer();
 
 		CheckAddRemoveButtonUsageAllowed();
 	}

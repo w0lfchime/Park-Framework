@@ -17,10 +17,20 @@ public class Player
 		InputSource = source;
 	}
 
-	public void Update() => InputSource.Update();
+	public void Update()
+	{
+		if (InputSource != null)
+		{
+			InputSource.Update();
+		}
+	}
 
 	public void RecordFrame(int frame)
 	{
+		if (InputSource == null)
+		{
+			return;
+		}
 		InputSource.UpdateInput(frame);
 		var input = InputSource.GetInputForFrame(frame);
 
@@ -39,6 +49,18 @@ public class Player
 			inputHistory.Add(data);
 		else
 			inputHistory[frame] = data;
+	}
+
+	public void AssignInput(InputDevice device, IInputSource source)
+	{
+		Device = device;
+		InputSource = source;
+	}
+
+	public void ClearInput()
+	{
+		Device = null;
+		InputSource = null;
 	}
 
 	public void ClearHistory() => inputHistory.Clear();

@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.InputSystem;
 
 
 public class AppManager : MonoBehaviour
@@ -27,9 +28,7 @@ public class AppManager : MonoBehaviour
 
 
 
-
-	//players
-	//I need a list of "Player"s
+	public InputActionAsset STD_InputActions; // assign in Inspector
 
 
 
