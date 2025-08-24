@@ -19,6 +19,12 @@ public enum SysInputManagerState
 
 public class SysInputManager
 {
+	public delegate void DevicePairedHandler(int playerId, PlayerControllerType type);
+	public delegate void DeviceUnpairedHandler(int playerId);
+
+	public event DevicePairedHandler OnDevicePaired;
+	public event DeviceUnpairedHandler OnDeviceUnpaired;
+
 	public bool InputLogging;
 
 	private Dictionary<int, Player> players = new();
@@ -135,14 +141,21 @@ public class SysInputManager
 			LogCore.Log(LogType.Pairing, $"Cannot pair device, Player {playerId} does not exist.");
 			return;
 		}
-		//HACK: input actions sourcing 
 
 		var iam = AppManager.Instance.STD_InputActions.FindActionMap("Character", throwIfNotFound: true).Clone();
-
 		var source = new InputSource_UnityGamepad(iam);
+
 		players[playerId].AssignInput(device, source);
 
-		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} to Player {playerId}");
+		// Detect type
+		PlayerControllerType type = PlayerControllerType.None;
+		if (device is Keyboard) type = PlayerControllerType.Keyboard;
+		else if (device is Gamepad) type = PlayerControllerType.Gamepad;
+
+		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} ({type}) to Player {playerId}");
+
+		// Fire event
+		OnDevicePaired?.Invoke(playerId, type);
 	}
 
 	public void UnpairDeviceFromPlayer(int playerId)
@@ -155,6 +168,9 @@ public class SysInputManager
 
 		players[playerId].ClearInput();
 		LogCore.Log(LogType.Pairing, $"Unpaired device from Player {playerId}");
+
+		// Fire event
+		OnDeviceUnpaired?.Invoke(playerId);
 	}
 
 	private void CheckForPairingInput()

@@ -2,8 +2,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+public enum PlayerControllerType
+{
+	None,
+	Keyboard,
+	Gamepad,
+}
+
+[System.Serializable]
+public class PlayerSlot
+{
+	public CanvasGroup canvasGroup;
+	[HideInInspector] public PlayerControllerType controllerType = PlayerControllerType.None;
+	[HideInInspector] public GameObject spawnedIcon; // track spawned prefab
+}
+
+
 public class App_CanvasPanelController : MonoBehaviour
 {
+	[Header("Controller Icons")]
+	public GameObject keyboardIconPrefab;
+	public GameObject gamepadIconPrefab;
+
 	[Header("Canvas Groups")]
 	public CanvasGroup DebugView1;
 	public CanvasGroup PauseMenu;
@@ -15,7 +35,11 @@ public class App_CanvasPanelController : MonoBehaviour
 	public Button RemovePlayerButton;
 
 	[Header("Player UI Slots")]
-	public List<CanvasGroup> playerSlots = new List<CanvasGroup>(); // Assign 4 slots in inspector
+	public List<PlayerSlot> playerSlots = new List<PlayerSlot>(); // Assign in inspector
+
+
+
+
 
 	[Header("Player Settings")]
 	public int MaxPlayers = 4;
@@ -43,10 +67,29 @@ public class App_CanvasPanelController : MonoBehaviour
 		// Initialize player slots
 		for (int i = 0; i < playerSlots.Count; i++)
 		{
-			if (i == 0) SetPlayerSlotActive(playerSlots[i], true); // First player always active
-			else SetPlayerSlotActive(playerSlots[i], false);
+			if (i == 0) SetPlayerSlotActive(playerSlots[i].canvasGroup, true); // First player always active
+			else SetPlayerSlotActive(playerSlots[i].canvasGroup, false);
 		}
 	}
+
+	private void OnEnable()
+	{
+		if (AppManager.Instance?.SystemInputManager != null)
+		{
+			AppManager.Instance.SystemInputManager.OnDevicePaired += HandleDevicePaired;
+			AppManager.Instance.SystemInputManager.OnDeviceUnpaired += HandleDeviceUnpaired;
+		}
+	}
+
+	private void OnDisable()
+	{
+		if (AppManager.Instance?.SystemInputManager != null)
+		{
+			AppManager.Instance.SystemInputManager.OnDevicePaired -= HandleDevicePaired;
+			AppManager.Instance.SystemInputManager.OnDeviceUnpaired -= HandleDeviceUnpaired;
+		}
+	}
+
 
 	void Update()
 	{
@@ -87,6 +130,8 @@ public class App_CanvasPanelController : MonoBehaviour
 		SetCanvasGroupActive(PairingModeUI, false);
 
 		CheckAddRemoveButtonUsageAllowed();
+
+		UpdatePlayerSlotColorsAndPairingIcons();
 	}
 
 	public void ExitPairingMenu()
@@ -114,7 +159,9 @@ public class App_CanvasPanelController : MonoBehaviour
 		SetButtonActive(AddPlayerButton, false);
 		SetButtonActive(RemovePlayerButton, false);
 
-		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Pairing);
+		UpdatePlayerSlotColorsAndPairingIcons();
+
+		AppManager.Instance.SystemInputManager.EnterPairingMode();
 	}
 
 	public void ExitPairingMode()
@@ -129,8 +176,9 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		CheckAddRemoveButtonUsageAllowed();
 
+		UpdatePlayerSlotColorsAndPairingIcons();
 
-		//AppManager.Instance.SystemInputManager.SetState(SysInputManagerState.Disabled);
+		AppManager.Instance.SystemInputManager.ExitPairingMode();
 	}
 
 	// -------------------
@@ -149,7 +197,7 @@ public class App_CanvasPanelController : MonoBehaviour
 		if (PlayerCount >= MaxPlayers) return; // already max
 
 		PlayerCount++;
-		SetPlayerSlotActive(playerSlots[PlayerCount - 1], true);
+		SetPlayerSlotActive(playerSlots[PlayerCount - 1].canvasGroup, true);
 
 		AppManager.Instance.SystemInputManager.AddPlayer();
 
@@ -160,12 +208,14 @@ public class App_CanvasPanelController : MonoBehaviour
 	{
 		if (PlayerCount <= 1) return; // at least one player must exist
 
-		SetPlayerSlotActive(playerSlots[PlayerCount - 1], false);
+		SetPlayerSlotActive(playerSlots[PlayerCount - 1].canvasGroup, false);
 		PlayerCount--;
 
 		AppManager.Instance.SystemInputManager.RemovePlayer();
 
 		CheckAddRemoveButtonUsageAllowed();
+
+		UpdatePlayerSlotColorsAndPairingIcons();
 	}
 
 	public void CheckAddRemoveButtonUsageAllowed()
@@ -212,5 +262,69 @@ public class App_CanvasPanelController : MonoBehaviour
 		// Explicitly disable/enable the Button component
 		button.interactable = active;
 	}
+
+	private void HandleDevicePaired(int playerId, PlayerControllerType type)
+	{
+		if (playerId - 1 < 0 || playerId - 1 >= playerSlots.Count) return;
+
+		playerSlots[playerId - 1].controllerType = type;
+		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
+	}
+
+	private void HandleDeviceUnpaired(int playerId)
+	{
+		if (playerId - 1 < 0 || playerId - 1 >= playerSlots.Count) return;
+
+		playerSlots[playerId - 1].controllerType = PlayerControllerType.None;
+		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
+	}
+
+	public void UpdatePlayerSlotColorsAndPairingIcons()
+	{
+		foreach (var slot in playerSlots)
+		{
+			if (slot.canvasGroup == null) continue;
+
+			// Get or add the Image component
+			var image = slot.canvasGroup.GetComponent<UnityEngine.UI.Image>();
+			if (image == null) continue;
+
+			// Reset color + icon
+			image.color = Color.white;
+			if (slot.spawnedIcon != null) Destroy(slot.spawnedIcon);
+
+			switch (slot.controllerType)
+			{
+				case PlayerControllerType.None:
+					image.color = Color.white;
+					break;
+
+				case PlayerControllerType.Keyboard:
+					image.color = new Color(0.7f, 0.85f, 1f); // light blue
+					if (keyboardIconPrefab != null)
+					{
+						slot.spawnedIcon = Instantiate(
+							keyboardIconPrefab,
+							slot.canvasGroup.transform
+						);
+						slot.spawnedIcon.transform.localPosition = new Vector3(0, -50f, 0); // adjust as needed
+					}
+					break;
+
+				case PlayerControllerType.Gamepad:
+					image.color = new Color(0.7f, 0.85f, 1f); // light blue
+					if (gamepadIconPrefab != null)
+					{
+						slot.spawnedIcon = Instantiate(
+							gamepadIconPrefab,
+							slot.canvasGroup.transform
+						);
+						slot.spawnedIcon.transform.localPosition = new Vector3(0, -50f, 0); // adjust as needed
+					}
+					break;
+			}
+		}
+	}
+
 
 }
