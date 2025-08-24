@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem;
 using System.Linq;
 using UnityEditor.PackageManager.Requests;
+using UnityEngine.InputSystem.Utilities;
 
 
 
@@ -25,7 +26,7 @@ public class SysInputManager
 	public event DevicePairedHandler OnDevicePaired;
 	public event DeviceUnpairedHandler OnDeviceUnpaired;
 
-	public bool InputLogging;
+	public bool VerboseInputLogging;
 
 	private Dictionary<int, Player> players = new();
 	private int nextPlayerId = 1;
@@ -35,7 +36,7 @@ public class SysInputManager
 
 	public SysInputManager()
 	{
-		InputLogging = true;
+		VerboseInputLogging = false;
 
 		// commands 
 		CommandHandler.RegisterCommand("listdevices", args =>
@@ -53,6 +54,15 @@ public class SysInputManager
 			}
 		});
 
+		CommandHandler.RegisterCommand("toggleinputlog", args =>
+		{
+			VerboseInputLogging = !VerboseInputLogging;
+
+			string state = VerboseInputLogging ? "Enabled" : "Disabled";
+			LogCore.Log(LogType.Response, $"{state} verbose input logging.");
+		});
+
+
 		// helper command to pair first device to Player 1
 		CommandHandler.RegisterCommand("pairfirst", args =>
 		{
@@ -65,6 +75,36 @@ public class SysInputManager
 			var device = InputSystem.devices.First(); // grab the first device in the list
 			PairDeviceToPlayer(1, device);            // try to pair it to player 1
 		});
+
+		// helper command to list all players and their devices
+		CommandHandler.RegisterCommand("listplayers", args =>
+		{
+			if (players.Count == 0)
+			{
+				LogCore.Log(LogType.Response, "No players exist.");
+				return;
+			}
+
+			LogCore.Log(LogType.Response, $"Listing {players.Count} players:");
+			foreach (var kvp in players)
+			{
+				int id = kvp.Key;
+				var player = kvp.Value;
+
+				string deviceInfo = "Unpaired";
+				if (player.Device != null)
+				{
+					PlayerControllerType type = PlayerControllerType.None;
+					if (player.Device is Keyboard) type = PlayerControllerType.Keyboard;
+					else if (player.Device is Gamepad) type = PlayerControllerType.Gamepad;
+
+					deviceInfo = $"{player.Device.displayName} ({type})";
+				}
+
+				LogCore.Log(LogType.Response, $"- Player {id}: {deviceInfo}");
+			}
+		});
+
 
 		AddPlayer();
 	}
@@ -92,7 +132,7 @@ public class SysInputManager
 				player.RecordFrame(frame);
 		}
 
-		if (InputLogging)
+		if (VerboseInputLogging)
 			DebugLogInputs(frame);
 	}
 
@@ -142,21 +182,25 @@ public class SysInputManager
 			return;
 		}
 
-		var iam = AppManager.Instance.STD_InputActions.FindActionMap("Character", throwIfNotFound: true).Clone();
-		var source = new InputSource_UnityGamepad(iam);
+		var iam = AppManager.Instance.STD_InputActions
+			.FindActionMap("Character", throwIfNotFound: true)
+			.Clone();
 
+		//Restrict to only this player’s device
+		iam.devices = new ReadOnlyArray<InputDevice>(new[] { device });
+
+		var source = new InputSource_UnityGamepad(iam);
 		players[playerId].AssignInput(device, source);
 
-		// Detect type
 		PlayerControllerType type = PlayerControllerType.None;
 		if (device is Keyboard) type = PlayerControllerType.Keyboard;
 		else if (device is Gamepad) type = PlayerControllerType.Gamepad;
 
 		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} ({type}) to Player {playerId}");
-
-		// Fire event
 		OnDevicePaired?.Invoke(playerId, type);
 	}
+
+
 
 	public void UnpairDeviceFromPlayer(int playerId)
 	{
@@ -172,6 +216,19 @@ public class SysInputManager
 		// Fire event
 		OnDeviceUnpaired?.Invoke(playerId);
 	}
+
+	public void UnpairAllPlayers()
+	{
+		foreach (var playerId in players.Keys.ToList())
+		{
+			if (players[playerId].Device != null)
+			{
+				UnpairDeviceFromPlayer(playerId);
+			}
+		}
+		LogCore.Log(LogType.Pairing, "Unpaired all players.");
+	}
+
 
 	private void CheckForPairingInput()
 	{

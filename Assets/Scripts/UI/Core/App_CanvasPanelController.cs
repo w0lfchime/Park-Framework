@@ -20,6 +20,9 @@ public class PlayerSlot
 
 public class App_CanvasPanelController : MonoBehaviour
 {
+	[Header("Misc")]
+	public bool EventsSubscribed = false;
+
 	[Header("Controller Icons")]
 	public GameObject keyboardIconPrefab;
 	public GameObject gamepadIconPrefab;
@@ -78,7 +81,9 @@ public class App_CanvasPanelController : MonoBehaviour
 		{
 			AppManager.Instance.SystemInputManager.OnDevicePaired += HandleDevicePaired;
 			AppManager.Instance.SystemInputManager.OnDeviceUnpaired += HandleDeviceUnpaired;
-		}
+
+			EventsSubscribed = true;
+		} 
 	}
 
 	private void OnDisable()
@@ -90,6 +95,16 @@ public class App_CanvasPanelController : MonoBehaviour
 		}
 	}
 
+	private void FixedUpdate()
+	{
+		if (!EventsSubscribed && AppManager.Instance?.SystemInputManager != null)
+		{
+			AppManager.Instance.SystemInputManager.OnDevicePaired += HandleDevicePaired;
+			AppManager.Instance.SystemInputManager.OnDeviceUnpaired += HandleDeviceUnpaired;
+
+			EventsSubscribed = true;
+		}
+	}
 
 	void Update()
 	{
@@ -161,6 +176,9 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		UpdatePlayerSlotColorsAndPairingIcons();
 
+
+		AppManager.Instance.SystemInputManager.UnpairAllPlayers();
+
 		AppManager.Instance.SystemInputManager.EnterPairingMode();
 	}
 
@@ -207,6 +225,8 @@ public class App_CanvasPanelController : MonoBehaviour
 	public void RemovePlayer()
 	{
 		if (PlayerCount <= 1) return; // at least one player must exist
+
+		HandleDeviceUnpaired(PlayerCount);
 
 		SetPlayerSlotActive(playerSlots[PlayerCount - 1].canvasGroup, false);
 		PlayerCount--;
@@ -269,6 +289,8 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		playerSlots[playerId - 1].controllerType = type;
 		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
+
+		LogCore.Log("meowtest");
 	}
 
 	private void HandleDeviceUnpaired(int playerId)
@@ -277,6 +299,8 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		playerSlots[playerId - 1].controllerType = PlayerControllerType.None;
 		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
+
+		LogCore.Log("meowfest");
 	}
 
 	public void UpdatePlayerSlotColorsAndPairingIcons()
@@ -307,7 +331,7 @@ public class App_CanvasPanelController : MonoBehaviour
 							keyboardIconPrefab,
 							slot.canvasGroup.transform
 						);
-						slot.spawnedIcon.transform.localPosition = new Vector3(0, -50f, 0); // adjust as needed
+						slot.spawnedIcon.transform.localPosition = new Vector3(0, -300f, 0); // adjust as needed
 					}
 					break;
 
@@ -319,7 +343,7 @@ public class App_CanvasPanelController : MonoBehaviour
 							gamepadIconPrefab,
 							slot.canvasGroup.transform
 						);
-						slot.spawnedIcon.transform.localPosition = new Vector3(0, -50f, 0); // adjust as needed
+						slot.spawnedIcon.transform.localPosition = new Vector3(0, -300f, 0); // adjust as needed
 					}
 					break;
 			}
