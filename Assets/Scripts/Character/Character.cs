@@ -44,8 +44,7 @@ public abstract class Character : MonoBehaviour
 	public bool nonPlayer = false;
 
 	[Header("Debug")]
-	public bool debug;
-	public bool characterDebug = true;
+	public bool debug = true;
 	public Transform debugParentTransform;
 	public TextMeshPro stateText;
 	public TextMeshPro debugTextPlus;
@@ -83,7 +82,7 @@ public abstract class Character : MonoBehaviour
 	[Header("Animation Refs")]
 	public Animator animator;
 	public Transform rigAndMeshTransform;
-	public AAPController aapController;
+	public FDAPController FDAP_Controller;
 
 	[Header("Params")]
 	public float logicUPS = 60;
@@ -161,7 +160,7 @@ public abstract class Character : MonoBehaviour
 
 
 
-	//======// /==/==/==/=||[MONO & INTERFACE]||==/==/==/==/==/==/==/==/==/==/==/ //======//
+	//======// /==/==/==/=||[MONO & MONO-ABSTRACTS]||==/==/==/==/==/==/==/==/==/ //======//
 	#region mono
 	private void Awake()
 	{
@@ -215,22 +214,15 @@ public abstract class Character : MonoBehaviour
 		csm.PSMLateUpdate();
 	}
 	#endregion mono
-	#region hittable
-	public void TakeHit(HitData hitData, Character attacker)
-	{
-		// Apply hit effects
-		//ApplyHitstun(hitData.Hitstun);
-		//ApplyKnockback(hitData.KnockbackForce, hitData.KnockbackDirection);
-		//ApplyDamage(hitData.Damage);
-
-		//Debug.Log($"{gameObject.name} took {hitData.Damage} damage from {attacker.gameObject.name}!");
-	}
-	public virtual void ReceiveHit()
-	{
-
-	}
-
-	#endregion hittable
+	//----------------------------------------
+	#region mono_abstracts
+	protected abstract void CharacterAwake();
+	protected abstract void CharacterStart();
+	protected abstract void CharacterUpdate();
+	protected abstract void CharacterFixedFrameUpdate();
+	protected abstract void CharacterFixedPhysicsUpdate();
+	protected abstract void CharacterLateUpdate();
+	#endregion mono_abstracts
 	/////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -397,8 +389,8 @@ public abstract class Character : MonoBehaviour
 		UpdateCharacterData();
 
 		//animation 
-		aapController = new AAPController(this);
-		aapController.Setup();
+		FDAP_Controller = new FDAPController(this);
+		FDAP_Controller.Setup();
 
 
 		//LAST
@@ -526,14 +518,7 @@ public abstract class Character : MonoBehaviour
 	}
 	#endregion data
 	//=//-----|Mono|-------------------------------------------------------------//=//
-	#region mono_abstracts
-	protected abstract void CharacterAwake();
-	protected abstract void CharacterStart();
-	protected abstract void CharacterUpdate();
-	protected abstract void CharacterFixedFrameUpdate();
-	protected abstract void CharacterFixedPhysicsUpdate();
-	protected abstract void CharacterLateUpdate();
-	#endregion mono_abstracts
+
 
 	//=//------------------------------------------------------------------------//=//
 	#endregion base

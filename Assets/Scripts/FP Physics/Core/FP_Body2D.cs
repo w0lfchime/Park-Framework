@@ -27,7 +27,7 @@ public class FP_Body2D : MonoBehaviour
     public Fix64 InverseMass => mass.RawValue == 0 ? Fix64.Zero : Fix64.FromFloat(1f) / mass;
 
     [SerializeField] private Fix64 mass = Fix64.FromFloat(1f);
-    [SerializeField] private bool useGravity = true;
+    [SerializeField] private bool UseGravity = true;
 
     private FixVec2 accumulatedForces = FixVec2.zero;
 
@@ -45,7 +45,7 @@ public class FP_Body2D : MonoBehaviour
         {
             Velocity = FixVec2.zero;
             mass = Fix64.FromFloat(rb2d.mass);
-            useGravity = rb2d.gravityScale != 0;
+            UseGravity = rb2d.gravityScale != 0;
 
             // Convert Rigidbody2D body type
             switch (rb2d.bodyType)
@@ -85,7 +85,7 @@ public class FP_Body2D : MonoBehaviour
     {
         if (!IsDynamic) return;
 
-        if (useGravity)
+        if (UseGravity)
         {
             FixVec2 gravity = new(0.0f, -9.81f);
             accumulatedForces += gravity * mass;

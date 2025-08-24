@@ -18,7 +18,10 @@ public enum STDAnimState
     GroundedChargeAttackForwardRelease,
 }
 
-public class AAPController
+/// <summary>
+/// The Animations and frame data hub
+/// </summary>
+public class FDAPController
 {
     private Character owner;
 
@@ -34,7 +37,7 @@ public class AAPController
 
     public STDAnimState currentAnimatorState;
 
-    public AAPController(Character character)
+    public FDAPController(Character character)
     {
         this.owner = character;
         this.animator = owner.animator;
