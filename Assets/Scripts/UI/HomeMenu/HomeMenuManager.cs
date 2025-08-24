@@ -69,4 +69,10 @@ public class HomeMenuManager : MonoBehaviour
 		currentState = previous;
 		currentState.stateRoot.SetActive(true);
 	}
+
+
+	public void EnterQuickTest()
+	{
+		AppManager.Instance.SetAppState(new MatchAPS("FixedPointTesting"));
+	}
 }

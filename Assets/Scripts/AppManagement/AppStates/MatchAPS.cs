@@ -9,11 +9,21 @@ public enum MatchState
 
 public class MatchAPS : AppState
 {
+	private string MatchScene;
+
+	public MatchAPS(string matchScene)
+	{
+		this.MatchScene = matchScene;
+
+
+	}
+
+
 	public override void OnEnter()
 	{
 		base.OnEnter();
 
-		AppManager.LoadScene("HomeMenu");
+		AppManager.LoadScene(MatchScene);
 
 		
 	}

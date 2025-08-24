@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AppCameraController : MonoBehaviour
 {
@@ -31,6 +32,18 @@ public class AppCameraController : MonoBehaviour
 		Vector3 euler = transform.rotation.eulerAngles;
 		yaw = euler.y;
 		pitch = euler.x;
+
+		CommandHandler.RegisterCommand("freecam", args =>
+		{
+			if (currentMode != CameraMode.FreeCam)
+			{
+				SetMode(CameraMode.FreeCam);
+			} else
+			{
+				//HACK: need to return to previous mode
+				SetMode(CameraMode.Disabled);
+			}
+		});
 	}
 
 	void Update()

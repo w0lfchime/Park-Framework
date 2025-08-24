@@ -105,8 +105,6 @@ public class AppManager : MonoBehaviour
 	}
 
 
-
-	//appstate flow
 	public void SetAppState(string newStateName)
 	{
 		// Get the Type from the string
@@ -121,15 +119,22 @@ public class AppManager : MonoBehaviour
 		// Create an instance of the AppState
 		AppState newState = Activator.CreateInstance(newStateType) as AppState;
 
-		if (newState == null)
+		SetAppState(newState);
+	}
+
+
+	//appstate flow
+	public void SetAppState(AppState newappstate)
+	{
+		if (newappstate == null)
 		{
-			LogCore.Log(LogType.Fatal, $"Type {newStateName} is not a valid AppState.");
+			LogCore.Log(LogType.Fatal, $"Tried to set null AppState.");
 			return;
 		}
 
 		// Transition
 		CurrentState?.OnExit();
-		CurrentState = newState;
+		CurrentState = newappstate;
 		CurrentState?.OnEnter();
 	}
 
