@@ -28,7 +28,6 @@ public static class FixedGameUpdateDriver
 		AppManager.Instance.FixedGameUpdate(); //circular calling, dont worry about it, just feels the best for me
 
 		ClockUpdateLogic();
-		
 	}
 
 	private static void ClockUpdateLogic()

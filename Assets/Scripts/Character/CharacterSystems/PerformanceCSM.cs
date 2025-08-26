@@ -143,8 +143,8 @@ public class PerformanceCSM
 
 	public void PushState(CStateID stateID, int pushForce, int frameLifetime)
 	{
-		bool coss = (bool)GetState(stateID).ClearFromQueueOnCharacterSetNewState;
-		var newRequest = new SetStateRequest(stateID, pushForce, coss);
+		bool clearOnSetThisState = (bool)GetState(stateID).ClearFromQueueOnCharacterSetNewState;
+		var newRequest = new SetStateRequest(stateID, pushForce, clearOnSetThisState);
 
 		RequestQueue.Add(newRequest, frameLifetime);
 

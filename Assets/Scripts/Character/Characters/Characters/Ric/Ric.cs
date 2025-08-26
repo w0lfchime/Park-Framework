@@ -24,7 +24,10 @@ public class Ric : Character
 
 
 
-
+	public void OnDisable()
+	{
+		LogCore.Log("FUCK0");
+	}
 
 	//======// /==/==/==/=||[LOCAL]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
 	#region local

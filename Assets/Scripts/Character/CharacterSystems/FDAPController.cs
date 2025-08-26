@@ -40,7 +40,7 @@ public class FDAPController
     public FDAPController(Character character)
     {
         this.owner = character;
-        this.animator = owner.animator;
+        //this.animator = owner.animator;
         this.ups = owner.logicUPS;
     }
 

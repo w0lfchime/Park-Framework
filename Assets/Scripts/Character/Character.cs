@@ -42,6 +42,7 @@ public abstract class Character : MonoBehaviour
 	public string InstanceName;
 	public string StandardClassPrefix;
 	public bool nonPlayer = false;
+	public int? playerID; 
 
 	[Header("Debug")]
 	public bool debug = true;
@@ -80,8 +81,8 @@ public abstract class Character : MonoBehaviour
 	//=//-----|Animation|---------------------------------------------------------//=//
 	#region animation
 	[Header("Animation Refs")]
-	public Animator animator;
-	public Transform rigAndMeshTransform;
+	//public Animator animator;
+	//public Transform rigAndMeshTransform;
 	public FDAPController FDAP_Controller;
 
 	[Header("Params")]
@@ -432,7 +433,7 @@ public abstract class Character : MonoBehaviour
 		groundLayer = LayerMask.GetMask("Ground");
 
 		//animation
-		animator = GetComponent<Animator>();
+		//animator = GetComponent<Animator>();
 
 		//debug
 		debugParentTransform = transform.Find("Debug");

@@ -182,11 +182,18 @@ public class SysInputManager
 			return;
 		}
 
+		// Only allow keyboards and gamepads
+		if (!(device is Keyboard) && !(device is Gamepad))
+		{
+			LogCore.Log(LogType.Pairing, $"Device {device.displayName} is not supported (only Gamepad or Keyboard).");
+			return;
+		}
+
 		var iam = AppManager.Instance.STD_InputActions
 			.FindActionMap("Character", throwIfNotFound: true)
 			.Clone();
 
-		//Restrict to only this player’s device
+		// Restrict to only this player’s device
 		iam.devices = new ReadOnlyArray<InputDevice>(new[] { device });
 
 		var source = new InputSource_UnityGamepad(iam);
@@ -199,6 +206,7 @@ public class SysInputManager
 		LogCore.Log(LogType.Pairing, $"Paired {device.displayName} ({type}) to Player {playerId}");
 		OnDevicePaired?.Invoke(playerId, type);
 	}
+
 
 
 

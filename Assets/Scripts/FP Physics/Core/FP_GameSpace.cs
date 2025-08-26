@@ -28,6 +28,7 @@ public class FP_GameSpace : MonoBehaviour
     private void Start()
     {
         GenerateGameSpace();
+
     }
 
     private void GenerateGameSpace()
