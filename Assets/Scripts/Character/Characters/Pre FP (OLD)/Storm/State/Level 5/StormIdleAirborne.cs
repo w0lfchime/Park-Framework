@@ -47,9 +47,9 @@
 //	#endregion setup
 //	//=//-----|Data Management|------------------------------------------//=//
 //	#region data_management
-//	protected override void ProcessInput()
+//	protected override void PollInput()
 //	{
-//		base.ProcessInput();
+//		base.PollInput();
 //		//...
 //	}
 //	protected override void SetOnEntry()
@@ -65,10 +65,10 @@
 //	#endregion data_management
 //	//=//-----|Routing|--------------------------------------------------//=//
 //	#region routings
-//	protected override void RouteState()
+//	protected override void HandleStateComplete()
 //	{
 //		//...
-//		base.RouteState();
+//		base.HandleStateComplete();
 //	}
 //	protected override void RouteStateFixed()
 //	{

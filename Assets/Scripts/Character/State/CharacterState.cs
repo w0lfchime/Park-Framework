@@ -11,29 +11,27 @@ public abstract class CharacterState
 
 	//======// /==/==/==/=||[LOCAL FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
 	#region local_fields
+
 	//meta
-	public string StateName;
-	//refs
 	public PerformanceCSM StateMachine;
 	public Character Ch;
-
-
-	#region psm
-	//Definition
+	
+	public string StateName;
 	public CStateID? StateID;
+
+	#region state_definiton
+	//refs
+
+
 	public CStateID? DefaultExitState;
-	public bool? ClearFromQueueOnCharacterSetNewState;
+	public bool? ClearFromQueueOnSetNewState;
 	public bool? ForceClearQueueOnEntry;
 	public int? DefaultPriority;
+	//TODO: incomplete / complete priorities? 
 	public int? CurrentPriority;
 
-	//Variables
-	#endregion psm
-
-	
-	#region duration
 	//Duration Definition
-	public int? StateDuration; //0, if indefinite
+	public int? StateDuration; //0, if cyclic or indefinite
 	public bool? ExitOnStateComplete;
 	public int? MinimumStateDuration;
 	public int? CurrentFrame;
@@ -42,9 +40,9 @@ public abstract class CharacterState
 	public bool? StateComplete; //will cause state to push DefaultExitState if ExitOnStateComplete is true. 
 
 
-	#endregion duration
+	#endregion state_definition
 
-	public bool? IsPhysical;
+	//HACK: no is physical. (correct choice?) 
 
 
 	//=//----------------------------------------------------------------//=//
@@ -71,7 +69,7 @@ public abstract class CharacterState
 	{
 		CurrentFrame = 0;
 	}
-	protected virtual void ProcessInput()
+	protected virtual void PollInput()
 	{
 		//HACK: LOL
 	}
@@ -79,10 +77,7 @@ public abstract class CharacterState
 	{
 		CurrentFrame++;
 
-		if (ExitOnStateComplete == true && StateComplete == true)
-		{
-			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
-		}
+
 	}
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
@@ -99,14 +94,22 @@ public abstract class CharacterState
 
 		return exitAllowed;
 	}
-
-	protected void StatePushState(CStateID? stateID, int pushForce, int lifeTime)
+	public void HandleStateComplete()
 	{
-		Ch.StatePushState(stateID, pushForce, lifeTime);
+		if (ExitOnStateComplete == true && StateComplete == true)
+		{
+			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
+		}
+	}
+	protected void StatePushState(CStateID? stateID, int pushPriority, int lifeTime)
+	{
+		Ch.StatePushState(stateID, pushPriority, lifeTime);
 	}
 	#endregion routing
 	//=//-----|Wrapper Events/Mono|--------------------------------------//=//
 	#region mono
+
+	#region core_csm_mono
 	public virtual void Enter()
 	{
 		LogCore.Log(LogType.CSM_Flow, $"Entering State {StateName}.");
@@ -118,18 +121,37 @@ public abstract class CharacterState
 		LogCore.Log(LogType.CSM_Flow, $"Exting State {StateName}.");
 		//...
 	}
-	public virtual void FixedFrameUpdate()
+	public virtual void FixedPhysicsUpdate() //run first
+	{
+
+	}
+	public virtual void FixedFrameUpdate() //run second
 	{
 		PerFrame();
+
+		HandleStateComplete();
 		//...
 
 	}
+	#endregion core_csm_mono
+
+
+	#region unity_mono
+	//TODO: physicX for environmental chaos and destruction ?
 	public virtual void Update()
 	{
-		ProcessInput(); //HACK: idk...
+		//PollInput(); //HACK: idk...
 	}
 	public virtual void LateUpdate() { }
+	public virtual void FixedUpdate() { }
+	#endregion unity_mono
+
+
+
 	#endregion mono
+
+
+
 	//=//-----|Debug|----------------------------------------------------//=//
 	#region debug
 	public virtual bool VerifyState()
