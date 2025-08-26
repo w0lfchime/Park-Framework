@@ -75,7 +75,7 @@ public abstract class CharacterState
 	{
 		//HACK: LOL
 	}
-	protected virtual void EachFrame()
+	protected virtual void PerFrame()
 	{
 		CurrentFrame++;
 
@@ -120,7 +120,7 @@ public abstract class CharacterState
 	}
 	public virtual void FixedFrameUpdate()
 	{
-		EachFrame();
+		PerFrame();
 		//...
 
 	}

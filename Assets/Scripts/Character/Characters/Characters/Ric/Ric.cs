@@ -26,7 +26,7 @@ public class Ric : Character
 
 	public void OnDisable()
 	{
-		LogCore.Log("FUCK0");
+		LogCore.Log("disabled"); //this is always called  
 	}
 
 	//======// /==/==/==/=||[LOCAL]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//

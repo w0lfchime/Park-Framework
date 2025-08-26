@@ -77,22 +77,28 @@ public class PerformanceCSM
 	{
 		string stateOwnerClassName = MachineOwner.StandardClassPrefix;
 
+		LogCore.Log(LogType.CSM_Setup, $"Registering states for {MachineOwner.InstanceName}.");
+
 		foreach (CStateID stateID in Enum.GetValues(typeof(CStateID)))
 		{
 			if (stateID == CStateID.Null) continue;
 
 			string stateClassName = stateOwnerClassName + stateID.ToString();
 
+			LogCore.Log(LogType.CSM_Setup, $"Attempting to create state {stateClassName}.");
+
 			Type stateClass = Type.GetType(stateClassName);
 			if (stateClass == null)
 			{
 				//No character specific override found, create a generic state. 
 				stateClassName = stateID.ToString() + "State";
+				LogCore.Log(LogType.CSM_Setup, $"No state override found. Creating generic state as {stateClassName}.");
 				stateClass = Type.GetType(stateClassName);
 
 				if (stateClass == null)
 				{
-
+					LogCore.Log(LogType.CSM_Setup, $"Fatal: No generic state exists for {stateClassName}.");
+					DebugCore.StopGame();
 				}
 			}
 
