@@ -297,7 +297,7 @@ public class SysInputManager
 			}
 			string log = $"[InputLog][Frame {frame}][Player {player.Id}] " +
 						 $"Buttons: 0x{input.buttons:X4} | " +
-						 $"Move: ({input.xAxis}, {input.yAxis}) | " +
+						 $"MoveInput: ({input.xAxis}, {input.yAxis}) | " +
 						 $"Look: ({input.lookX}, {input.lookY})";
 			LogCore.Log(log);
 		}

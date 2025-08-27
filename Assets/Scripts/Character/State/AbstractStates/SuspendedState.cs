@@ -1,7 +1,7 @@
 //using System;
 //using UnityEngine;
 
-//public class SuspendedState : CharacterState
+//public class SuspendedState : CState
 //{
 //	//Level x state
 
@@ -30,7 +30,7 @@
 //	#region base
 //	//=//-----|Setup|----------------------------------------------------//=//
 //	#region setup
-//	public SuspendedState(PerformanceCSM sm, Character character) : base(sm, character)
+//	public SuspendedState(CStateMachine sm, Character character) : base(sm, character)
 //	{
 //		//...
 //	}
@@ -38,7 +38,7 @@
 //	{
 //		base.SetStateMembers();
 //		//...
-//		exitState = CStateID.IdleAirborne;
+//		exitState = CStateIDs.IdleAirborne;
 //		clearFromQueueOnSetState = true;
 //		forceClearQueueOnEntry = true;
 //		priority = 0;
@@ -49,9 +49,9 @@
 //	#endregion setup
 //	//=//-----|Data Management|------------------------------------------//=//
 //	#region data_management
-//	protected override void PollInput()
+//	protected override void ProcessInput()
 //	{
-//		base.PollInput();
+//		base.ProcessInput();
 //		//...
 //	}
 //	protected override void PerFrame()

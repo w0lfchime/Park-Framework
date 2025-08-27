@@ -60,23 +60,9 @@ public static class LogCore
 		string formattedMessage = $"({messageCount}) [{typeName}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
 
 		// Convert enum to string and decide logging severity
-		if (typeName.Contains("Fatal"))
-		{
-			Debug.LogError(formattedMessage);
-			DebugCore.StopGame();
-		}
-		else if (typeName.Contains("Error"))
-		{
-			Debug.LogError(formattedMessage);
-		}
-		else if (typeName.Contains("Warning"))
-		{
-			Debug.LogWarning(formattedMessage);
-		}
-		else
-		{
-			Debug.Log(formattedMessage);
-		}
+		
+		Debug.Log(formattedMessage);
+		
 
 		OnLog?.Invoke(formattedMessage);
 	}

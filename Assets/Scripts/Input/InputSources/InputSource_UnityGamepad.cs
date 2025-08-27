@@ -22,7 +22,7 @@ public class InputSource_UnityGamepad : IInputSource
 	public InputSource_UnityGamepad(InputActionMap actionMap)
 	{
 		// Axes
-		move = actionMap["Move"];
+		move = actionMap["MoveInput"];
 		look = actionMap["Look"];
 
 		// Buttons

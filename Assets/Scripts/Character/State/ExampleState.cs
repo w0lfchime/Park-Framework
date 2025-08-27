@@ -30,7 +30,7 @@
 //	#region base
 //	//=//-----|Setup|----------------------------------------------------//=//
 //	#region setup
-//	public ExampleState(PerformanceCSM sm, Character character) : base(sm, character)
+//	public ExampleState(CStateMachine sm, Character character) : base(sm, character)
 //	{
 //		//...
 //	}
@@ -47,9 +47,9 @@
 //	#endregion setup
 //	//=//-----|Data Management|------------------------------------------//=//
 //	#region data_management
-//	protected override void PollInput()
+//	protected override void ProcessInput()
 //	{
-//		base.PollInput();
+//		base.ProcessInput();
 //		//...
 //	}
 //	protected override void SetOnEntry()

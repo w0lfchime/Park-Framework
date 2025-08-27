@@ -24,15 +24,30 @@ public class Ric : Character
 
 
 
-	public void OnDisable()
-	{
-		LogCore.Log("disabled"); //this is always called  
-	}
-
 	//======// /==/==/==/=||[LOCAL]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
 	#region local
 	//=//------------------------------------------------------------------------//=//
 	#endregion local
+	/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+	//======// /==/==/==/=||[UPDATES & MONO]||==/==/==/==/==/==/==/==/==/ //======//
+	#region update_calls
+	public void FixedPhysicsUpdate()
+	{
+		base.FixedPhysicsUpdate();
+		//..
+	}
+	public void FixedFrameUpdate()
+	{
+		base.FixedFrameUpdate();
+		//...
+	}
+	#endregion update_calls
+	//----------------------------------------
+	#region mono_virtuals
+	#endregion mono_virtuals 
 	/////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -47,6 +62,11 @@ public class Ric : Character
 	{
 		base.CharacterSetup();
 		//...
+		//HACK: SEE BELOW
+		for (int i = 3; i < CStateIDs.GenericStateCount(); i++)
+		{
+			StateBlacklist.Add(i);
+		}
 	}
 	protected override void RegisterCommands()
 	{
@@ -66,49 +86,12 @@ public class Ric : Character
 	#endregion setup
 	//=//-----|Data|-------------------------------------------------------------//=//
 	#region data
-	protected override void ProcessInput()
-	{
-		base.ProcessInput();
-		//...
-	}
-	protected override void UpdateACS()
-	{
-		base.UpdateACS();
-		//...
-	}
 	protected override void UpdateCharacterData() //TODO: better name 
 	{
 		base.UpdateCharacterData();
 		//...
 	}
 	#endregion data
-	//=//-----|Mono|------------------------------------------------------------//=//
-	#region mono
-	protected override void CharacterAwake()
-	{
-		//...
-	}
-	protected override void CharacterStart()
-	{
-		//...
-	}
-	protected override void CharacterUpdate()
-	{
-		//...
-	}
-	protected override void CharacterFixedFrameUpdate()
-	{
-		//...
-	}
-	protected override void CharacterFixedPhysicsUpdate()
-	{
-		//...
-	}
-	protected override void CharacterLateUpdate()
-	{
-		//...
-	}
-	#endregion mono
 	//=//------------------------------------------------------------------------//=//
 	#endregion base
 	/////////////////////////////////////////////////////////////////////////////////////

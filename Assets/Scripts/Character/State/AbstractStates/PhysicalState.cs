@@ -1,327 +1,286 @@
-using system;
-using system.security.cryptography;
-using unity.visualscripting.fullserializer;
-using unityengine;
+using System;
+using System.Security.Cryptography;
+using Unity.VisualScripting.FullSerializer;
+using UnityEngine;
 
-public class physicalstate : characterstateold
+public class PhysicalState : CState
 {
-	//level 2 state 
-	//======// /==/==/==/=||[local fields]||==/==/==/==/==/==/==/==/==/ //======//
-	#region local_fields
-	private int? ongroundingholdframes = 5;
-	private int? onungroundingholdframes = 5;
+	// Level 2 State 
+	//======// /==/==/==/=||[Local Fields]||==/==/==/==/==/==/==/==/==/ //======//
+	#region Local_Fields
+	private int? onGroundingHoldFrames = 5;
+	private int? onUngroundingHoldFrames = 5;
 	//=//----------------------------------------------------------------//=//
-	#endregion local_fields
+	#endregion Local_Fields
 	/////////////////////////////////////////////////////////////////////////////
 
 
 
 
-	//======// /==/==/==/=||[local]||=/==/==/==/==/==/==/==/==/==/==/==/ //======//
-	#region local
+	//======// /==/==/==/=||[Local]||=/==/==/==/==/==/==/==/==/==/==/==/ //======//
+	#region Local
 	//=//----------------------------------------------------------------//=//
-	#endregion local
+	#endregion Local
 	/////////////////////////////////////////////////////////////////////////////
 
 
 
 
-	//======// /==/==/==/=||[base]||=/==/==/==/==/==/==/==/==/==/==/==/ //======// performance state
-	//overrides of the base class, performance state.
-	#region base
-	//=//-----|setup|----------------------------------------------------//=//
-	#region setup
-	public physicalstate(performancecsm sm, character character) : base(sm, character)
+	//======// /==/==/==/=||[Base]||=/==/==/==/==/==/==/==/==/==/==/==/ //======// Performance State
+	// Overrides of the Base Class, CState.
+	#region Base
+	//=//-----|Setup|----------------------------------------------------//=//
+	#region Setup
+	public PhysicalState(CStateMachine sm, Character character) : base(sm, character)
 	{
 		//...
 	}
-	protected override void setstatereferences()
+	#endregion Setup
+	//=//-----|Data Management|------------------------------------------//=//
+	#region Data_Management
+	protected override void SetOnEntry()
 	{
-		base.setstatereferences();
+		base.SetOnEntry();
+		//...
+		PhysicalDataUpdates(); // Call here to prevent nulls or whatever
+	}
+	protected override void PerFrame()
+	{
+		base.PerFrame();
 		//...
 	}
-	public override void setstatemembers()
+	#endregion Data_Management
+	//=//-----|Routing|--------------------------------------------------//=//
+	#region Routings
+
+	#endregion Routing
+	//=//-----|Flow|-----------------------------------------------------//=//
+	#region Flow
+	public override void Enter()
 	{
-		base.setstatemembers();
+		base.Enter();
 		//...
 	}
-	#endregion setup
-	//=//-----|data management|------------------------------------------//=//
-	#region data_management
-	protected override void pollinput()
+	public override void Exit()
 	{
-		base.pollinput();
+		base.Exit();
 		//...
 	}
-	protected override void setonentry()
+	#endregion Flow
+	//=//-----|Mono|-----------------------------------------------------//=//
+	#region Mono
+	public override void Update()
 	{
-		base.setonentry();
+		base.Update();
 		//...
-		physicaldataupdates(); //call here to prevent nulls or whatever
+		PhysicalDataUpdates();
+		HandleNaturalRotation();
 	}
-	protected override void perframe()
+	public override void FixedFrameUpdate()
 	{
-		base.perframe();
+		//SetGrounding();
 		//...
+		base.FixedFrameUpdate();
 	}
-	#endregion data_management
-	//=//-----|routing|--------------------------------------------------//=//
-	#region routings
-	protected override void routestate()
+	public override void FixedPhysicsUpdate()
 	{
+		//WatchGrounding();
+		ApplyGravity();
 		//...
-		handlegrounding();
-		handlejump();
-		base.routestate();
+		base.FixedPhysicsUpdate();
 	}
-	protected override void routestatefixed()
-	{
-		//...
-		base.routestatefixed();
-	}
-	#endregion routing
-	//=//-----|flow|-----------------------------------------------------//=//
-	#region flow
-	public override void enter()
-	{
-		base.enter();
-		//...
-	}
-	public override void exit()
-	{
-		base.exit();
-		//...
-	}
-	#endregion flow
-	//=//-----|mono|-----------------------------------------------------//=//
-	#region mono
-	public override void update()
-	{
-		base.update();
-		//...
-		physicaldataupdates();
-		handlenaturalrotation();
-	}
-	public override void fixedframeupdate()
-	{
-		setgrounding();
-		//...
-		base.fixedframeupdate();
-	}
-	public override void fixedphysicsupdate()
-	{
-		watchgrounding();
-		applygravity();
-		//...
-		base.fixedphysicsupdate();
-	}
-	public override void lateupdate()
+	public override void LateUpdate()
 	{
 		//...
-		base.lateupdate();
+		base.LateUpdate();
 	}
-	#endregion mono
-	//=//-----|debug|----------------------------------------------------//=//
-	#region debug
-	public override bool verifystate()
+	#endregion Mono
+	//=//-----|Debug|----------------------------------------------------//=//
+	#region Debug
+	public override bool VerifyState()
 	{
-		return base.verifystate();
+		return base.VerifyState();
 	}
-	#endregion debug
+	#endregion Debug
 	//=//----------------------------------------------------------------//=//
-	#endregion base
-	/////////////////////////////////////////////////////////////////////////////
-
-
-
-
-	//======// /==/==/==/==||[level 1]||==/==/==/==/==/==/==/==/==/==/ //======// character state
-
-	#region level_1
-	//=//----------------------------------------------------------------//=//
-	#endregion level_1
+	#endregion Base
 	/////////////////////////////////////////////////////////////////////////////
 
 
 
 
 
-	//======// /==/==/==/==||[level 2]||==/==/==/==/==/==/==/==/==/==/ //======// physical state
-	#region level_2
-	//=//-----|data management|-----------------------------------------//=//
-	#region data_management
-	protected virtual void physicaldataupdates()
+	//======// /==/==/==/==||[Level 1]||==/==/==/==/==/==/==/==/==/==/ //======// Physical State
+	#region Level_1
+	//=//-----|Data Management|-----------------------------------------//=//
+	#region Data_Management
+	protected virtual void PhysicalDataUpdates()
 	{
 		ch.position = ch.transform.position;
 
-		vector3 lv = rb.linearvelocity;
+		Vector3 lv = rb.linearVelocity;
 		ch.velocity = lv;
-		ch.velocityx = lv.x;
-		ch.velocityy = lv.y;
-		ch.characterspeed = lv.magnitude;
+		ch.velocityX = lv.x;
+		ch.velocityY = lv.y;
+		ch.characterSpeed = lv.magnitude;
 
-		//debug 
-		ch.updatedebugvector("velocity", lv, color.green);
+		// Debug 
+		ch.UpdateDebugVector("velocity", lv, Color.green);
 
 	}
-	#endregion data_management
-	//=//-----|force|---------------------------------------------------//=//
-	#region force
-	public virtual void addforce(string forcename, vector3 force)
+	#endregion Data_Management
+	//=//-----|Force|---------------------------------------------------//=//
+	#region Force
+	public virtual void AddForce(string forceName, Vector3 force)
 	{
-		ch.updatedebugvector(forcename, force, color.yellow);
+		ch.UpdateDebugVector(forceName, force, Color.yellow);
 
-		ch.appliedforce += force;
+		ch.appliedForce += force;
 	}
-	public virtual void addimpulseforce(string forcename, vector3 impulseforce)
+	public virtual void AddImpulseForce(string forceName, Vector3 impulseForce)
 	{
-		ch.stampdebugvector(forcename, impulseforce, color.red);
-		ch.appliedimpulseforce += impulseforce;
+		ch.StampDebugVector(forceName, impulseForce, Color.red);
+		ch.appliedImpulseForce += impulseForce;
 	}
-	protected virtual void addforcebytargetvelocity(string forcename, vector3 targetvelocity, float forcefactor)
+	protected virtual void AddForceByTargetVelocity(string forceName, Vector3 targetVelocity, float forceFactor)
 	{
-		//debug
-		string tvname = $"{forcename}_targetvelocity";
-		ch.updatedebugvector(tvname, targetvelocity, color.white);
+		// Debug
+		string tvName = $"{forceName}_TargetVelocity";
+		ch.UpdateDebugVector(tvName, targetVelocity, Color.white);
 
-		//force
-		vector3 forcebytargetvelocity = vector3.zero;
-		forcebytargetvelocity += targetvelocity - ch.velocity;
-		forcebytargetvelocity *= forcefactor;
-		addforce(forcename, forcebytargetvelocity);
+		// Force
+		Vector3 forceByTargetVelocity = Vector3.zero;
+		forceByTargetVelocity += targetVelocity - ch.velocity;
+		forceByTargetVelocity *= forceFactor;
+		AddForce(forceName, forceByTargetVelocity);
 	}
-	protected virtual void applygravity()
+	protected virtual void ApplyGravity()
 	{
-		vector3 gravforcevector = vector3.up * ch.acs.gravityterminalvelocity;
-		addforce("gravity", gravforcevector);
+		Vector3 gravForceVector = Vector3.up * ch.acs.gravityTerminalVelocity;
+		AddForce("gravity", gravForceVector);
 	}
-	#endregion force
-	//=//-----|grounding|-----------------------------------------------//=//
-	#region grounding
-	protected virtual void watchgrounding()
-	{
-		float sphereradius = cc.radius;
-		vector3 capsuleraycaststart = ch.transform.position + new vector3(0, sphereradius + 0.1f, 0);
+	#endregion Force
+	//=//-----|Grounding|-----------------------------------------------//=//
+	#region Grounding
+	//protected virtual void WatchGrounding()
+	//{
+	//	float sphereRadius = cc.radius;
+	//	Vector3 capsuleRaycastStart = ch.transform.position + new Vector3(0, sphereRadius + 0.1f, 0);
 
-		unityengine.debug.drawray(capsuleraycaststart, vector3.down * ch.acs.groundcheckingdistance, color.red);
-		unityengine.debug.drawray(capsuleraycaststart + new vector3(0.1f, 0, 0), vector3.down * ch.acs.isgroundeddistance, color.blue);
+	//	UnityEngine.Debug.DrawRay(capsuleRaycastStart, Vector3.down * ch.acs.groundCheckingDistance, Color.red);
+	//	UnityEngine.Debug.DrawRay(capsuleRaycastStart + new Vector3(0.1f, 0, 0), Vector3.down * ch.acs.isGroundedDistance, Color.blue);
 
-		raycasthit hit;
+	//	RaycastHit hit;
 
-		if (physics.spherecast(capsuleraycaststart, sphereradius, vector3.down, out hit, ch.acs.groundcheckingdistance, ch.groundlayer))
-		{
-			ch.distancetoground = hit.distance - sphereradius;
-		}
-		else
-		{
-			ch.distancetoground = ch.acs.groundcheckingdistance;
-		}
+	//	if (Physics.SphereCast(capsuleRaycastStart, sphereRadius, Vector3.down, out hit, ch.acs.groundCheckingDistance, ch.groundLayer))
+	//	{
+	//		ch.distanceToGround = hit.distance - sphereRadius;
+	//	}
+	//	else
+	//	{
+	//		ch.distanceToGround = ch.acs.groundCheckingDistance;
+	//	}
+	//}
+	//public void SetGrounding()
+	//{
+	//	bool groundedByDistance = ch.distanceToGround < ch.acs.isGroundedDistance;
 
+	//	if (groundedByDistance != ch.isGrounded)
+	//	{
+	//		if (Time.time - ch.lastGroundedCheckTime >= ch.acs.groundedSwitchCooldown)
+	//		{
+	//			ch.isGrounded = groundedByDistance;
+	//			ch.lastGroundedCheckTime = Time.time;
 
-	}
-	public void setgrounding()
-	{
-		bool groundedbydistance = ch.distancetoground < ch.acs.isgroundeddistance;
+	//			// Reset jumps on grounded
+	//			if (ch.isGrounded)
+	//			{
+	//				ch.timeSinceLastGrounding = Time.time;
 
-		if (groundedbydistance != ch.isgrounded)
-		{
-			if (time.time - ch.lastgroundedchecktime >= ch.acs.groundedswitchcooldown)
-			{
-				ch.isgrounded = groundedbydistance;
-				ch.lastgroundedchecktime = time.time;
+	//				ch.onGrounding = true;
 
-				//reset jumps on grounded
-				if (ch.isgrounded)
-				{
-					ch.timesincelastgrounding = time.time;
+	//				ch.ScheduleAction((int)onGroundingHoldFrames, () => ch.onGrounding = false);
+	//			}
+	//			else
+	//			{
+	//				ch.onUngrounding = true;
 
-					ch.ongrounding = true;
+	//				ch.ScheduleAction((int)onUngroundingHoldFrames, () => ch.onUngrounding = false);
+	//			}
+	//		}
+	//	}
+	//}
+	#endregion Grounding
+	//=//-----|Rotation|------------------------------------------------//=//
+	#region Rotation
+	//public void HandleNaturalRotation()
+	//{
+	//	if (ch.isGrounded)
+	//	{
+	//		// ch.facingRight = ch.velocityX > 0;
+	//	}
 
-					ch.scheduleaction((int)ongroundingholdframes, () => ch.ongrounding = false);
-				}
-				else
-				{
-					ch.onungrounding = true;
+	//	if (ch.inputMoveDirection != Vector3.zero)
+	//	{
+	//		ch.facingRight = ch.inputMoveDirection.x > 0;
+	//	}
 
-					ch.scheduleaction((int)onungroundingholdframes, () => ch.onungrounding = false);
-				}
-			}
-		}
-	}
-	#endregion grounding
-	//=//-----|rotation|------------------------------------------------//=//
-	#region rotation
-	public void handlenaturalrotation()
-	{
-		if (ch.isgrounded)
-		{
-			//ch.facingright = ch.velocityx > 0;
-		}
+	//	bool clockwiseRotation = ch.FlipCoin();
 
+	//	Vector3 directionFacing = ch.facingRight ? Vector3.right : Vector3.left;
 
-		if (ch.inputmovedirection != vector3.zero)
-		{
-			ch.facingright = ch.inputmovedirection.x > 0;
-		}
+	//	// Calculate the target rotation
+	//	Quaternion targetRotation = Quaternion.LookRotation(directionFacing, Vector3.up);
 
-		bool clockwiserotation = ch.flipcoin();
-
-		vector3 directionfacing = ch.facingright ? vector3.right : vector3.left;
-
-		// calculate the target rotation
-		quaternion targetrotation = quaternion.lookrotation(directionfacing, vector3.up);
-
-		// smoothly interpolate the rotation using slerp
-		ch.rigandmeshtransform.rotation = quaternion.slerp(
-			ch.rigandmeshtransform.rotation,
-			targetrotation,
-			time.deltatime * ch.acs.rotationspeed
-		);
-	}
-
-
-	#endregion rotation
-	//=//-----|routes|--------------------------------------------------//=//
-	#region routes
-	protected virtual void handlegrounding()
-	{
-		if (ch.ongrounding)
-		{
-			ch.jumpcount = 0;
-			if (!ch.isgroundedbystate)
-			{
-				statepushstate(cstateid.groundedidle, (int)priority + 1, 2);
-			}
-		}
-		if (ch.onungrounding)
-		{
-			if (ch.isgroundedbystate)
-			{
-				statepushstate(cstateid.idleairborne, (int)priority + 1, 2);
-			}
-		}
-	}
-	protected virtual void handlejump()
-	{
-		//assess
-		bool jumpallowed = true;
-		if (ch.jumpcount > ch.acs.maxjumps)
-		{
-			jumpallowed = false;
-		}
-		if (ch.inputenabled == false)
-		{
-			jumpallowed = false;
-		}
-		//route 
-		if (cih.getbuttondown("jump") && jumpallowed)
-		{
-			ch.jumpcount++;
-			statepushstate(cstateid.jump, 4, 4);
-		}
-	}
-	#endregion routes
+	//	// Smoothly interpolate the rotation using Slerp
+	//	ch.rigAndMeshTransform.rotation = Quaternion.Slerp(
+	//		ch.rigAndMeshTransform.rotation,
+	//		targetRotation,
+	//		Time.deltaTime * ch.acs.rotationSpeed
+	//	);
+	//}
+	#endregion Rotation
+	//=//-----|Routes|--------------------------------------------------//=//
+	#region Routes
+	//protected virtual void HandleGrounding()
+	//{
+	//	if (ch.onGrounding)
+	//	{
+	//		ch.jumpCount = 0;
+	//		if (!ch.isGroundedByState)
+	//		{
+	//			StatePushState(CStateIDs.GroundedIdle, (int)priority + 1, 2);
+	//		}
+	//	}
+	//	if (ch.onUngrounding)
+	//	{
+	//		if (ch.isGroundedByState)
+	//		{
+	//			StatePushState(CStateIDs.IdleAirborne, (int)priority + 1, 2);
+	//		}
+	//	}
+	//}
+	//protected virtual void HandleJump()
+	//{
+	//	// Assess
+	//	bool jumpAllowed = true;
+	//	if (ch.jumpCount > ch.acs.maxJumps)
+	//	{
+	//		jumpAllowed = false;
+	//	}
+	//	if (ch.inputEnabled == false)
+	//	{
+	//		jumpAllowed = false;
+	//	}
+	//	// Route 
+	//	if (cih.GetButtonDown("jump") && jumpAllowed)
+	//	{
+	//		ch.jumpCount++;
+	//		StatePushState(CStateIDs.Jump, 4, 4);
+	//	}
+	//}
+	#endregion Routes
 	//=//----------------------------------------------------------------//=//
-	#endregion level_2
+	#endregion Level_1
 	/////////////////////////////////////////////////////////////////////////////
 }

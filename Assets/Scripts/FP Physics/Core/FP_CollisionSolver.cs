@@ -51,7 +51,7 @@ public class FP_CollisionSolver : MonoBehaviour
 
 		if (movable == null) return;
 
-		// --- 4. Positional correction (one Move only) ---
+		// --- 4. Positional correction (one MoveInput only) ---
 		movable.Move(mtv);
 
 		// --- 5. Kill velocity into the surface ---

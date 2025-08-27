@@ -5,25 +5,27 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public abstract class CharacterState
+public abstract class CState
 {
 	//THE BASE STATE
 
-	//======// /==/==/==/=||[LOCAL FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
+	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
 	#region local_fields
-
+	//=//-----|Meta|-----------------------------------------------------------//=//
+	#region meta
 	//meta
-	public PerformanceCSM StateMachine;
+	public CStateMachine StateMachine;
 	public Character Ch;
 	
 	public string StateName;
-	public CStateID? StateID;
-
+	public int? StateID;
+	#endregion meta
+	//=//-----|State Definition|-----------------------------------------------//=//
 	#region state_definiton
-	//refs
 
 
-	public CStateID? DefaultExitState;
+
+	public int? DefaultExitState;
 	public bool? ClearFromQueueOnSetNewState;
 	public bool? ForceClearQueueOnEntry;
 	public int? DefaultPriority;
@@ -41,26 +43,26 @@ public abstract class CharacterState
 
 
 	#endregion state_definition
-
-	//HACK: no is physical. (correct choice?) 
-
-
 	//=//----------------------------------------------------------------//=//
 	#endregion local_fields
 	/////////////////////////////////////////////////////////////////////////////
+
+
+
 
 	//======// /==/==/==/=||[BASE]||=/==/==/==/==/==/==/==/==/==/==/==/ //======//
 	#region base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region setup
-	public CharacterState(PerformanceCSM sm)
+	public CState(CStateMachine sm)
 	{
-		this.StateName = GetType().Name;
 		this.StateMachine = sm;
-		this.Ch = sm.MachineOwner;
+
+		Ch = sm.MachineOwner;
+		StateName = GetType().Name;
+		StateID = CStateIDs.GetStateId(StateName);
 
 		SetOnEntry();
-
 	}
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
@@ -68,10 +70,6 @@ public abstract class CharacterState
 	protected virtual void SetOnEntry()
 	{
 		CurrentFrame = 0;
-	}
-	protected virtual void PollInput()
-	{
-		//HACK: LOL
 	}
 	protected virtual void PerFrame()
 	{
@@ -101,15 +99,13 @@ public abstract class CharacterState
 			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
 		}
 	}
-	protected void StatePushState(CStateID? stateID, int pushPriority, int lifeTime)
+	protected void StatePushState(CStateIDs? stateID, int pushPriority, int lifeTime)
 	{
 		Ch.StatePushState(stateID, pushPriority, lifeTime);
 	}
 	#endregion routing
-	//=//-----|Wrapper Events/Mono|--------------------------------------//=//
-	#region mono
-
-	#region core_csm_mono
+	//=//-----|Driver Calls|--------------------------------------//=//
+	#region driver_calls
 	public virtual void Enter()
 	{
 		LogCore.Log(LogType.CSM_Flow, $"Entering State {StateName}.");
@@ -133,25 +129,14 @@ public abstract class CharacterState
 		//...
 
 	}
-	#endregion core_csm_mono
-
-
+	#endregion driver_calls
+	//=//-----|Unity Mono|----------------------------------------------------//=////HACK: THIS
 	#region unity_mono
-	//TODO: physicX for environmental chaos and destruction ?
-	public virtual void Update()
-	{
-		//PollInput(); //HACK: idk...
-	}
+	//TODO: IF I EVER NEED THIS. I GUESS. LOL
+	public virtual void Update() { }
 	public virtual void LateUpdate() { }
 	public virtual void FixedUpdate() { }
 	#endregion unity_mono
-
-
-
-	#endregion mono
-
-
-
 	//=//-----|Debug|----------------------------------------------------//=//
 	#region debug
 	public virtual bool VerifyState()
@@ -198,5 +183,4 @@ public abstract class CharacterState
     //=//----------------------------------------------------------------//=//
     #endregion base
     /////////////////////////////////////////////////////////////////////////////
-
 }
