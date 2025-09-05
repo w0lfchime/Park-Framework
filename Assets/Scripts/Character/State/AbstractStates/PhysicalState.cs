@@ -31,7 +31,7 @@ public class PhysicalState : CState
 	#region Base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region Setup
-	public PhysicalState(CStateMachine sm, Character character) : base(sm, character)
+	public PhysicalState(CStateMachine sm) : base(sm)
 	{
 		//...
 	}
@@ -74,7 +74,7 @@ public class PhysicalState : CState
 		base.Update();
 		//...
 		PhysicalDataUpdates();
-		HandleNaturalRotation();
+		//HandleNaturalRotation();
 	}
 	public override void FixedFrameUpdate()
 	{
@@ -116,16 +116,16 @@ public class PhysicalState : CState
 	#region Data_Management
 	protected virtual void PhysicalDataUpdates()
 	{
-		ch.position = ch.transform.position;
+		//ch.position = ch.transform.position;
 
-		Vector3 lv = rb.linearVelocity;
-		ch.velocity = lv;
-		ch.velocityX = lv.x;
-		ch.velocityY = lv.y;
-		ch.characterSpeed = lv.magnitude;
+		//Vector3 lv = rb.linearVelocity;
+		//ch.velocity = lv;
+		//ch.velocityX = lv.x;
+		//ch.velocityY = lv.y;
+		//ch.characterSpeed = lv.magnitude;
 
-		// Debug 
-		ch.UpdateDebugVector("velocity", lv, Color.green);
+		//// Debug 
+		//ch.UpdateDebugVector("velocity", lv, Color.green);
 
 	}
 	#endregion Data_Management
@@ -133,113 +133,113 @@ public class PhysicalState : CState
 	#region Force
 	public virtual void AddForce(string forceName, Vector3 force)
 	{
-		ch.UpdateDebugVector(forceName, force, Color.yellow);
+		//Ch.UpdateDebugVector(forceName, force, Color.yellow);
 
-		ch.appliedForce += force;
+		//Ch.appliedForce += force;
 	}
 	public virtual void AddImpulseForce(string forceName, Vector3 impulseForce)
 	{
-		ch.StampDebugVector(forceName, impulseForce, Color.red);
-		ch.appliedImpulseForce += impulseForce;
+		//Ch.StampDebugVector(forceName, impulseForce, Color.red);
+		//Ch.appliedImpulseForce += impulseForce;
 	}
 	protected virtual void AddForceByTargetVelocity(string forceName, Vector3 targetVelocity, float forceFactor)
 	{
-		// Debug
-		string tvName = $"{forceName}_TargetVelocity";
-		ch.UpdateDebugVector(tvName, targetVelocity, Color.white);
+		//// Debug
+		//string tvName = $"{forceName}_TargetVelocity";
+		//Ch.UpdateDebugVector(tvName, targetVelocity, Color.white);
 
-		// Force
-		Vector3 forceByTargetVelocity = Vector3.zero;
-		forceByTargetVelocity += targetVelocity - ch.velocity;
-		forceByTargetVelocity *= forceFactor;
-		AddForce(forceName, forceByTargetVelocity);
+		//// Force
+		//Vector3 forceByTargetVelocity = Vector3.zero;
+		//forceByTargetVelocity += targetVelocity - Ch.velocity;
+		//forceByTargetVelocity *= forceFactor;
+		//AddForce(forceName, forceByTargetVelocity);
 	}
 	protected virtual void ApplyGravity()
 	{
-		Vector3 gravForceVector = Vector3.up * ch.acs.gravityTerminalVelocity;
-		AddForce("gravity", gravForceVector);
+		//Vector3 gravForceVector = Vector3.up * Ch.acs.gravityTerminalVelocity;
+		//AddForce("gravity", gravForceVector);
 	}
 	#endregion Force
 	//=//-----|Grounding|-----------------------------------------------//=//
-	#region Grounding
-	//protected virtual void WatchGrounding()
-	//{
-	//	float sphereRadius = cc.radius;
-	//	Vector3 capsuleRaycastStart = ch.transform.position + new Vector3(0, sphereRadius + 0.1f, 0);
+	#region grounding
+	protected virtual void WatchGrounding()
+	{
+		//float sphereRadius = cc.radius;
+		//Vector3 capsuleRaycastStart = ch.transform.position + new Vector3(0, sphereRadius + 0.1f, 0);
 
-	//	UnityEngine.Debug.DrawRay(capsuleRaycastStart, Vector3.down * ch.acs.groundCheckingDistance, Color.red);
-	//	UnityEngine.Debug.DrawRay(capsuleRaycastStart + new Vector3(0.1f, 0, 0), Vector3.down * ch.acs.isGroundedDistance, Color.blue);
+		//UnityEngine.Debug.DrawRay(capsuleRaycastStart, Vector3.down * ch.acs.groundCheckingDistance, Color.red);
+		//UnityEngine.Debug.DrawRay(capsuleRaycastStart + new Vector3(0.1f, 0, 0), Vector3.down * ch.acs.isGroundedDistance, Color.blue);
 
-	//	RaycastHit hit;
+		//RaycastHit hit;
 
-	//	if (Physics.SphereCast(capsuleRaycastStart, sphereRadius, Vector3.down, out hit, ch.acs.groundCheckingDistance, ch.groundLayer))
-	//	{
-	//		ch.distanceToGround = hit.distance - sphereRadius;
-	//	}
-	//	else
-	//	{
-	//		ch.distanceToGround = ch.acs.groundCheckingDistance;
-	//	}
-	//}
-	//public void SetGrounding()
-	//{
-	//	bool groundedByDistance = ch.distanceToGround < ch.acs.isGroundedDistance;
+		//if (Physics.SphereCast(capsuleRaycastStart, sphereRadius, Vector3.down, out hit, ch.acs.groundCheckingDistance, ch.groundLayer))
+		//{
+		//	ch.distanceToGround = hit.distance - sphereRadius;
+		//}
+		//else
+		//{
+		//	ch.distanceToGround = ch.acs.groundCheckingDistance;
+		//}
+	}
+	public void SetGrounding()
+	{
+		//bool groundedByDistance = ch.distanceToGround < ch.acs.isGroundedDistance;
 
-	//	if (groundedByDistance != ch.isGrounded)
-	//	{
-	//		if (Time.time - ch.lastGroundedCheckTime >= ch.acs.groundedSwitchCooldown)
-	//		{
-	//			ch.isGrounded = groundedByDistance;
-	//			ch.lastGroundedCheckTime = Time.time;
+		//if (groundedByDistance != ch.isGrounded)
+		//{
+		//	if (Time.time - ch.lastGroundedCheckTime >= ch.acs.groundedSwitchCooldown)
+		//	{
+		//		ch.isGrounded = groundedByDistance;
+		//		ch.lastGroundedCheckTime = Time.time;
 
-	//			// Reset jumps on grounded
-	//			if (ch.isGrounded)
-	//			{
-	//				ch.timeSinceLastGrounding = Time.time;
+		//		// Reset jumps on grounded
+		//		if (ch.isGrounded)
+		//		{
+		//			ch.timeSinceLastGrounding = Time.time;
 
-	//				ch.onGrounding = true;
+		//			ch.onGrounding = true;
 
-	//				ch.ScheduleAction((int)onGroundingHoldFrames, () => ch.onGrounding = false);
-	//			}
-	//			else
-	//			{
-	//				ch.onUngrounding = true;
+		//			ch.ScheduleAction((int)onGroundingHoldFrames, () => ch.onGrounding = false);
+		//		}
+		//		else
+		//		{
+		//			ch.onUngrounding = true;
 
-	//				ch.ScheduleAction((int)onUngroundingHoldFrames, () => ch.onUngrounding = false);
-	//			}
-	//		}
-	//	}
-	//}
-	#endregion Grounding
+		//			ch.ScheduleAction((int)onUngroundingHoldFrames, () => ch.onUngrounding = false);
+		//		}
+		//	}
+		//}
+	}
+	#endregion grounding
 	//=//-----|Rotation|------------------------------------------------//=//
-	#region Rotation
-	//public void HandleNaturalRotation()
-	//{
-	//	if (ch.isGrounded)
-	//	{
-	//		// ch.facingRight = ch.velocityX > 0;
-	//	}
+	#region rotation
+	public void HandleNaturalRotation()
+	{
+		//if (ch.isGrounded)
+		//{
+		//	// ch.facingRight = ch.velocityX > 0;
+		//}
 
-	//	if (ch.inputMoveDirection != Vector3.zero)
-	//	{
-	//		ch.facingRight = ch.inputMoveDirection.x > 0;
-	//	}
+		//if (ch.inputMoveDirection != Vector3.zero)
+		//{
+		//	ch.facingRight = ch.inputMoveDirection.x > 0;
+		//}
 
-	//	bool clockwiseRotation = ch.FlipCoin();
+		//bool clockwiseRotation = ch.FlipCoin();
 
-	//	Vector3 directionFacing = ch.facingRight ? Vector3.right : Vector3.left;
+		//Vector3 directionFacing = ch.facingRight ? Vector3.right : Vector3.left;
 
-	//	// Calculate the target rotation
-	//	Quaternion targetRotation = Quaternion.LookRotation(directionFacing, Vector3.up);
+		//// Calculate the target rotation
+		//Quaternion targetRotation = Quaternion.LookRotation(directionFacing, Vector3.up);
 
-	//	// Smoothly interpolate the rotation using Slerp
-	//	ch.rigAndMeshTransform.rotation = Quaternion.Slerp(
-	//		ch.rigAndMeshTransform.rotation,
-	//		targetRotation,
-	//		Time.deltaTime * ch.acs.rotationSpeed
-	//	);
-	//}
-	#endregion Rotation
+		//// Smoothly interpolate the rotation using Slerp
+		//ch.rigAndMeshTransform.rotation = Quaternion.Slerp(
+		//	ch.rigAndMeshTransform.rotation,
+		//	targetRotation,
+		//	Time.deltaTime * ch.acs.rotationSpeed
+		//);
+	}
+	#endregion rotation
 	//=//-----|Routes|--------------------------------------------------//=//
 	#region Routes
 	//protected virtual void HandleGrounding()

@@ -206,7 +206,7 @@ public class CStateMachine
 		RequestQueue.ClearClearOnSetState();
 		CurrentState.Enter();
 
-		MachineOwner.OnStateSet();
+		MachineOwner.DebugOnStateSet();
 
 		LogCore.Log(LogType.CSM_Flow, $"Switched from {PreviousStateID} to {CurrentStateID}");
 	}

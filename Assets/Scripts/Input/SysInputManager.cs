@@ -124,7 +124,7 @@ public class SysInputManager
 
 	public void FixedGameUpdate() // Called by AppManager at 60Hz
 	{
-		int frame = FixedGameUpdateDriver.Clock;
+		int frame = AppManager.Instance.FixedGameUpdateDriver.Clock;
 
 		if (recordingInput)
 		{

@@ -109,8 +109,8 @@ public abstract class Character : MonoBehaviour
 	public bool onGrounding;
 	public bool onUngrounding;
 	public Fix64 distanceToGround;
-	public Fix64 lastGroundedCheckTime = 0.0f;
-	public Fix64 timeSinceLastGrounding = 0.0f;
+	public Fix64 lastGroundedCheckTime = Fix64.Zero;
+	public Fix64 timeSinceLastGrounding = Fix64.Zero;
 
 	[Header("HandleNaturalRotation Variables")]
 	public bool facingRight;
@@ -123,8 +123,8 @@ public abstract class Character : MonoBehaviour
 	[Header("Physics Variables")]
 	public FixVec2 position;
 	public FixVec2 velocity;
-	public FixVec2 appliedForce = Vector3.zero;
-	public FixVec2 appliedImpulseForce = Vector3.zero;
+	public FixVec2 appliedForce = FixVec2.zero;
+	public FixVec2 appliedImpulseForce = FixVec2.zero;
 	#endregion gameplay_data
 	//=//-------------------------------------------------------------------------//=//
 	#endregion fields
@@ -288,13 +288,13 @@ public abstract class Character : MonoBehaviour
 	/// <summary>
 	/// For pushing states from states
 	/// </summary>
-	public void StatePushState(CStateIDs? stateID, int pushForce, int frameLifetime)
+	public void StatePushState(int? stateID, int pushForce, int frameLifetime)
 	{
-		csm.PushState((CStateIDs)stateID, pushForce, frameLifetime);
+		csm.PushState((int)stateID, pushForce, frameLifetime);
 	}
-	private void CharacterPushState(CStateIDs? stateID, int pushForce, int frameLifetime)
+	private void CharacterPushState(int? stateID, int pushForce, int frameLifetime)
 	{
-		csm.PushState((CStateIDs)stateID, pushForce, frameLifetime);
+		csm.PushState((int)stateID, pushForce, frameLifetime);
 	}
 	public void CSMDebugUpdate()
 	{
@@ -344,7 +344,7 @@ public abstract class Character : MonoBehaviour
 
 		//rigidBody.isKinematic = false;
 		//rigidBody.linearVelocity = hitstopStoredVelocity;
-		hitstopStoredVelocity = Vector3.zero;
+		hitstopStoredVelocity = FixVec2.zero;
 	}
 	public void AddHitstop(int frames)
 	{
@@ -495,9 +495,9 @@ public abstract class Character : MonoBehaviour
 	#endregion general
 	//=//-----|State|------------------------------------------------------------//=//
 	#region state
-	public void OnStateSet()
+	public void DebugOnStateSet()
 	{
-		currentStateName = csm.GetState().StateName;
+		currentStateName = csm.GetCurrentState().StateName;
 
 		if (debug && stateText != null)
 		{

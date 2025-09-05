@@ -12,6 +12,7 @@ public class AppManager : MonoBehaviour
 
 	//services
 	public SysInputManager SystemInputManager { get; private set; }
+	public FixedGameUpdateDriver FixedGameUpdateDriver { get; private set; }
 
 	//appstate
 	private string currentLoadedScene;
@@ -52,7 +53,7 @@ public class AppManager : MonoBehaviour
 
 		//services 
 		SystemInputManager = new SysInputManager();
-
+		FixedGameUpdateDriver = new FixedGameUpdateDriver();
 
 		//appstate
 		SetAppState(BootAppState);

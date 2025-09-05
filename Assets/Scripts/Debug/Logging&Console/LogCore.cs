@@ -22,7 +22,7 @@ public enum LogType
 	CommandMeta,
 	Response,
 	Pairing,
-
+	Animation_Setup,
 }
 
 

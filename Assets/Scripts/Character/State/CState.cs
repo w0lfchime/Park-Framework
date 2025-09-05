@@ -99,7 +99,7 @@ public abstract class CState
 			StatePushState(DefaultExitState, (int)DefaultPriority + 1, 2);
 		}
 	}
-	protected void StatePushState(CStateIDs? stateID, int pushPriority, int lifeTime)
+	protected void StatePushState(int? stateID, int pushPriority, int lifeTime)
 	{
 		Ch.StatePushState(stateID, pushPriority, lifeTime);
 	}

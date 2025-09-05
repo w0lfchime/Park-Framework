@@ -3,16 +3,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public static class FixedGameUpdateDriver
+public class FixedGameUpdateDriver
 {
-	private const float TargetDeltaTime = 1f / 60f; // 60Hz
-	private static float accumulatedTime = 0f;
+	public const float FPS = 60.0f;
+	private const float TargetDeltaTime = 1f / FPS; // 60Hz
+	private float accumulatedTime = 0f;
 
-	public static int Clock; 
-	public static bool ClockEnabled = false;
-	private static int pauseDuration;
+	public int Clock; 
+	public bool ClockEnabled = false;
+	private int pauseDuration;
 
-	public static void Update() //called by monobehaviour AppManager
+	public FixedGameUpdateDriver()
+	{
+
+	}
+
+	public void Update() //called by monobehaviour AppManager
 	{
 		accumulatedTime += Time.deltaTime;
 
@@ -23,14 +29,14 @@ public static class FixedGameUpdateDriver
 		}
 	}
 
-	private static void RunFixedGameUpdate()
+	private void RunFixedGameUpdate()
 	{
 		AppManager.Instance.FixedGameUpdate(); //circular calling, dont worry about it, just feels the best for me
 
 		ClockUpdateLogic();
 	}
 
-	private static void ClockUpdateLogic()
+	private void ClockUpdateLogic()
 	{
 		if (ClockEnabled && pauseDuration == 0)
 		{
@@ -46,17 +52,17 @@ public static class FixedGameUpdateDriver
 		}
 	}
 
-	public static void PauseClock()
+	public void PauseClock()
 	{
 		ClockEnabled = false;
 	}
-	public static void PauseClock(int pauseFrameCount)
+	public void PauseClock(int pauseFrameCount)
 	{
 		pauseDuration = pauseFrameCount;
 	}
 
 
-	public static void UnpauseClock()
+	public void UnpauseClock()
 	{
 		ClockEnabled = true;
 		pauseDuration = 0;
