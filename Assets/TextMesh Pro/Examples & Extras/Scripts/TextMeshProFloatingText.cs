@@ -95,7 +95,7 @@ namespace TMPro.Examples
         }
 
 
-        //void Update()
+        //void MonoUpdate()
         //{
         //    if (SpawnType == 0)
         //    {

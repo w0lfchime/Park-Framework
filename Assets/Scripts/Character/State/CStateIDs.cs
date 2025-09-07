@@ -46,7 +46,7 @@ public static class CStateIDs
 		}
 	}
 
-	public static int GenericStateCount()
+	public static int GenericStateCount() 
 	{
 		int count = 0;
 

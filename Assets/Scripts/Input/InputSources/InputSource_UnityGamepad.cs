@@ -76,7 +76,7 @@ public class InputSource_UnityGamepad : IInputSource
 			liveState.buttons &= (ushort)~mask;
 	}
 
-	// Called from MonoBehaviour Update() (not sim tick)
+	// Called from MonoBehaviour MonoUpdate() (not sim tick)
 	public void Update()
 	{
 		Vector2 moveVec = move.ReadValue<Vector2>();

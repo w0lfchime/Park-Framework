@@ -34,7 +34,7 @@ namespace TMPro.Examples
         }
 
 
-        // Update is called once per frame
+        // MonoUpdate is called once per frame
         void Update()
         {
             switch (Motion)

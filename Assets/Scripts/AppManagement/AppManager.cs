@@ -68,11 +68,11 @@ public class AppManager : MonoBehaviour
 
 	private void Update()
 	{
-		FixedGameUpdateDriver.Update();
+		FixedGameUpdateDriver.MonoUpdate();
 
 
-		SystemInputManager.Update();
-		CurrentState?.OnUpdate();
+		SystemInputManager.MonoUpdate();
+		CurrentState?.OnMonoUpdate();
 		
 	}
 
@@ -80,6 +80,11 @@ public class AppManager : MonoBehaviour
 	public void FixedGameUpdate()
 	{
 		SystemInputManager.FixedGameUpdate();
+
+		//Our custom logic update
+		CurrentState.FixedGameUpdate();
+		//Our custom physics update
+		CurrentState.FixedPhysicsUpdate();
 	}
 
 

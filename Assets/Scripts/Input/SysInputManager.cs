@@ -113,7 +113,7 @@ public class SysInputManager
 	// 
 	// UPDATE LOOPS
 	// 
-	public void Update()
+	public void MonoUpdate()
 	{
 		foreach (var player in players.Values)
 			player.Update();

@@ -14,6 +14,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum CharacterID
+{
+	None = 0,
+	Ric = 1000,
+	Storm = 2000,
+}
+
+//for local input processing 
+public enum CharacterInputType
+{
+	None,
+	AllButtons,
+	ButtonsAndSticks
+}
 
 public abstract class Character : MonoBehaviour
 {
@@ -25,7 +39,8 @@ public abstract class Character : MonoBehaviour
 	public string CharacterName;
 	public string InstanceName;
 	public string StandardClassPrefix;
-	public int CharacterID;
+	public CharacterID CharacterID;
+	public int CharacterInstanceID;
 	public int playerID;
 	public bool nonPlayer = false;
 
@@ -57,7 +72,7 @@ public abstract class Character : MonoBehaviour
 	[Header("State Machine")]
 	public CStateMachine csm;
 	public string currentStateName;
-	public readonly HashSet<int> StateBlacklist = new HashSet<int>();
+	public readonly HashSet<int> StateBlacklist = new HashSet<int>(); //for debug and development
 
 	[Header("CSM debug")]
 	public int requestQueueSize;
@@ -72,7 +87,8 @@ public abstract class Character : MonoBehaviour
 	#endregion animation
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
-
+	[Header("Input Refs")]
+	public IInputSource InputSource;
 
 	[Header("Input Variables")]
 	public FixVec2 MoveInput;
@@ -205,7 +221,7 @@ public abstract class Character : MonoBehaviour
 	#region data
 	protected void ProcessInput()
 	{
-		//TODO: YEA
+		
 
 	}
 	protected void UpdateACS()
@@ -308,7 +324,7 @@ public abstract class Character : MonoBehaviour
 	{
 		if (!isHitstopped)
 		{
-			//rigidBody.AddForce(appliedForce, ForceMode.Force);
+			FPBody.AddForce(appliedForce);
 		}
 
 		appliedForce = FixVec2.zero;

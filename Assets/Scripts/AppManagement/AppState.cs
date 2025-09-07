@@ -14,13 +14,23 @@ public abstract class AppState
 	}
 
 
+	public virtual void FixedGameUpdate()
+	{
 
-	public virtual void OnUpdate()
+	}
+
+	public virtual void FixedPhysicsUpdate()
+	{
+
+	}
+
+
+	public virtual void OnMonoUpdate()
 	{
 		
 	}
 
 	// Optional: override for pause/resume, or frame-step updates
-	public virtual void OnFixedUpdate() { }
-	public virtual void OnLateUpdate() { }
+	public virtual void OnMonoFixedUpdate() { }
+	public virtual void OnMonoLateUpdate() { }
 }

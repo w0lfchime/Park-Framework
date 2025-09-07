@@ -18,7 +18,7 @@ public class FixedGameUpdateDriver
 
 	}
 
-	public void Update() //called by monobehaviour AppManager
+	public void MonoUpdate() //called by monobehaviour AppManager
 	{
 		accumulatedTime += Time.deltaTime;
 

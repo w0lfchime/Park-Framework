@@ -12,7 +12,7 @@ public class HomeMenuAPS : AppState
 
 	}
 
-	public override void OnUpdate()
+	public override void OnMonoUpdate()
 	{
 
 	}

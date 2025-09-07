@@ -13,7 +13,7 @@ public class FP_Body2D : MonoBehaviour
 {
 
     [SerializeField]
-    private FP_BodyType bodyType = FP_BodyType.Dynamic;
+    private FP_BodyType bodyType;
 
     public bool IsStatic => bodyType == FP_BodyType.Static;
     public bool IsKinematic => bodyType == FP_BodyType.Kinematic;
@@ -81,7 +81,7 @@ public class FP_Body2D : MonoBehaviour
     }
 
 
-    public void ApplyForces(Fix64 deltaTime)
+    public void ApplyForces()
     {
         if (!IsDynamic) return;
 
@@ -92,17 +92,17 @@ public class FP_Body2D : MonoBehaviour
         }
 
         FixVec2 acceleration = accumulatedForces * InverseMass;
-        Velocity += acceleration * deltaTime;
+        Velocity += acceleration;
 
         ClearForces();
     }
 
 
 
-    public void Integrate(Fix64 deltaTime)
+    public void Integrate()
     {
         if (!IsDynamic) return;
-        Position += Velocity * deltaTime;
+        Position += Velocity; //* deltaTime;
     }
 
 
@@ -116,7 +116,7 @@ public class FP_Body2D : MonoBehaviour
 
 
 
-    public void ApplyForce(FixVec2 force)
+    public void AddForce(FixVec2 force)
     {
         accumulatedForces += force;
     }

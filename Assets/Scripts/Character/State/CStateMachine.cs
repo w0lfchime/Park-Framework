@@ -75,7 +75,7 @@ public class CStateMachine
 	protected virtual void RegisterStates()
 	{
 		string stateOwnerClassName = MachineOwner.StandardClassPrefix;
-		int ownerCharacterID = MachineOwner.CharacterID;
+		int ownerCharacterID = (int)MachineOwner.CharacterID;
 
 		LogCore.Log(LogType.CSM_Setup, $"Registering states for {MachineOwner.InstanceName}.");
 

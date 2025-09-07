@@ -15,7 +15,7 @@ public class CharSelectAPS : AppState
 
 
 
-	public override void OnUpdate()
+	public override void OnMonoUpdate()
 	{
 
 	}

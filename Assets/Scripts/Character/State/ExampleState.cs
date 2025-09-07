@@ -91,9 +91,9 @@
 //	#endregion flow
 //	//=//-----|Mono|-----------------------------------------------------//=//
 //	#region mono
-//	public override void Update()
+//	public override void MonoUpdate()
 //	{
-//		base.Update();
+//		base.MonoUpdate();
 //		//...
 //	}
 //	public override void FixedFrameUpdate()

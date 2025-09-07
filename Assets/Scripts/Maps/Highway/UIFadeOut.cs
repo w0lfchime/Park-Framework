@@ -14,7 +14,7 @@
 
 //	private bool isFading = false;
 
-//	private void Update()
+//	private void MonoUpdate()
 //	{
 //		if (!isFading && character != null && character.velocity != Vector3.zero)
 //		{
