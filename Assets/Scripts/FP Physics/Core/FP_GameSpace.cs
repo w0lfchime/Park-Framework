@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-public class FP_PhysicsSpace : MonoBehaviour
+public class FP_GameSpace : MonoBehaviour
 {
-    public static FP_PhysicsSpace Instance { get; private set; }
+    public static FP_GameSpace Instance { get; private set; }
 
-	public List<Character> characters;
+	public List<Character> CharacterList = new List<Character>();
 
 	// === Physics system state 
 	private readonly List<FP_Body2D> bodies = new();
@@ -39,7 +39,7 @@ public class FP_PhysicsSpace : MonoBehaviour
     private void GenerateGameSpace()
     {
 
-        LogCore.Log(LogType.GameSetup, "Generating gamespace...");
+        LogCore.Log(LogType.GameSpace, "Generating gamespace...");
         AssignBodiesFromLayer("FP_Character");
         AssignBodiesFromLayer("FP_Ground");
         AssignBodiesFromLayer("FP_Platform");
@@ -87,11 +87,11 @@ public class FP_PhysicsSpace : MonoBehaviour
                 }
                 else
                 {
-                    characters.Add(c);
+                    AddCharacter(c);
                 }
             }
         }
-        LogCore.Log(LogType.PhysicsSetup, $"Found {count} objects in layer {layerName}");
+        LogCore.Log(LogType.GameSpace, $"Found {count} objects in layer {layerName}");
 
 
 
@@ -105,11 +105,30 @@ public class FP_PhysicsSpace : MonoBehaviour
 
     }
 
+    public void AddCharacter(Character c)
+    {
+        LogCore.Log(LogType.GameSpace, $"Adding character {c.InstanceName} to the gamespace.");
+        CharacterList.Add(c);
+        c.playerID = CharacterList.Count; //HACK: super hack adding method 
+    }
+
+    public void FixedGameSpaceUpdate()
+    {
+        foreach (Character c in CharacterList)
+        {
+            c.FixedFrameUpdate();
+        }
+    }
+
     //main driver, called by match appstate
     public void FixedPhysicsSpaceUpdate()
     {
         StepPhysics();
-    }
+		foreach (Character c in CharacterList)
+		{
+			c.FixedFrameUpdate();
+		}
+	}
 
     // === Step functions ===
     private void StepPhysics()
@@ -177,7 +196,7 @@ public class FP_PhysicsSpace : MonoBehaviour
 
 	public void ListCharacters()
 	{
-		foreach (var character in characters)
+		foreach (var character in CharacterList)
 		{
 			LogCore.Log(LogType.Response, $"{character.InstanceName}");
 		}

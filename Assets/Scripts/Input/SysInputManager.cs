@@ -28,7 +28,7 @@ public class SysInputManager
 
 	public bool VerboseInputLogging;
 
-	private Dictionary<int, Player> players = new();
+	public Dictionary<int, Player> players = new();
 	private int nextPlayerId = 1;
 
 	public SysInputManagerState currentState = SysInputManagerState.Disabled;

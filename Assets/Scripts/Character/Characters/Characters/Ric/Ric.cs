@@ -34,12 +34,12 @@ public class Ric : Character
 
 	//======// /==/==/==/=||[UPDATES & MONO]||==/==/==/==/==/==/==/==/==/ //======//
 	#region update_calls
-	public void FixedPhysicsUpdate()
+	public override void FixedPhysicsUpdate()
 	{
 		base.FixedPhysicsUpdate();
 		//..
 	}
-	public void FixedFrameUpdate()
+	public override void FixedFrameUpdate()
 	{
 		base.FixedFrameUpdate();
 		//...

@@ -103,7 +103,7 @@ namespace TMPro.Examples
 
             for (int i = 0; i < characterCount; i++)
             {
-                // Draw visible as well as invisible characters
+                // Draw visible as well as invisible CharacterList
                 TMP_CharacterInfo characterInfo = m_TextInfo.characterInfo[i];
 
                 bool isCharacterVisible = i < m_TextComponent.maxVisibleCharacters &&

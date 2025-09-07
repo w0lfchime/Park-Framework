@@ -2,6 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+public enum CharacterID
+{
+	None = 0,
+	Ric = 1000,
+	Storm = 2000,
+}
+
 public static class CStateIDs
 {
 	public const int Null = 0;

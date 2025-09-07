@@ -106,7 +106,7 @@ namespace TMPro.Examples
                     // Iterate through each character of the line.
                     for (int j = first; j <= last; j++)
                     {
-                        // Skip characters that are not visible and thus have no geometry to manipulate.
+                        // Skip CharacterList that are not visible and thus have no geometry to manipulate.
                         if (!textInfo.characterInfo[j].isVisible)
                             continue;
 
@@ -132,7 +132,7 @@ namespace TMPro.Examples
                         // Setup the matrix rotation.
                         matrix = Matrix4x4.TRS(Vector3.one, rotation, Vector3.one * randomScale);
 
-                        // Apply the matrix TRS to the individual characters relative to the center of the current line.
+                        // Apply the matrix TRS to the individual CharacterList relative to the center of the current line.
                         copyOfVertices[materialIndex][vertexIndex + 0] = matrix.MultiplyPoint3x4(copyOfVertices[materialIndex][vertexIndex + 0]);
                         copyOfVertices[materialIndex][vertexIndex + 1] = matrix.MultiplyPoint3x4(copyOfVertices[materialIndex][vertexIndex + 1]);
                         copyOfVertices[materialIndex][vertexIndex + 2] = matrix.MultiplyPoint3x4(copyOfVertices[materialIndex][vertexIndex + 2]);

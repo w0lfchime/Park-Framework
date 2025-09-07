@@ -68,7 +68,7 @@ namespace TMPro.Examples
                     visibleCount = 0;
                 }
 
-                textComponent.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                textComponent.maxVisibleCharacters = visibleCount; // How many CharacterList should TextMeshPro display?
 
                 visibleCount += 1;
 
@@ -100,10 +100,10 @@ namespace TMPro.Examples
                     visibleCount = 0;
                 else if (currentWord < totalWordCount) // Display all other words with the exception of the last one.
                     visibleCount = textComponent.textInfo.wordInfo[currentWord - 1].lastCharacterIndex + 1;
-                else if (currentWord == totalWordCount) // Display last word and all remaining characters.
+                else if (currentWord == totalWordCount) // Display last word and all remaining CharacterList.
                     visibleCount = totalVisibleCharacters;
 
-                textComponent.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                textComponent.maxVisibleCharacters = visibleCount; // How many CharacterList should TextMeshPro display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
                 if (visibleCount >= totalVisibleCharacters)

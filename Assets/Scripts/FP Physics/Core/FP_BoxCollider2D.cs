@@ -12,7 +12,7 @@ public class FP_BoxCollider2D : MonoBehaviour
 
 	private void Awake()
 	{
-		FP_PhysicsSpace.Instance.RegisterCollider(this);
+		FP_GameSpace.Instance.RegisterCollider(this);
 	}
 
 	public void Initialize(FP_Body2D parent, BoxCollider2D sourceCollider)

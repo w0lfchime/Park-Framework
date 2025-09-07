@@ -15,7 +15,7 @@ public class MatchAPS : AppState
 {
 	private string MatchScene;
 
-	private FP_PhysicsSpace physicsSpace;
+	private FP_GameSpace gameSpace;
 
 	public MatchAPS(string matchScene)
 	{
@@ -47,15 +47,15 @@ public class MatchAPS : AppState
 		if (scene.name == MatchScene)
 		{
 			// Find the physics space in the loaded scene
-			this.physicsSpace = Object.FindAnyObjectByType<FP_PhysicsSpace>();
+			this.gameSpace = Object.FindAnyObjectByType<FP_GameSpace>();
 
-			if (physicsSpace != null)
+			if (gameSpace != null)
 			{
-				LogCore.Log(LogType.PhysicsSetup, "Found FP_PhysicsSpace in scene: " + physicsSpace.name);
+				LogCore.Log(LogType.PhysicsSetup, "Found FP_GameSpace in scene: " + gameSpace.name);
 			}
 			else
 			{
-				LogCore.Log(LogType.PhysicsSetup, $"Failed to find PhysicsSpace within loaded scene: {MatchScene}");
+				LogCore.Log(LogType.PhysicsSetup, $"Failed to find GameSpace within loaded scene: {MatchScene}");
 				DebugCore.StopGame();
 			}
 		}
@@ -70,7 +70,7 @@ public class MatchAPS : AppState
 	{
 		//no base needed 
 
-		physicsSpace?.FixedPhysicsSpaceUpdate();
+		gameSpace?.FixedPhysicsSpaceUpdate();
 	}
 
 	public override void OnMonoUpdate()

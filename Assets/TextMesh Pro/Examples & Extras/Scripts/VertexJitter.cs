@@ -72,7 +72,7 @@ namespace TMPro.Examples
             int loopCount = 0;
             hasTextChanged = true;
 
-            // Create an Array which contains pre-computed Angle Ranges and Speeds for a bunch of characters.
+            // Create an Array which contains pre-computed Angle Ranges and Speeds for a bunch of CharacterList.
             VertexAnim[] vertexAnim = new VertexAnim[1024];
             for (int i = 0; i < 1024; i++)
             {
@@ -80,7 +80,7 @@ namespace TMPro.Examples
                 vertexAnim[i].speed = Random.Range(1f, 3f);
             }
 
-            // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
+            // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the CharacterList.
             TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
             while (true)
@@ -108,7 +108,7 @@ namespace TMPro.Examples
                 {
                     TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
 
-                    // Skip characters that are not visible and thus have no geometry to manipulate.
+                    // Skip CharacterList that are not visible and thus have no geometry to manipulate.
                     if (!charInfo.isVisible)
                         continue;
 

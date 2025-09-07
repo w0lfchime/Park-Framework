@@ -82,7 +82,7 @@ namespace TMPro.Examples
         {
             if (isHoveringObject)
             {
-                // Check if Mouse Intersects any of the characters. If so, assign a random color.
+                // Check if Mouse Intersects any of the CharacterList. If so, assign a random color.
                 #region Handle Character Selection
                 int charIndex = TMP_TextUtilities.FindIntersectingCharacter(m_TextMeshPro, Input.mousePosition, m_Camera, true);
 
@@ -155,7 +155,7 @@ namespace TMPro.Examples
                     int lastVertexIndex = vertices.Length - 4;
 
                     // Swap the current character's vertex attributes with those of the last element in the vertex attribute arrays.
-                    // We do this to make sure this character is rendered last and over other characters.
+                    // We do this to make sure this character is rendered last and over other CharacterList.
                     meshInfo.SwapVertexData(vertexIndex, lastVertexIndex);
 
                     // Need to update the appropriate
@@ -173,7 +173,7 @@ namespace TMPro.Examples
                 {
                     TMP_WordInfo wInfo = m_TextMeshPro.textInfo.wordInfo[m_selectedWord];
 
-                    // Iterate through each of the characters of the word.
+                    // Iterate through each of the CharacterList of the word.
                     for (int i = 0; i < wInfo.characterCount; i++)
                     {
                         int characterIndex = wInfo.firstCharacterIndex + i;
@@ -209,7 +209,7 @@ namespace TMPro.Examples
 
                     TMP_WordInfo wInfo = m_TextMeshPro.textInfo.wordInfo[wordIndex];
 
-                    // Iterate through each of the characters of the word.
+                    // Iterate through each of the CharacterList of the word.
                     for (int i = 0; i < wInfo.characterCount; i++)
                     {
                         int characterIndex = wInfo.firstCharacterIndex + i;
@@ -308,7 +308,7 @@ namespace TMPro.Examples
         {
             //Debug.Log("Click at POS: " + eventData.position + "  World POS: " + eventData.worldPosition);
 
-            // Check if Mouse Intersects any of the characters. If so, assign a random color.
+            // Check if Mouse Intersects any of the CharacterList. If so, assign a random color.
             #region Character Selection Handling
             /*
             int charIndex = TMP_TextUtilities.FindIntersectingCharacter(m_TextMeshPro, Input.mousePosition, m_Camera, true);
@@ -346,7 +346,7 @@ namespace TMPro.Examples
                 // Get a reference to the uiVertices array.
                 UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo.uiVertices;
 
-                // Iterate through each of the characters of the word.
+                // Iterate through each of the CharacterList of the word.
                 for (int i = 0; i < wInfo.characterCount; i++)
                 {
                     int vertexIndex = m_TextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i].vertexIndex;
@@ -374,7 +374,7 @@ namespace TMPro.Examples
                 // Get a reference to the uiVertices array.
                 UIVertex[] uiVertices = m_TextMeshPro.textInfo.meshInfo.uiVertices;
 
-                // Iterate through each of the characters of the word.
+                // Iterate through each of the CharacterList of the word.
                 for (int i = 0; i < wInfo.characterCount; i++)
                 {
                     int vertexIndex = m_TextMeshPro.textInfo.characterInfo[wInfo.firstCharacterIndex + i].vertexIndex;
@@ -429,7 +429,7 @@ namespace TMPro.Examples
                 {
                     TMP_CharacterInfo cInfo = m_TextMeshPro.textInfo.characterInfo[linkInfo.firstCharacterIndex + i];
 
-                    if (!cInfo.isVisible) continue; // Skip invisible characters.
+                    if (!cInfo.isVisible) continue; // Skip invisible CharacterList.
 
                     int vertexIndex = cInfo.vertexIndex;
 

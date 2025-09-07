@@ -59,7 +59,7 @@ namespace TMPro.Examples
             {
                 visibleCount = counter % (totalVisibleCharacters + 1);
 
-                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many characters should TextMeshPro display?
+                m_textMeshPro.maxVisibleCharacters = visibleCount; // How many CharacterList should TextMeshPro display?
 
                 // Once the last character has been revealed, wait 1.0 second and start over.
                 if (visibleCount >= totalVisibleCharacters)

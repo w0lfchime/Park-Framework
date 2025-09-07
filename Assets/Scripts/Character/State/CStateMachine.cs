@@ -212,10 +212,16 @@ public class CStateMachine
 	}
 
 
-	public void PSMFixedFrameUpdate()
+	public void CSMFixedPhysicsUpdate()
+	{
+		CurrentState.FixedPhysicsUpdate();
+	}
+
+	public void CSMFixedFrameUpdate()
 	{
 		RequestQueue.FixedFrameUpdate();
 		ProcessStateQueue();
+		CurrentState.FixedFrameUpdate();
 	}
 	
 }

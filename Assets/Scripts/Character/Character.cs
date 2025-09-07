@@ -14,21 +14,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum CharacterID
-{
-	None = 0,
-	Ric = 1000,
-	Storm = 2000,
-}
+
 
 //for local input processing 
-public enum CharacterInputType
-{
-	None,
-	AllButtons,
-	ButtonsAndSticks
-}
-
 public abstract class Character : MonoBehaviour
 {
 	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
@@ -146,22 +134,22 @@ public abstract class Character : MonoBehaviour
 
 	//======// /==/==/==/=||[UPDATES & MONO]||==/==/==/==/==/==/==/==/==/ //======//
 	#region update_calls
-	public void FixedPhysicsUpdate()
+	public virtual void FixedPhysicsUpdate()
 	{
 		LogCore.Log(LogType.General, "HELLO?");
-		csm.CurrentState.FixedPhysicsUpdate();
+		csm.CSMFixedPhysicsUpdate();
 		UpdateCharacterData();
 	}
-	public void FixedFrameUpdate()
+	public virtual void FixedFrameUpdate()
 	{
-		csm.CurrentState.FixedFrameUpdate();
-		csm.PSMFixedFrameUpdate();
+		csm.CSMFixedFrameUpdate();
 	}
 	#endregion update_calls
 	//----------------------------------
 	#region mono
 	private void Awake()
 	{
+		CharacterSetup();
 		MonoAwake();
 		//...
 	}
@@ -217,7 +205,7 @@ public abstract class Character : MonoBehaviour
 	#region data
 	protected void GetInput()
 	{
-		AppManager.Instance.SystemInputManager.
+		CurrentInput = AppManager.Instance.SystemInputManager.players[this.playerID].GetInput();
 
 	}
 	protected void UpdateACS()
