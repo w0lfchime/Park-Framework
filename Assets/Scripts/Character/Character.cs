@@ -13,6 +13,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 
 
@@ -37,7 +38,6 @@ public abstract class Character : MonoBehaviour
 	public bool debug = true;
 	public Transform debugParentTransform;
 	public TextMeshPro stateText;
-	public TextMeshPro debugTextPlus;
 
 	[Header("Stats")]
 	public CharacterStats ucs; //Universal
@@ -76,7 +76,7 @@ public abstract class Character : MonoBehaviour
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
 	[Header("Input Refs")]
-	protected ProcessedInputFrameData CurrentInput;
+	public ProcessedInputFrameData CurrentInput;
 	#endregion input
 	//=//-----|Action Queue|------------------------------------------------------//=//
 	#region hitstop
@@ -288,13 +288,10 @@ public abstract class Character : MonoBehaviour
 	/// <summary>
 	/// For pushing states from states
 	/// </summary>
-	public void StatePushState(int? stateID, int pushForce, int frameLifetime)
+	public void CharacterPushState(int? stateID, int pushForce, int frameLifetime)
 	{
 		csm.PushState((int)stateID, pushForce, frameLifetime);
-	}
-	private void CharacterPushState(int? stateID, int pushForce, int frameLifetime)
-	{
-		csm.PushState((int)stateID, pushForce, frameLifetime);
+		DebugOnStateSet();
 	}
 	public void CSMDebugUpdate()
 	{
@@ -435,21 +432,11 @@ public abstract class Character : MonoBehaviour
 	}
 	protected virtual void SetReferences()
 	{
-		//input
-		//playerInput = GetComponent<PlayerInput>(); //HACK: Replace
-		//playerInputHandler = GetComponent<PlayerInputHandler>(); //HACK: replacing needed
-
-		//physics
-		//rigidBody = GetComponent<Rigidbody>();
-		//capsuleCollider = GetComponent<CapsuleCollider>();
 		groundLayer = LayerMask.GetMask("Ground");
 
-		//animation
-		//animator = GetComponent<Animator>();
-
-		//debug
+		
 		debugParentTransform = transform.Find("Debug");
-		stateText = debugParentTransform.Find("CharacterStateText")?.GetComponent<TextMeshPro>();
+		stateText = debugParentTransform.Find("CStateText")?.GetComponent<TextMeshPro>();
 
 	}
 	#endregion setup
@@ -512,10 +499,7 @@ public abstract class Character : MonoBehaviour
 	}
 	private void UpdateDebugText()
 	{
-		if (debugTextPlus != null)
-		{
-			//TODO: idk
-		}
+
 	}
 	#endregion state
 	//=//------------------------------------------------------------------------//=//

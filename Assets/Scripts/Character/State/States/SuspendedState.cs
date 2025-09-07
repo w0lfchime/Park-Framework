@@ -23,22 +23,42 @@ public class SuspendedState : CState
 	#region setup
 	public SuspendedState(CStateMachine sm) : base(sm)
 	{
+		
+	}
+	public override void SetGenericStateDefinition()
+	{
+		DefaultExitState = CStateIDs.IdleAirborne;
+		ClearFromQueueOnSetNewState = false;
+		ForceClearQueueOnEntry = true;
+		DefaultPriority = 5;
+		StateDuration = 0;
+		ExitOnStateComplete = false;
+		MinimumStateDuration = 60;
 
 	}
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
 	#region data_management
-	protected override void SetOnEntry()
+	public override void SetOnEntry()
 	{
 		base.SetOnEntry();
 	}
 	protected override void PerFrame()
 	{
 		base.PerFrame();
+
 	}
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
-	// ??
+	protected override void RouteState() //only called after min state duration
+	{
+		base.RouteState();
+		
+		if (!Ch.CurrentInput.Move.IsZero)
+		{
+			StatePushState(DefaultExitState);
+		}
+	}
 	//=//-----|Driver Calls|--------------------------------------//=//
 	#region driver_calls
 	public override void Enter()

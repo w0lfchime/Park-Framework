@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class Flight : PhysicalState
+public class FlightState : PhysicalState
 {
 
 	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/ //======//
@@ -21,14 +21,26 @@ public class Flight : PhysicalState
 	#region base
 	//=//-----|Setup|----------------------------------------------------//=//
 	#region setup
-	public Flight(CStateMachine sm) : base(sm)
+	public FlightState(CStateMachine sm) : base(sm)
 	{
 
+	}
+	public override void SetGenericStateDefinition()
+	{
+		DefaultExitState = CStateIDs.IdleAirborne;
+		ClearFromQueueOnSetNewState = false;
+		ForceClearQueueOnEntry = true;
+		DefaultPriority = 5;
+		StateDuration = 0;
+		ExitOnStateComplete = false;
+		MinimumStateDuration = 2;
+
+	
 	}
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
 	#region data_management
-	protected override void SetOnEntry()
+	public override void SetOnEntry()
 	{
 		base.SetOnEntry();
 	}

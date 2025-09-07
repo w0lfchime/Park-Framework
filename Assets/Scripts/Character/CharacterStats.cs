@@ -34,7 +34,7 @@ public class CharacterStats : ScriptableObject
 	public float gravityFactorWhileJumping = 0.004f; //How much effect gravity has while holding jump
 	public float gravityFactorLerpRate = 0.1f; //How quickly the effect of gravity can change
 
-	[Header("Flight")] //debug mode of character 
+	[Header("FlightState")] //debug mode of character 
     public float meowidk;
 
 }

@@ -57,25 +57,36 @@ public abstract class CState
 	public CState(CStateMachine sm)
 	{
 		this.StateMachine = sm;
-
+		
 		Ch = sm.MachineOwner;
-		StateName = GetType().Name;
+		string fullname = GetType().Name;
+		StateName = fullname.Substring(0, fullname.Length - 5); //Get rid of "state" at the end
 		StateID = CStateIDs.GetStateId(StateName);
-
-		SetOnEntry();
+		LogCore.Log(StateID + " " + StateName);
 	}
+	public abstract void SetGenericStateDefinition();
 	#endregion setup
 	//=//-----|Data Management|------------------------------------------//=//
 	#region data_management
-	protected virtual void SetOnEntry()
+	public virtual void SetOnEntry()
 	{
 		CurrentFrame = 0;
+		CurrentPriority = DefaultPriority;
+		StateComplete = false;
 	}
 	protected virtual void PerFrame()
 	{
 		CurrentFrame++;
+		if (StateDuration > 0 && CurrentFrame > StateDuration)
+		{
+			StateComplete = true;
+		}
 
-
+		if (CurrentFrame > MinimumStateDuration)
+		{
+			RouteState();
+		}
+		
 	}
 	#endregion data_management
 	//=//-----|Routing|--------------------------------------------------//=//
@@ -101,7 +112,15 @@ public abstract class CState
 	}
 	protected void StatePushState(int? stateID, int pushPriority, int lifeTime)
 	{
-		Ch.StatePushState(stateID, pushPriority, lifeTime);
+		Ch.CharacterPushState(stateID, pushPriority, lifeTime);
+	}
+	protected void StatePushState(int? stateID)
+	{
+		Ch.CharacterPushState(stateID, 5, 5);
+	}
+	protected virtual void RouteState()
+	{
+
 	}
 	#endregion routing
 	//=//-----|Driver Calls|--------------------------------------//=//

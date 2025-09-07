@@ -95,13 +95,15 @@ public class CStateMachine
 			LogCore.Log(LogType.CSM_Setup, $"Attempting to create state {stateClassName}.");
 
 			Type stateClass = Type.GetType(stateClassName);
+
+			bool requiresGenericDefinition = false;
 			if (stateClass == null)
 			{
 				//No character specific override found, create a generic state. 
 				stateClassName = stateName + "State";
 				LogCore.Log(LogType.CSM_Setup, $"No character specific override found. Creating generic state as {stateClassName}.");
 				stateClass = Type.GetType(stateClassName);
-
+				requiresGenericDefinition = true;
 				if (stateClass == null)
 				{
 					LogCore.Log(LogType.CSM_Setup, $"Fatal: No generic state exists as {stateClassName}.");
@@ -110,6 +112,13 @@ public class CStateMachine
 			}
 
 			var stateInstance = (CState)Activator.CreateInstance(stateClass, this);
+
+			if (requiresGenericDefinition)
+			{
+				stateInstance.SetGenericStateDefinition();
+			}
+
+			stateInstance.SetOnEntry();
 			SetStateDictState(i, stateInstance);
 
 		}

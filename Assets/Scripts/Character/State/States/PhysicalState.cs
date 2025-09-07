@@ -35,10 +35,14 @@ public class PhysicalState : CState
 	{
 		//...
 	}
+	public override void SetGenericStateDefinition()
+	{
+		
+	}
 	#endregion Setup
 	//=//-----|Data Management|------------------------------------------//=//
 	#region Data_Management
-	protected override void SetOnEntry()
+	public override void SetOnEntry()
 	{
 		base.SetOnEntry();
 		//...
