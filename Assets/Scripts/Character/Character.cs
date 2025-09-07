@@ -88,11 +88,7 @@ public abstract class Character : MonoBehaviour
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
 	[Header("Input Refs")]
-	public IInputSource InputSource;
-
-	[Header("Input Variables")]
-	public FixVec2 MoveInput;
-	public FixVec2 LookInput;
+	protected ProcessedInputFrameData CurrentInput;
 	#endregion input
 	//=//-----|Action Queue|------------------------------------------------------//=//
 	#region hitstop
@@ -152,7 +148,7 @@ public abstract class Character : MonoBehaviour
 	#region update_calls
 	public void FixedPhysicsUpdate()
 	{
-
+		LogCore.Log(LogType.General, "HELLO?");
 		csm.CurrentState.FixedPhysicsUpdate();
 		UpdateCharacterData();
 	}
@@ -219,9 +215,9 @@ public abstract class Character : MonoBehaviour
 	#region local
 	//=//-----|Data|-------------------------------------------------------------//=//
 	#region data
-	protected void ProcessInput()
+	protected void GetInput()
 	{
-		
+		AppManager.Instance.SystemInputManager.
 
 	}
 	protected void UpdateACS()

@@ -290,7 +290,8 @@ public class SysInputManager
 	{
 		foreach (var player in players.Values)
 		{
-			InputFrameData input = player.GetFrame(frame);
+			//HACK: simply getting upmost frame. Instead of sampling frame by index. Must fix in the future. 
+			InputFrameData input = player.GetFrame();
 			if (input.IsEmpty())
 			{
 				continue;

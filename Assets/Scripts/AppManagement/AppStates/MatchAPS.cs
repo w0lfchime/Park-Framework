@@ -17,16 +17,11 @@ public class MatchAPS : AppState
 
 	private FP_PhysicsSpace physicsSpace;
 
-	public List<Character> characters;
-
 	public MatchAPS(string matchScene)
 	{
 		this.MatchScene = matchScene;
 
-		CommandHandler.RegisterCommand("listcharacters", args =>
-		{
-			ListCharacters();
-		});
+
 	}
 
 
@@ -39,7 +34,6 @@ public class MatchAPS : AppState
 
 		AppManager.LoadScene(MatchScene);
 
-		characters = new List<Character>(Object.FindObjectsByType<Character>(FindObjectsSortMode.None));
 	}
 
 
@@ -83,12 +77,6 @@ public class MatchAPS : AppState
 	{
 
 	}
-	public void ListCharacters()
-	{
-        foreach (var character in characters)
-        {
-            LogCore.Log(LogType.Response, $"{character.InstanceName}");
-        }
-	}
+
 
 }

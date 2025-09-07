@@ -51,6 +51,11 @@ public struct FixVec2
 	{
 		return new FixVec2(Fix64.FromFloat(v.x), Fix64.FromFloat(v.y));
 	}
+	public static Fix64 FromSByte(sbyte value)
+	{
+
+		return new Fix64((long)value * Fix64.ONE / 127);
+	}
 
 	public static FixVec2 Normalize(FixVec2 v)
     {

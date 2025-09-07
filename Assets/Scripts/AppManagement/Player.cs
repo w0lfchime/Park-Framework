@@ -1,3 +1,4 @@
+using NUnit;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,8 +41,30 @@ public class Player
 			inputHistory[frame] = input;
 	}
 
-	public InputFrameData GetFrame(int frame) =>
-		frame < inputHistory.Count ? inputHistory[frame] : InputFrameData.Empty;
+	public InputFrameData GetFrame(int frame) //HACK: major hack
+	{
+		LogCore.Log($"{inputHistory.Count} --- {frame}");
+		InputFrameData data = inputHistory[frame];
+		return data;
+	}
+
+	public InputFrameData GetFrame() //HACK: more hack. need to actually write this to sample frames
+	{
+		return inputHistory[inputHistory.Count - 1];
+	}
+
+	public ProcessedInputFrameData GetInput(int frame)
+	{
+		//TODO: IDK. DO WE NEED IT?
+
+		return null;
+	}
+
+	public ProcessedInputFrameData GetInput()
+	{
+		return ProcessedInputFrameData.FromRaw(inputHistory[inputHistory.Count - 1]);
+	}
+
 
 	public void SetFrame(int frame, InputFrameData data)
 	{

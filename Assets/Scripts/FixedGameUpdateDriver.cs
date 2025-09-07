@@ -10,8 +10,7 @@ public class FixedGameUpdateDriver
 	private float accumulatedTime = 0f;
 
 	public int Clock; 
-	public bool ClockEnabled = false;
-	private int pauseDuration;
+	public bool ClockEnabled = true;
 
 	public FixedGameUpdateDriver()
 	{
@@ -31,24 +30,16 @@ public class FixedGameUpdateDriver
 
 	private void RunFixedGameUpdate()
 	{
-		AppManager.Instance.FixedGameUpdate(); //circular calling, dont worry about it, just feels the best for me
+		AppManager.Instance.FixedGameUpdate(); 
 
-		ClockUpdateLogic();
+		UpdateClock();
 	}
 
-	private void ClockUpdateLogic()
+	private void UpdateClock()
 	{
-		if (ClockEnabled && pauseDuration == 0)
+		if (ClockEnabled)
 		{
 			Clock++;
-		}
-		else if (pauseDuration > 0)
-		{
-			pauseDuration--;
-		}
-		else
-		{
-			pauseDuration = 0;
 		}
 	}
 
@@ -56,15 +47,9 @@ public class FixedGameUpdateDriver
 	{
 		ClockEnabled = false;
 	}
-	public void PauseClock(int pauseFrameCount)
-	{
-		pauseDuration = pauseFrameCount;
-	}
-
 
 	public void UnpauseClock()
 	{
 		ClockEnabled = true;
-		pauseDuration = 0;
 	}
 }

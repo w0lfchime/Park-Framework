@@ -1,29 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class FP_PhysicsSpace : MonoBehaviour
 {
-	public static FP_PhysicsSpace Instance { get; private set; }
+    public static FP_PhysicsSpace Instance { get; private set; }
 
+	public List<Character> characters;
 
-    // === Physics system state 
-    private readonly List<FP_Body2D> bodies = new();
+	// === Physics system state 
+	private readonly List<FP_Body2D> bodies = new();
     private readonly List<FP_BoxCollider2D> colliders = new();
 
-	private void Awake()
-	{
-		if (Instance != null && Instance != this)
-		{
-			Destroy(gameObject); // Prevent duplicates
-			return;
-		}
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // Prevent duplicates
+            return;
+        }
 
-		Instance = this;
-		// Uncomment if you want it to survive scene changes
-		// DontDestroyOnLoad(gameObject);
-	}
+        Instance = this;
+        // Uncomment if you want it to survive scene changes
+        // DontDestroyOnLoad(gameObject);
 
-	private void Start()
+        CommandHandler.RegisterCommand("listcharacters", args =>
+        {
+            ListCharacters();
+        });
+    }
+
+    private void Start()
     {
         GenerateGameSpace();
 
@@ -33,7 +40,7 @@ public class FP_PhysicsSpace : MonoBehaviour
     {
 
         LogCore.Log(LogType.GameSetup, "Generating gamespace...");
-        AssignBodiesFromLayer("FP_Player");
+        AssignBodiesFromLayer("FP_Character");
         AssignBodiesFromLayer("FP_Ground");
         AssignBodiesFromLayer("FP_Platform");
         AssignBodiesFromLayer("FP_Wall");
@@ -44,37 +51,55 @@ public class FP_PhysicsSpace : MonoBehaviour
 
     private void AssignBodiesFromLayer(string layerName)
     {
+        int count = 0;
+        int layer = LayerMask.NameToLayer(layerName);
+        if (layer == -1)
+        {
+            Debug.LogWarning($"Layer '{layerName}' not found.");
+            return;
+        }
 
-        switch (layerName)
+        // Find all GameObjects in the scene
+        foreach (var go in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        {
+            if (go.layer != layer || go.GetComponent<Rigidbody2D>() == null)
+                continue;
+
+            // Only assign if it doesn't already have one
+            var body = go.GetComponent<FP_Body2D>();
+            if (body == null)
+                body = go.AddComponent<FP_Body2D>();
+
+
+
+            // Add to bodies list (only if not already tracked)
+            if (!bodies.Contains(body))
+                count++;
+            bodies.Add(body);
+
+            if (layerName == "FP_Character")
+            {
+                Character c = go.GetComponent<Character>();
+                if (c == null)
+                {
+                    LogCore.Log(LogType.PhysicsSetup, "There are objects within the FP_Character layer without a valid character compnent.");
+                    DebugCore.StopGame();
+                }
+                else
+                {
+                    characters.Add(c);
+                }
+            }
+        }
+        LogCore.Log(LogType.PhysicsSetup, $"Found {count} objects in layer {layerName}");
+
+
+
+        switch (layerName) //HACK: random as switch statement
         {
             case "None":
                 break;
             default:
-                int count = 0;
-                int layer = LayerMask.NameToLayer(layerName);
-                if (layer == -1)
-                {
-                    Debug.LogWarning($"Layer '{layerName}' not found.");
-                    return;
-                }
-
-                // Find all GameObjects in the scene
-                foreach (var go in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
-                {
-                    if (go.layer != layer || go.GetComponent<Rigidbody2D>() == null)
-                        continue;
-
-                    // Only assign if it doesn't already have one
-                    var body = go.GetComponent<FP_Body2D>();
-                    if (body == null)
-                        body = go.AddComponent<FP_Body2D>();
-
-                    // Add to bodies list (only if not already tracked)
-                    if (!bodies.Contains(body))
-                        count++;
-                        bodies.Add(body);
-                }
-                LogCore.Log(LogType.PhysicsSetup, $"Found {count} objects in layer {layerName}");
                 break;
         }
 
@@ -97,26 +122,26 @@ public class FP_PhysicsSpace : MonoBehaviour
         foreach (var body in bodies)
             body.Integrate();
 
-		// 3. Collision detection (include all bodies)
-	    int solverIterations = 4;
-		for (int k = 0; k < solverIterations; k++)
-		{
-			for (int i = 0; i < colliders.Count; i++)
-			{
-				for (int j = i + 1; j < colliders.Count; j++)
-				{
-					var a = colliders[i];
-					var b = colliders[j];
+        // 3. Collision detection (include all bodies)
+        int solverIterations = 4;
+        for (int k = 0; k < solverIterations; k++)
+        {
+            for (int i = 0; i < colliders.Count; i++)
+            {
+                for (int j = i + 1; j < colliders.Count; j++)
+                {
+                    var a = colliders[i];
+                    var b = colliders[j];
 
-					if (a.IsActive && b.IsActive)
-						FP_CollisionSolver.Instance.CheckAndResolve(a, b);
-				}
-			}
-		}
+                    if (a.IsActive && b.IsActive)
+                        FP_CollisionSolver.Instance.CheckAndResolve(a, b);
+                }
+            }
+        }
 
 
-		// 4. Sync all bodies for rendering
-		foreach (var body in bodies)
+        // 4. Sync all bodies for rendering
+        foreach (var body in bodies)
             body.SyncTransform();
     }
 
@@ -147,4 +172,14 @@ public class FP_PhysicsSpace : MonoBehaviour
     // === Optional accessors ===
     public IReadOnlyList<FP_Body2D> Bodies => bodies;
     public IReadOnlyList<FP_BoxCollider2D> Colliders => colliders;
+
+
+
+	public void ListCharacters()
+	{
+		foreach (var character in characters)
+		{
+			LogCore.Log(LogType.Response, $"{character.InstanceName}");
+		}
+	}
 }

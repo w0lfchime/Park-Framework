@@ -47,9 +47,9 @@
 //	#endregion setup
 //	//=//-----|Data Management|------------------------------------------//=//
 //	#region data_management
-//	protected override void ProcessInput()
+//	protected override void GetInput()
 //	{
-//		base.ProcessInput();
+//		base.GetInput();
 //		//...
 //	}
 //	protected override void SetOnEntry()
