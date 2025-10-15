@@ -81,9 +81,9 @@ public class CStateMachine
 
 		for (int i = 0; i < 999 + ownerCharacterID; i++)
 		{
-			if (i == 999)
+			if (i == 999) //if checked all universal states,
 			{
-				i = ownerCharacterID;
+				i = ownerCharacterID; //move onto character specific states
 			}
 			if (MachineOwner.StateBlacklist.Contains(i)) continue;
 			string stateName = CStateIDs.GetStateName(i);

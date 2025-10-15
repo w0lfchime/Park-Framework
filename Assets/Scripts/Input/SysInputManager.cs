@@ -38,6 +38,14 @@ public class SysInputManager
 	{
 		VerboseInputLogging = false;
 
+		RegisterInputCommands();
+
+
+		AddPlayer();
+	}
+
+	private void RegisterInputCommands()
+	{
 		// commands 
 		CommandHandler.RegisterCommand("listdevices", args =>
 		{
@@ -104,11 +112,7 @@ public class SysInputManager
 				LogCore.Log(LogType.Response, $"- Player {id}: {deviceInfo}");
 			}
 		});
-
-
-		AddPlayer();
 	}
-
 
 	// 
 	// UPDATE LOOPS

@@ -123,13 +123,31 @@ public class App_CanvasPanelController : MonoBehaviour
 			// Toggle PauseMenu with Esc
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				if (AppManager.OpenPauseAllowed)
+				if (isPauseMenuVisible)
 				{
-					ExitPairingMenu();
-					isPauseMenuVisible = !isPauseMenuVisible;
-					SetCanvasGroupActive(PauseMenu, isPauseMenuVisible);
+					ExitPauseMenu();
+				}
+				else
+				{
+					EnterPauseMenu();
 				}
 			}
+		}
+	}
+
+	public void ExitPauseMenu()
+	{
+		isPauseMenuVisible = false;
+		ExitPairingMenu();
+		SetCanvasGroupActive(PauseMenu, false);
+	}
+	public void EnterPauseMenu()
+	{
+		if (AppManager.OpenPauseAllowed)
+		{
+			isPauseMenuVisible = true;
+			ExitPairingMenu();
+			SetCanvasGroupActive(PauseMenu, true);
 		}
 	}
 

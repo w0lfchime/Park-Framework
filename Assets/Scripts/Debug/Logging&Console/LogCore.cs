@@ -68,9 +68,22 @@ public static class LogCore
 	}
 
 
-	public static void Log(string message)
+	public static void Log(string message,
+		[CallerFilePath] string file = "",
+		[CallerLineNumber] int line = 0,
+		[CallerMemberName] string member = "")
 	{
-		Log(LogType.NoCategory, message);
+		if (!loggingEnabled) return;
+
+		messageCount++;
+
+		string formattedMessage = $"({messageCount}) [{"NoCategory"}] {message} (at {System.IO.Path.GetFileName(file)}:{line} in {member})";
+
+		// Convert enum to string and decide logging severity
+
+		Debug.Log(formattedMessage);
+
+		OnLog?.Invoke(formattedMessage);
 	}
 
 	public static void SetLogTypeEnabled(LogType type, bool enabled)
