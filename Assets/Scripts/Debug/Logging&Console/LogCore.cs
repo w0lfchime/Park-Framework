@@ -16,6 +16,7 @@ public enum LogType
 	CSM_Setup,
 	CSM_Flow,
 	Character,
+	Character_Setup,
 	GameSpace,
 	PhysicsSetup,
 	ServiceLocator,

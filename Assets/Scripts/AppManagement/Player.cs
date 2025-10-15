@@ -28,12 +28,17 @@ public class Player
 
 	public void RecordFrame(int frame)
 	{
+		InputFrameData input;
 		if (InputSource == null)
 		{
-			return;
+			//TODO: Use null entries to conserve memory
+			input = new InputFrameData(); //write blank input to keep input history structure in tact
 		}
-		InputSource.UpdateInput(frame);
-		var input = InputSource.GetInputForFrame(frame);
+		else
+		{
+			InputSource.UpdateInput(frame);
+			input = InputSource.GetInputForFrame(frame);
+		}
 
 		if (frame >= inputHistory.Count)
 			inputHistory.Add(input);

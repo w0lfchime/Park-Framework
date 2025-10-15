@@ -136,13 +136,15 @@ public abstract class Character : MonoBehaviour
 	#region update_calls
 	public virtual void FixedPhysicsUpdate()
 	{
-		LogCore.Log(LogType.General, "HELLO?");
 		csm.CSMFixedPhysicsUpdate();
 		UpdateCharacterData();
 	}
 	public virtual void FixedFrameUpdate()
 	{
+		GetInput();
 		csm.CSMFixedFrameUpdate();
+
+		
 	}
 	#endregion update_calls
 	//----------------------------------
@@ -384,13 +386,15 @@ public abstract class Character : MonoBehaviour
 	#region setup
 	protected virtual void CharacterSetup()
 	{
+		string temp = this.GetType().Name;
+		LogCore.Log(LogType.Character_Setup, $"Creating new character with class: {temp}");
+
 		//Local init functions
 		SetMemberVariables();
 		SetReferences();
 
 		//The rest
 		RegisterCommands();
-		//GlobalData.characterInitialized = true;	//HACK: do we need this?
 
 		//magic numbers
 		UpdateACS();
@@ -407,13 +411,16 @@ public abstract class Character : MonoBehaviour
 		//state
 		csm = new CStateMachine(this); //special init proc
 
-		LogCore.Log(LogType.Character, $"Character initialized: {InstanceName}");
+
 
 		//post setup
 		if (csm.Verified)
 		{
 			CharacterPushState(CStateIDs.Suspended, 9, 9);
 		}
+
+		LogCore.Log(LogType.Character, $"Character initialized: {InstanceName}");
+
 	}
 	protected virtual void RegisterCommands()
 	{
@@ -438,6 +445,14 @@ public abstract class Character : MonoBehaviour
 		debugParentTransform = transform.Find("Debug");
 		stateText = debugParentTransform.Find("CStateText")?.GetComponent<TextMeshPro>();
 
+	}
+	public virtual void EnterGameSpace()
+	{
+		GetInput();
+
+		LogCore.Log(LogType.GameSpace, $"Character {InstanceName} entering game space with player ID {playerID}");
+
+		//...
 	}
 	#endregion setup
 	//=//-----|Data|-------------------------------------------------------------//=//
@@ -500,6 +515,17 @@ public abstract class Character : MonoBehaviour
 	private void UpdateDebugText()
 	{
 
+	}
+	public void BlacklistAllStates()
+	{
+		for (int i = 0; i < CStateIDs.TotalStateCount(); i++)
+		{
+			StateBlacklist.Add(i);
+		}
+	}
+	public void WhitelistState(int stateID)
+	{
+		StateBlacklist.Remove(stateID);
 	}
 	#endregion state
 	//=//------------------------------------------------------------------------//=//

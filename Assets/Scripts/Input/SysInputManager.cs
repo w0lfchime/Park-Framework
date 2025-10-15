@@ -87,31 +87,36 @@ public class SysInputManager
 		// helper command to list all players and their devices
 		CommandHandler.RegisterCommand("listplayers", args =>
 		{
-			if (players.Count == 0)
-			{
-				LogCore.Log(LogType.Response, "No players exist.");
-				return;
-			}
-
-			LogCore.Log(LogType.Response, $"Listing {players.Count} players:");
-			foreach (var kvp in players)
-			{
-				int id = kvp.Key;
-				var player = kvp.Value;
-
-				string deviceInfo = "Unpaired";
-				if (player.Device != null)
-				{
-					PlayerControllerType type = PlayerControllerType.None;
-					if (player.Device is Keyboard) type = PlayerControllerType.Keyboard;
-					else if (player.Device is Gamepad) type = PlayerControllerType.Gamepad;
-
-					deviceInfo = $"{player.Device.displayName} ({type})";
-				}
-
-				LogCore.Log(LogType.Response, $"- Player {id}: {deviceInfo}");
-			}
+			ListPlayers();
 		});
+	}
+
+	public void ListPlayers()
+	{
+		if (players.Count == 0)
+		{
+			LogCore.Log(LogType.Response, "No players exist.");
+			return;
+		}
+
+		LogCore.Log(LogType.Response, $"Listing {players.Count} players:");
+		foreach (var kvp in players)
+		{
+			int id = kvp.Key;
+			var player = kvp.Value;
+
+			string deviceInfo = "Unpaired";
+			if (player.Device != null)
+			{
+				PlayerControllerType type = PlayerControllerType.None;
+				if (player.Device is Keyboard) type = PlayerControllerType.Keyboard;
+				else if (player.Device is Gamepad) type = PlayerControllerType.Gamepad;
+
+				deviceInfo = $"{player.Device.displayName} ({type})";
+			}
+
+			LogCore.Log(LogType.Response, $"- Player {id}: {deviceInfo}");
+		}
 	}
 
 	// 

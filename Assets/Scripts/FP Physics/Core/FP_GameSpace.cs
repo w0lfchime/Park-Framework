@@ -47,6 +47,9 @@ public class FP_GameSpace : MonoBehaviour
 
         foreach (var body in bodies)
             body.InitializeBody(); // Let each one complete its setup
+
+        LogCore.Log(LogType.GameSpace, "Gamespace setup complete.");
+        AppManager.Instance.SystemInputManager.ListPlayers();
     }
 
     private void AssignBodiesFromLayer(string layerName)
@@ -110,6 +113,7 @@ public class FP_GameSpace : MonoBehaviour
         LogCore.Log(LogType.GameSpace, $"Adding character {c.InstanceName} to the gamespace.");
         CharacterList.Add(c);
         c.playerID = CharacterList.Count; //HACK: super hack adding method 
+        c.EnterGameSpace();
     }
 
     public void FixedGameSpaceUpdate()

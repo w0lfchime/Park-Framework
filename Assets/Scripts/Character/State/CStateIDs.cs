@@ -11,15 +11,19 @@ public enum CharacterID
 
 public static class CStateIDs
 {
+	//non-gameplay
 	public const int Null = 0;
 	public const int Suspended = 1;
 	public const int Flight = 2;
+	public const int NoClip = 3;
 
-	public const int GroundedIdle = 3;
-	public const int Walk = 4;
-	public const int Run = 5;
-	public const int Jump = 6;
-	public const int IdleAirborne = 7;
+
+
+	public const int GroundedIdle = 100;
+	public const int Walk = 101;
+	public const int Run = 102;
+	public const int Jump = 103;
+	public const int IdleAirborne = 104;
 
 	public static class Ric
 	{
@@ -52,8 +56,12 @@ public static class CStateIDs
 			}
 		}
 	}
+	public static int TotalStateCount()
+	{
+		return reverseLookup.Count;
+	}
 
-	public static int GenericStateCount() 
+	public static int GenericStateCount() //counts the number of generic states
 	{
 		int count = 0;
 

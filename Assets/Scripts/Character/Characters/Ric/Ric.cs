@@ -60,10 +60,8 @@ public class Ric : Character
 	#region setup
 	protected override void CharacterSetup()
 	{
-		for (int i = 3; i < CStateIDs.GenericStateCount(); i++)
-		{
-			StateBlacklist.Add(i);
-		}
+		BlacklistAllStates();
+
 
 		base.CharacterSetup();
 		//...
