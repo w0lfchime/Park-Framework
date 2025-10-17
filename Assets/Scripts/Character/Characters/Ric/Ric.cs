@@ -60,8 +60,11 @@ public class Ric : Character
 	#region setup
 	protected override void CharacterSetup()
 	{
-		BlacklistAllStates();
+		//BlacklistAllStates();
 
+		//WhitelistState(CStateGlobal.Suspended);
+
+		CharacterHeight = 2.0f;
 
 		base.CharacterSetup();
 		//...

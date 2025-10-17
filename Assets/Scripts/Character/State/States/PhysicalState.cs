@@ -253,14 +253,14 @@ public class PhysicalState : CState
 	//		ch.jumpCount = 0;
 	//		if (!ch.isGroundedByState)
 	//		{
-	//			StatePushState(CStateIDs.GroundedIdle, (int)priority + 1, 2);
+	//			StatePushState(CStateGlobal.GroundedIdle, (int)priority + 1, 2);
 	//		}
 	//	}
 	//	if (ch.onUngrounding)
 	//	{
 	//		if (ch.isGroundedByState)
 	//		{
-	//			StatePushState(CStateIDs.IdleAirborne, (int)priority + 1, 2);
+	//			StatePushState(CStateGlobal.Airborne, (int)priority + 1, 2);
 	//		}
 	//	}
 	//}
@@ -280,7 +280,7 @@ public class PhysicalState : CState
 	//	if (cih.GetButtonDown("jump") && jumpAllowed)
 	//	{
 	//		ch.jumpCount++;
-	//		StatePushState(CStateIDs.Jump, 4, 4);
+	//		StatePushState(CStateGlobal.Jump, 4, 4);
 	//	}
 	//}
 	#endregion Routes

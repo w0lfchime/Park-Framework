@@ -12,8 +12,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.XR;
 
 
 
@@ -25,13 +23,13 @@ public abstract class Character : MonoBehaviour
 	//=//-----|General|-----------------------------------------------------------//=//
 	#region general
 	[Header("Meta")]
-	public string CharacterName;
+	public string Name;
 	public string InstanceName;
-	public string StandardClassPrefix;
-	public CharacterID CharacterID;
-	public int CharacterInstanceID;
-	public int playerID;
-	public bool nonPlayer = false;
+	public string ClassPrefix;
+	public CharacterID ID;
+	public int InstanceID;
+	public int PlayerID;
+	public bool NonPlayer = false;
 
 
 	[Header("Debug")]
@@ -95,7 +93,7 @@ public abstract class Character : MonoBehaviour
 	//=//-----|Gameplay Data|-----------------------------------------------------//=//
 	#region gameplay_data
 	[Header("Character Dimensions")]
-	public Fix64 characterHeight;
+	public float CharacterHeight;
 
 	[Header("Movement Variables")]
 	public Fix64 characterSpeed;
@@ -143,7 +141,7 @@ public abstract class Character : MonoBehaviour
 	{
 		GetInput();
 		csm.CSMFixedFrameUpdate();
-
+		DebugRenderInput();
 		
 	}
 	#endregion update_calls
@@ -207,7 +205,7 @@ public abstract class Character : MonoBehaviour
 	#region data
 	protected void GetInput()
 	{
-		CurrentInput = AppManager.Instance.SystemInputManager.players[this.playerID].GetInput();
+		CurrentInput = AppManager.Instance.SystemInputManager.players[this.PlayerID].GetInput();
 
 	}
 	protected void UpdateACS()
@@ -416,7 +414,7 @@ public abstract class Character : MonoBehaviour
 		//post setup
 		if (csm.Verified)
 		{
-			CharacterPushState(CStateIDs.Suspended, 9, 9);
+			CharacterPushState(CStateGlobal.Suspended, 9, 9);
 		}
 
 		LogCore.Log(LogType.Character, $"Character initialized: {InstanceName}");
@@ -433,9 +431,9 @@ public abstract class Character : MonoBehaviour
 	protected virtual void SetMemberVariables()
 	{
 		//meta
-		this.StandardClassPrefix = GetType().Name;
-		this.InstanceName = StandardClassPrefix + "_1"; //HACK: hack solution for character instance name 
-		this.CharacterName = acs.characterName;
+		this.ClassPrefix = GetType().Name;
+		this.InstanceName = ClassPrefix + "_1"; //HACK: hack solution for character instance name 
+		this.Name = acs.characterName;
 	}
 	protected virtual void SetReferences()
 	{
@@ -450,7 +448,7 @@ public abstract class Character : MonoBehaviour
 	{
 		GetInput();
 
-		LogCore.Log(LogType.GameSpace, $"Character {InstanceName} entering game space with player ID {playerID}");
+		LogCore.Log(LogType.GameSpace, $"Character {InstanceName} entering game space with player ID {PlayerID}");
 
 		//...
 	}
@@ -459,7 +457,7 @@ public abstract class Character : MonoBehaviour
 	#region data
 	protected virtual void UpdateCharacterData() //TODO: better name 
 	{
-		//this.characterHeight = capsuleCollider.height;
+		//this.CharacterHeight = capsuleCollider.height;
 	}
 	#endregion data
 	#endregion base
@@ -494,6 +492,23 @@ public abstract class Character : MonoBehaviour
 	{
 		return $"{this.GetType().Name}: {message}";
 	}
+	public void DebugRenderInput()
+	{
+		string vectorName = CName("MoveVector");
+		FixVec2 vector = CurrentInput.Move;
+		Transform vectorLocation = gameObject.transform;
+
+		DebugVectorRenderer.Instance.RenderVector(vectorName, vectorLocation, vector, Color.grey);
+
+
+		vectorName = CName("LookVector");
+		vector = CurrentInput.Look;
+		Vector3 offset = vectorLocation.position;
+		offset.y += CharacterHeight;
+		vectorLocation.position = offset;
+
+		DebugVectorRenderer.Instance.RenderVector(vectorName, vectorLocation, vector, Color.white);
+	}
 	#endregion general
 	//=//-----|State|------------------------------------------------------------//=//
 	#region state
@@ -504,9 +519,9 @@ public abstract class Character : MonoBehaviour
 		if (debug && stateText != null)
 		{
 			// Remove the character class name prefix if it exists
-			if (currentStateName.StartsWith(StandardClassPrefix))
+			if (currentStateName.StartsWith(ClassPrefix))
 			{
-				currentStateName = currentStateName.Substring(StandardClassPrefix.Length);
+				currentStateName = currentStateName.Substring(ClassPrefix.Length);
 			}
 
 			stateText.text = currentStateName;
@@ -516,9 +531,9 @@ public abstract class Character : MonoBehaviour
 	{
 
 	}
-	public void BlacklistAllStates()
+	public void BlacklistAllStates() //applies to state generation 
 	{
-		for (int i = 0; i < CStateIDs.TotalStateCount(); i++)
+		for (int i = 0; i <= CStateGlobal.GetHighestGenericStateId(); i++)
 		{
 			StateBlacklist.Add(i);
 		}

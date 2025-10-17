@@ -2,12 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public enum PlayerControllerType
-{
-	None,
-	Keyboard,
-	Gamepad,
-}
 
 [System.Serializable]
 public class PlayerSlot
@@ -307,8 +301,6 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		playerSlots[playerId - 1].controllerType = type;
 		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
-
-		LogCore.Log("meowtest");
 	}
 
 	private void HandleDeviceUnpaired(int playerId)
@@ -317,8 +309,6 @@ public class App_CanvasPanelController : MonoBehaviour
 
 		playerSlots[playerId - 1].controllerType = PlayerControllerType.None;
 		UpdatePlayerSlotColorsAndPairingIcons(); // refresh visuals
-
-		LogCore.Log("meowfest");
 	}
 
 	public void UpdatePlayerSlotColorsAndPairingIcons()

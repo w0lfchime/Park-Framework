@@ -61,7 +61,7 @@ public class CStateMachine
 
 	public CStateMachine(Character owner)
 	{
-		this.CurrentStateID = CStateIDs.Null;
+		this.CurrentStateID = CStateGlobal.Null;
 		this.MachineOwner = owner;
 
 		StateDict = new Dictionary<int, CState>();
@@ -74,8 +74,8 @@ public class CStateMachine
 
 	protected virtual void RegisterStates()
 	{
-		string stateOwnerClassName = MachineOwner.StandardClassPrefix;
-		int ownerCharacterID = (int)MachineOwner.CharacterID;
+		string stateOwnerClassName = MachineOwner.ClassPrefix;
+		int ownerCharacterID = (int)MachineOwner.ID;
 
 		LogCore.Log(LogType.CSM_Setup, $"Registering states for {MachineOwner.InstanceName}.");
 
@@ -85,8 +85,8 @@ public class CStateMachine
 			{
 				i = ownerCharacterID; //move onto character specific states
 			}
-			if (MachineOwner.StateBlacklist.Contains(i)) continue;
-			string stateName = CStateIDs.GetStateName(i);
+			if (MachineOwner.StateBlacklist.Contains(i)) continue; //blacklist skips
+			string stateName = CStateGlobal.GetStateName(i);
 			if (stateName == null) continue;
 			if (stateName == "Null") continue;
 

@@ -9,7 +9,7 @@ public enum CharacterID
 	Storm = 2000,
 }
 
-public static class CStateIDs
+public static class CStateGlobal
 {
 	//non-gameplay
 	public const int Null = 0;
@@ -23,7 +23,9 @@ public static class CStateIDs
 	public const int Walk = 101;
 	public const int Run = 102;
 	public const int Jump = 103;
-	public const int IdleAirborne = 104;
+	public const int Airborne = 104;
+
+
 
 	public static class Ric
 	{
@@ -33,14 +35,14 @@ public static class CStateIDs
 	private static readonly Dictionary<int, string> reverseLookup;
 	private static readonly Dictionary<string, int> forwardLookup;
 
-	static CStateIDs()
+	static CStateGlobal()
 	{
 		reverseLookup = new Dictionary<int, string>();
 		forwardLookup = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
 		// Scan top-level and nested static classes
-		var typesToScan = new List<Type> { typeof(CStateIDs) };
-		typesToScan.AddRange(typeof(CStateIDs).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
+		var typesToScan = new List<Type> { typeof(CStateGlobal) };
+		typesToScan.AddRange(typeof(CStateGlobal).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
 
 		foreach (var t in typesToScan)
 		{
@@ -49,25 +51,37 @@ public static class CStateIDs
 				if (field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(int))
 				{
 					int value = (int)field.GetRawConstantValue();
-					string name = t == typeof(CStateIDs) ? field.Name : $"{t.Name}.{field.Name}";
+					string name = t == typeof(CStateGlobal) ? field.Name : $"{t.Name}.{field.Name}";
 					reverseLookup[value] = name;
 					forwardLookup[name] = value;
 				}
 			}
 		}
 	}
+
 	public static int TotalStateCount()
 	{
 		return reverseLookup.Count;
 	}
+	public static int GetHighestGenericStateId()
+	{
+		int max = -1;
+		foreach (var key in reverseLookup.Keys)
+		{
+			if (key >= 0 && key < 1000 && key > max)
+				max = key;
+		}
+		return max;
+	}
+
 
 	public static int GenericStateCount() //counts the number of generic states
 	{
 		int count = 0;
 
 		// Scan top-level and nested static classes
-		var typesToScan = new List<Type> { typeof(CStateIDs) };
-		typesToScan.AddRange(typeof(CStateIDs).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
+		var typesToScan = new List<Type> { typeof(CStateGlobal) };
+		typesToScan.AddRange(typeof(CStateGlobal).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
 
 		foreach (var t in typesToScan)
 		{

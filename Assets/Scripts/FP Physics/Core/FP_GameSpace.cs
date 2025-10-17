@@ -112,7 +112,7 @@ public class FP_GameSpace : MonoBehaviour
     {
         LogCore.Log(LogType.GameSpace, $"Adding character {c.InstanceName} to the gamespace.");
         CharacterList.Add(c);
-        c.playerID = CharacterList.Count; //HACK: super hack adding method 
+        c.PlayerID = CharacterList.Count; //HACK: super hack adding method 
         c.EnterGameSpace();
     }
 

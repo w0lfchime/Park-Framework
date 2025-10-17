@@ -17,6 +17,13 @@ public enum SysInputManagerState
 	CharactersOnly,
 }
 
+public enum PlayerControllerType
+{
+	None,
+	Keyboard,
+	Gamepad,
+}
+
 
 public class SysInputManager
 {
@@ -42,6 +49,10 @@ public class SysInputManager
 
 
 		AddPlayer();
+
+		LogCore.Log(LogType.Warning, "Calling PairFirst()");
+
+		PairFirst();
 	}
 
 	private void RegisterInputCommands()
@@ -74,14 +85,7 @@ public class SysInputManager
 		// helper command to pair first device to Player 1
 		CommandHandler.RegisterCommand("pairfirst", args =>
 		{
-			if (InputSystem.devices.Count == 0)
-			{
-				LogCore.Log(LogType.Pairing, "No input devices available to pair.");
-				return;
-			}
-
-			var device = InputSystem.devices.First(); // grab the first device in the list
-			PairDeviceToPlayer(1, device);            // try to pair it to player 1
+			PairFirst();
 		});
 
 		// helper command to list all players and their devices
@@ -89,6 +93,18 @@ public class SysInputManager
 		{
 			ListPlayers();
 		});
+	}
+
+	public void PairFirst()
+	{
+		if (InputSystem.devices.Count == 0)
+		{
+			LogCore.Log(LogType.Pairing, "No input devices available to pair.");
+			return;
+		}
+
+		var device = InputSystem.devices.First(); // grab the first device in the list
+		PairDeviceToPlayer(1, device);
 	}
 
 	public void ListPlayers()

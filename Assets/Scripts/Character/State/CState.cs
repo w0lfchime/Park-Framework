@@ -61,7 +61,7 @@ public abstract class CState
 		Ch = sm.MachineOwner;
 		string fullname = GetType().Name;
 		StateName = fullname.Substring(0, fullname.Length - 5); //Get rid of "state" at the end
-		StateID = CStateIDs.GetStateId(StateName);
+		StateID = CStateGlobal.GetStateId(StateName);
 		LogCore.Log(LogType.CSM_Setup, "State created: " + StateID + " " + StateName);
 	}
 	public abstract void SetGenericStateDefinition();
