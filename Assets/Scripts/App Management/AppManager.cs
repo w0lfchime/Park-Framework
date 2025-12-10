@@ -47,8 +47,8 @@ public class AppManager : MonoBehaviour
 		
 
 		//core scene
-		app_canvas = GameObject.Find("C_Canvas");
-		app_camera = GameObject.Find("C_Camera");
+		app_canvas = GameObject.Find("App_Canvas");
+		app_camera = GameObject.Find("App_Camera");
 
 
 		//services 

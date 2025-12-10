@@ -288,6 +288,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unrealchan.foldercolorsettings": {
+      "version": "https://github.com/bomul0327/UnityFolderColorSettings.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "23d7e3c77c49454ea748cfad0a72efc93950722f"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

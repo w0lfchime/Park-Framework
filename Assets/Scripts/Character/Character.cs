@@ -10,7 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -507,20 +506,20 @@ public abstract class Character : MonoBehaviour
 		//set other debug components and what not
 		DebugGameObject.gameObject.SetActive(Debug);
 	}
-	public virtual string CName(string message)
+	public virtual string AddCharacterNameTo(string message)
 	{
 		return $"{this.GetType().Name}: {message}";
 	}
 	public void RenderDebugVectors()
 	{
-		string vectorName = CName("MoveVector");
+		string vectorName = AddCharacterNameTo("MoveVector");
 		FixVec2 vector = CurrentInput.Move;
 		Transform vectorLocation = gameObject.transform;
 
 		DebugVectorRenderer.Instance.RenderVector(vectorName, vectorLocation, vector, Color.grey);
 
 
-		vectorName = CName("LookVector");
+		vectorName = AddCharacterNameTo("LookVector");
 		vector = CurrentInput.Look;
 		Vector3 offset = vectorLocation.position;
 		offset.y += FP_CharacterHeight;
