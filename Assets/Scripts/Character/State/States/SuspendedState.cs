@@ -27,7 +27,7 @@ public class SuspendedState : CState
 	}
 	public override void SetGenericStateDefinition()
 	{
-		DefaultExitState = CStateGlobal.Airborne;
+		DefaultExitState = CStateID.Airborne;
 		ClearFromQueueOnSetNewState = false;
 		ForceClearQueueOnEntry = true;
 		DefaultPriority = 5;

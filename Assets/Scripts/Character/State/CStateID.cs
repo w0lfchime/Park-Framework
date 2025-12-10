@@ -9,7 +9,7 @@ public enum CharacterID
 	Storm = 2000,
 }
 
-public static class CStateGlobal
+public static class CStateID
 {
 	//non-gameplay
 	public const int Null = 0;
@@ -35,14 +35,14 @@ public static class CStateGlobal
 	private static readonly Dictionary<int, string> reverseLookup;
 	private static readonly Dictionary<string, int> forwardLookup;
 
-	static CStateGlobal()
+	static CStateID()
 	{
 		reverseLookup = new Dictionary<int, string>();
 		forwardLookup = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
 		// Scan top-level and nested static classes
-		var typesToScan = new List<Type> { typeof(CStateGlobal) };
-		typesToScan.AddRange(typeof(CStateGlobal).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
+		var typesToScan = new List<Type> { typeof(CStateID) };
+		typesToScan.AddRange(typeof(CStateID).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
 
 		foreach (var t in typesToScan)
 		{
@@ -51,7 +51,7 @@ public static class CStateGlobal
 				if (field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(int))
 				{
 					int value = (int)field.GetRawConstantValue();
-					string name = t == typeof(CStateGlobal) ? field.Name : $"{t.Name}.{field.Name}";
+					string name = t == typeof(CStateID) ? field.Name : $"{t.Name}.{field.Name}";
 					reverseLookup[value] = name;
 					forwardLookup[name] = value;
 				}
@@ -80,8 +80,8 @@ public static class CStateGlobal
 		int count = 0;
 
 		// Scan top-level and nested static classes
-		var typesToScan = new List<Type> { typeof(CStateGlobal) };
-		typesToScan.AddRange(typeof(CStateGlobal).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
+		var typesToScan = new List<Type> { typeof(CStateID) };
+		typesToScan.AddRange(typeof(CStateID).GetNestedTypes(BindingFlags.Public | BindingFlags.Static));
 
 		foreach (var t in typesToScan)
 		{

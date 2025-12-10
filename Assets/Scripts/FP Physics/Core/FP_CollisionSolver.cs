@@ -54,7 +54,7 @@ public class FP_CollisionSolver : MonoBehaviour
 		// --- 4. Positional correction (one MoveInput only) ---
 		movable.Move(mtv);
 
-		// --- 5. Kill velocity into the surface ---
+		// --- 5. Kill FP_Velocity into the surface ---
 		FixVec2 n = FixVec2.Normalize(mtv);
 		Fix64 vDot = FixVec2.Dot(movable.Velocity, n);
 		if (vDot < Fix64.Zero)

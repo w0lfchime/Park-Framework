@@ -27,7 +27,7 @@ public class FlightState : PhysicalState
 	}
 	public override void SetGenericStateDefinition()
 	{
-		DefaultExitState = CStateGlobal.Airborne;
+		DefaultExitState = CStateID.Airborne;
 		ClearFromQueueOnSetNewState = false;
 		ForceClearQueueOnEntry = true;
 		DefaultPriority = 5;
@@ -64,6 +64,8 @@ public class FlightState : PhysicalState
 	public override void FixedPhysicsUpdate() //run first
 	{
 		base.FixedPhysicsUpdate();
+		
+
 	}
 	public override void FixedFrameUpdate() //run second
 	{

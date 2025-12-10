@@ -40,7 +40,7 @@ public sealed class DebugVectorRenderer : MonoBehaviour
 	[SerializeField] private float thicknessScale = 1.0f;
 
 	[Header("Parenting")]
-	[Tooltip("If true, vectors become children of their origin Transform. If false, they live under this manager and follow origin via position/rotation.")]
+	[Tooltip("If true, vectors become children of their origin Transform. If false, they live under this manager and follow origin via FP_Position/rotation.")]
 	[SerializeField] private bool parentToOrigin = true;
 
 	// name -> DebugVector

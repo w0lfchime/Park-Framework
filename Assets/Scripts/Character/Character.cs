@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ using UnityEngine;
 //for local input processing 
 public abstract class Character : MonoBehaviour
 {
+	//
+
 	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
 	#region fields
 	//=//-----|General|-----------------------------------------------------------//=//
@@ -33,17 +36,15 @@ public abstract class Character : MonoBehaviour
 
 
 	[Header("Debug")]
-	public bool debug = true;
-	public Transform debugParentTransform;
-	public TextMeshPro stateText;
+	public bool Debug = true;
+	public Transform DebugGameObject;
+	public TextMeshPro StateTextMesh;
 
 	[Header("Stats")]
 	public CharacterStats ucs; //Universal
 	public CharacterStats bcs; //Base Character Specific
 	public CharacterStats acs; //Active Universal+Base 
 
-	[Header("Time")]
-	private int currentFrame = 0;
 	#endregion general
 	//=//-----|Physics|-----------------------------------------------------------//=//
 	#region physics
@@ -56,14 +57,14 @@ public abstract class Character : MonoBehaviour
 	//=//-----|State|-------------------------------------------------------------//=//
 	#region state
 	[Header("State Machine")]
-	public CStateMachine csm;
-	public string currentStateName;
+	public CStateMachine CSM;
+	public string CurrentStateName;
 	public readonly HashSet<int> StateBlacklist = new HashSet<int>(); //for debug and development
 
-	[Header("CSM debug")]
-	public int requestQueueSize;
-	public bool currStateExitAllowed;
-	public bool currStatePriority;
+	[Header("CSM Info")]
+	public int RequestQueueSize;
+	public bool CurrStateExitAllowed;
+	public bool CurrStatePriority;
 	#endregion state
 	//=//-----|Animation|---------------------------------------------------------//=//
 	#region animation
@@ -73,56 +74,57 @@ public abstract class Character : MonoBehaviour
 	#endregion animation
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
-	[Header("Input Refs")]
+	[Header("Input")]
 	public ProcessedInputFrameData CurrentInput;
 	#endregion input
 	//=//-----|Action Queue|------------------------------------------------------//=//
 	#region hitstop
 
-	public bool isHitstopped;
-	public int hitstopFramesRemaining;
+	public bool IsHitstopped;
+	public int HitstopFramesRemaining;
 	public FixVec2 hitstopStoredVelocity;
 
 	#endregion hitstop
 	//=//-----|Action Queue|------------------------------------------------------//=//
 	#region action_queue
 	[Header("Action Queue")]
-	private readonly Queue<(int frame, Action action)> actionQueue = new();
-	private readonly Queue<(int frame, Action<object> action, object param)> paramActionQueue = new();
+	public int ActionQueueTicks;
+	private readonly Queue<(int frame, Action action)> ActionQueue = new();
+	private readonly Queue<(int frame, Action<object> action, object param)> ParamActionQueue = new();
 	#endregion action_queue
 	//=//-----|Gameplay Data|-----------------------------------------------------//=//
 	#region gameplay_data
 	[Header("Character Dimensions")]
-	public float CharacterHeight;
+	public float FP_CharacterHeight;
 
 	[Header("Movement Variables")]
-	public Fix64 characterSpeed;
-	public Fix64 velocityX;
-	public Fix64 velocityY;
+	public Fix64 FP_CharacterSpeed;
+	public Fix64 FP_VelocityX;
+	public Fix64 FP_VelocityY;
 
 	[Header("Ground Checking Variables")]
 	public LayerMask groundLayer;
-	public bool isGrounded;
-	public bool isGroundedByState;
-	public bool onGrounding;
-	public bool onUngrounding;
-	public Fix64 distanceToGround;
-	public Fix64 lastGroundedCheckTime = Fix64.Zero;
-	public Fix64 timeSinceLastGrounding = Fix64.Zero;
+	public bool IsGrounded;
+	public bool IsGroundedByState;
+	public bool OnGrounding;
+	public bool OnUngrounding;
+	public Fix64 DistanceToGround;
+	public int LastGroundedCheckTime = 0;
+	public int TimeSinceLastGrounding = 0;
 
 	[Header("HandleNaturalRotation Variables")]
-	public bool facingRight;
+	public bool FacingRight;
 
 	[Header("Jump Variables")]
-	public float lastJumpTime;
-	public int jumpCount;
-	public float jumpForceLerp;
+	public float LastJumpTime;
+	public int JumpCount;
+	public float JumpForceLerp;
 
 	[Header("Physics Variables")]
-	public FixVec2 position;
-	public FixVec2 velocity;
-	public FixVec2 appliedForce = FixVec2.zero;
-	public FixVec2 appliedImpulseForce = FixVec2.zero;
+	public FixVec2 FP_Position;
+	public FixVec2 FP_Velocity;
+	private FixVec2 _appliedForce = FixVec2.zero;
+	private FixVec2 _appliedImpulseForce = FixVec2.zero;
 	#endregion gameplay_data
 	//=//-------------------------------------------------------------------------//=//
 	#endregion fields
@@ -134,14 +136,23 @@ public abstract class Character : MonoBehaviour
 	#region update_calls
 	public virtual void FixedPhysicsUpdate()
 	{
-		csm.CSMFixedPhysicsUpdate();
-		UpdateCharacterData();
+		
+		UpdateCharacterData();		
+		CSM.CSMFixedPhysicsUpdate();
+
+		ApplyImpulseForces();
+		ApplyRegularForces();
+		
 	}
 	public virtual void FixedFrameUpdate()
 	{
+		DebugStateRotues();
 		GetInput();
-		csm.CSMFixedFrameUpdate();
-		DebugRenderInput();
+		CSM.CSMFixedFrameUpdate();
+		ProcessActionQueue();
+		RenderDebugVectors();
+		CSMDebugUpdate();
+		
 		
 	}
 	#endregion update_calls
@@ -214,7 +225,7 @@ public abstract class Character : MonoBehaviour
 
 		if (ucs == null || bcs == null || acs == null)
 		{
-			Debug.LogError("Error: ucs, bcs, or acs null.");
+			UnityEngine.Debug.LogError("Error: ucs, bcs, or acs null.");
 			return;
 		}
 
@@ -247,18 +258,18 @@ public abstract class Character : MonoBehaviour
 	#region action_queue
 	private void ProcessActionQueue()
 	{
-		currentFrame++;
+		ActionQueueTicks++;
 
 		// Execute non-param actions
-		while (actionQueue.Count > 0 && actionQueue.Peek().frame <= currentFrame)
+		while (ActionQueue.Count > 0 && ActionQueue.Peek().frame <= ActionQueueTicks)
 		{
-			var (_, action) = actionQueue.Dequeue();
+			var (_, action) = ActionQueue.Dequeue();
 			action?.Invoke();
 		}
 		// Execute param actions
-		while (paramActionQueue.Count > 0 && paramActionQueue.Peek().frame <= currentFrame)
+		while (ParamActionQueue.Count > 0 && ParamActionQueue.Peek().frame <= ActionQueueTicks)
 		{
-			var (_, action, param) = paramActionQueue.Dequeue();
+			var (_, action, param) = ParamActionQueue.Dequeue();
 			action?.Invoke(param);
 		}
 	}
@@ -270,7 +281,7 @@ public abstract class Character : MonoBehaviour
 			return;
 		}
 
-		actionQueue.Enqueue((currentFrame + framesFromNow, action));
+		ActionQueue.Enqueue((ActionQueueTicks + framesFromNow, action));
 	}
 	public void ScheduleAction<T>(int framesFromNow, Action<T> action, T param)
 	{
@@ -280,7 +291,7 @@ public abstract class Character : MonoBehaviour
 			return;
 		}
 
-		paramActionQueue.Enqueue((currentFrame + framesFromNow, (p) => action((T)p), param));
+		ParamActionQueue.Enqueue((ActionQueueTicks + framesFromNow, (p) => action((T)p), param));
 	}
 	#endregion action_queue
 	//=//-----|csm|--------------------------------------------------------------//=//
@@ -290,41 +301,49 @@ public abstract class Character : MonoBehaviour
 	/// </summary>
 	public void CharacterPushState(int? stateID, int pushForce, int frameLifetime)
 	{
-		csm.PushState((int)stateID, pushForce, frameLifetime);
+		CSM.PushState((int)stateID, pushForce, frameLifetime);
 		DebugOnStateSet();
 	}
 	public void CSMDebugUpdate()
 	{
-		requestQueueSize = csm.RequestQueue.Count;
-		currStateExitAllowed = csm.CurrentState.IsExitAllowed() == true;
+		RequestQueueSize = CSM.RequestQueue.Count;
+		CurrStateExitAllowed = CSM.CurrentState.IsExitAllowed() == true;
 	}
 	#endregion csm
 	//=//-----|Physics|----------------------------------------------------------//=//
 	#region physics
-	private void HandleRegularForce()
+	public void AddRegularForce(FixVec2 force)
 	{
-		if (!isHitstopped)
+		_appliedForce += force;
+	}
+	public void AddImpulseForce(FixVec2 force)
+	{
+		_appliedImpulseForce += force;
+	}
+	private void ApplyRegularForces()
+	{
+		if (!IsHitstopped)
 		{
-			FPBody.AddForce(appliedForce);
+			FPBody.AddForce(_appliedForce);
 		}
 
-		appliedForce = FixVec2.zero;
+		_appliedForce = FixVec2.zero;
 	}
-	private void HandleImpulseForce()
+	private void ApplyImpulseForces()
 	{
-		//rigidBody.AddForce(appliedImpulseForce, ForceMode.Impulse);
-		appliedImpulseForce = FixVec2.zero;
+		//rigidBody.AddForce(_appliedImpulseForce, ForceMode.Impulse);
+		_appliedImpulseForce = FixVec2.zero;
 	}
 	#endregion physics
 	//=//-----|Hitstop|----------------------------------------------------------//=//
 	#region hitstop
 	public void EnableHitstop()
 	{
-		if (isHitstopped)
+		if (IsHitstopped)
 		{
 			return;
 		}
-		isHitstopped = true;
+		IsHitstopped = true;
 
 		//hitstopStoredVelocity = rigidBody.linearVelocity;
 		//rigidBody.linearVelocity = Vector3.zero;
@@ -333,11 +352,11 @@ public abstract class Character : MonoBehaviour
 	}
 	public void DisableHitstop()
 	{
-		if (!isHitstopped)
+		if (!IsHitstopped)
 		{
 			return;
 		}
-		isHitstopped = false;
+		IsHitstopped = false;
 
 		//rigidBody.isKinematic = false;
 		//rigidBody.linearVelocity = hitstopStoredVelocity;
@@ -349,22 +368,22 @@ public abstract class Character : MonoBehaviour
 		{
 			return;
 		}
-		hitstopFramesRemaining += frames;
+		HitstopFramesRemaining += frames;
 
 	}
 
 	//Per fixed frame update
 	protected void ProcessHitstop()
 	{
-		if (hitstopFramesRemaining <= 0)
+		if (HitstopFramesRemaining <= 0)
 		{
 			DisableHitstop();
-			hitstopFramesRemaining = 0;
+			HitstopFramesRemaining = 0;
 		}
 		else
 		{
 			EnableHitstop();
-			hitstopFramesRemaining--;
+			HitstopFramesRemaining--;
 		}
 	}
 
@@ -407,14 +426,14 @@ public abstract class Character : MonoBehaviour
 
 		//LAST
 		//state
-		csm = new CStateMachine(this); //special init proc
+		CSM = new CStateMachine(this); //special init proc
 
 
 
 		//post setup
-		if (csm.Verified)
+		if (CSM.Verified)
 		{
-			CharacterPushState(CStateGlobal.Suspended, 9, 9);
+			CharacterPushState(CStateID.Suspended, 9, 9);
 		}
 
 		LogCore.Log(LogType.Character, $"Character initialized: {InstanceName}");
@@ -440,8 +459,8 @@ public abstract class Character : MonoBehaviour
 		groundLayer = LayerMask.GetMask("Ground");
 
 		
-		debugParentTransform = transform.Find("Debug");
-		stateText = debugParentTransform.Find("CStateText")?.GetComponent<TextMeshPro>();
+		DebugGameObject = transform.Find("Debug");
+		StateTextMesh = DebugGameObject.Find("CStateText")?.GetComponent<TextMeshPro>();
 
 	}
 	public virtual void EnterGameSpace()
@@ -457,7 +476,7 @@ public abstract class Character : MonoBehaviour
 	#region data
 	protected virtual void UpdateCharacterData() //TODO: better name 
 	{
-		//this.CharacterHeight = capsuleCollider.height;
+		//this.FP_CharacterHeight = capsuleCollider.height;
 	}
 	#endregion data
 	#endregion base
@@ -483,16 +502,16 @@ public abstract class Character : MonoBehaviour
 	public virtual void SetDebug(bool isEnabled)
 	{
 		//set debug
-		debug = isEnabled;
+		Debug = isEnabled;
 
 		//set other debug components and what not
-		debugParentTransform.gameObject.SetActive(debug);
+		DebugGameObject.gameObject.SetActive(Debug);
 	}
 	public virtual string CName(string message)
 	{
 		return $"{this.GetType().Name}: {message}";
 	}
-	public void DebugRenderInput()
+	public void RenderDebugVectors()
 	{
 		string vectorName = CName("MoveVector");
 		FixVec2 vector = CurrentInput.Move;
@@ -504,7 +523,7 @@ public abstract class Character : MonoBehaviour
 		vectorName = CName("LookVector");
 		vector = CurrentInput.Look;
 		Vector3 offset = vectorLocation.position;
-		offset.y += CharacterHeight;
+		offset.y += FP_CharacterHeight;
 		vectorLocation.position = offset;
 
 		DebugVectorRenderer.Instance.RenderVector(vectorName, vectorLocation, vector, Color.white);
@@ -512,19 +531,35 @@ public abstract class Character : MonoBehaviour
 	#endregion general
 	//=//-----|State|------------------------------------------------------------//=//
 	#region state
-	public void DebugOnStateSet()
+	private void DebugStateRotues()
 	{
-		currentStateName = csm.GetCurrentState().StateName;
-
-		if (debug && stateText != null)
+		//Flight toggling
+		if (Input.GetKeyDown(KeyCode.F))
 		{
-			// Remove the character class name prefix if it exists
-			if (currentStateName.StartsWith(ClassPrefix))
+			if (CSM.CurrentStateID == CStateID.Flight)
 			{
-				currentStateName = currentStateName.Substring(ClassPrefix.Length);
+				CharacterPushState(CStateID.Airborne, 9, 2);
+			}
+			else
+			{
+				CharacterPushState(CStateID.Flight, 9, 2);
 			}
 
-			stateText.text = currentStateName;
+		}
+	}
+	public void DebugOnStateSet()
+	{
+		CurrentStateName = CSM.GetCurrentState().Name;
+
+		if (Debug && StateTextMesh != null)
+		{
+			// Remove the character class name prefix if it exists
+			if (CurrentStateName.StartsWith(ClassPrefix))
+			{
+				CurrentStateName = CurrentStateName.Substring(ClassPrefix.Length);
+			}
+
+			StateTextMesh.text = CurrentStateName;
 		}
 	}
 	private void UpdateDebugText()
@@ -533,7 +568,7 @@ public abstract class Character : MonoBehaviour
 	}
 	public void BlacklistAllStates() //applies to state generation 
 	{
-		for (int i = 0; i <= CStateGlobal.GetHighestGenericStateId(); i++)
+		for (int i = 0; i <= CStateID.GetHighestGenericStateId(); i++)
 		{
 			StateBlacklist.Add(i);
 		}

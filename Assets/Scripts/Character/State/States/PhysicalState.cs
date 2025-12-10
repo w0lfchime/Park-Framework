@@ -120,16 +120,16 @@ public class PhysicalState : CState
 	#region Data_Management
 	protected virtual void PhysicalDataUpdates()
 	{
-		//ch.position = ch.transform.position;
+		//ch.FP_Position = ch.transform.FP_Position;
 
 		//Vector3 lv = rb.linearVelocity;
-		//ch.velocity = lv;
-		//ch.velocityX = lv.x;
-		//ch.velocityY = lv.y;
-		//ch.characterSpeed = lv.magnitude;
+		//ch.FP_Velocity = lv;
+		//ch.FP_VelocityX = lv.x;
+		//ch.FP_VelocityY = lv.y;
+		//ch.FP_CharacterSpeed = lv.magnitude;
 
 		//// Debug 
-		//ch.UpdateDebugVector("velocity", lv, Color.green);
+		//ch.UpdateDebugVector("FP_Velocity", lv, Color.green);
 
 	}
 	#endregion Data_Management
@@ -139,12 +139,12 @@ public class PhysicalState : CState
 	{
 		//Ch.UpdateDebugVector(forceName, force, Color.yellow);
 
-		//Ch.appliedForce += force;
+		//Ch._appliedForce += force;
 	}
 	public virtual void AddImpulseForce(string forceName, Vector3 impulseForce)
 	{
 		//Ch.StampDebugVector(forceName, impulseForce, Color.red);
-		//Ch.appliedImpulseForce += impulseForce;
+		//Ch._appliedImpulseForce += impulseForce;
 	}
 	protected virtual void AddForceByTargetVelocity(string forceName, Vector3 targetVelocity, float forceFactor)
 	{
@@ -154,7 +154,7 @@ public class PhysicalState : CState
 
 		//// Force
 		//Vector3 forceByTargetVelocity = Vector3.zero;
-		//forceByTargetVelocity += targetVelocity - Ch.velocity;
+		//forceByTargetVelocity += targetVelocity - Ch.FP_Velocity;
 		//forceByTargetVelocity *= forceFactor;
 		//AddForce(forceName, forceByTargetVelocity);
 	}
@@ -169,7 +169,7 @@ public class PhysicalState : CState
 	protected virtual void WatchGrounding()
 	{
 		//float sphereRadius = cc.radius;
-		//Vector3 capsuleRaycastStart = ch.transform.position + new Vector3(0, sphereRadius + 0.1f, 0);
+		//Vector3 capsuleRaycastStart = ch.transform.FP_Position + new Vector3(0, sphereRadius + 0.1f, 0);
 
 		//UnityEngine.Debug.DrawRay(capsuleRaycastStart, Vector3.down * ch.acs.groundCheckingDistance, Color.red);
 		//UnityEngine.Debug.DrawRay(capsuleRaycastStart + new Vector3(0.1f, 0, 0), Vector3.down * ch.acs.isGroundedDistance, Color.blue);
@@ -178,38 +178,38 @@ public class PhysicalState : CState
 
 		//if (Physics.SphereCast(capsuleRaycastStart, sphereRadius, Vector3.down, out hit, ch.acs.groundCheckingDistance, ch.groundLayer))
 		//{
-		//	ch.distanceToGround = hit.distance - sphereRadius;
+		//	ch.DistanceToGround = hit.distance - sphereRadius;
 		//}
 		//else
 		//{
-		//	ch.distanceToGround = ch.acs.groundCheckingDistance;
+		//	ch.DistanceToGround = ch.acs.groundCheckingDistance;
 		//}
 	}
 	public void SetGrounding()
 	{
-		//bool groundedByDistance = ch.distanceToGround < ch.acs.isGroundedDistance;
+		//bool groundedByDistance = ch.DistanceToGround < ch.acs.isGroundedDistance;
 
-		//if (groundedByDistance != ch.isGrounded)
+		//if (groundedByDistance != ch.IsGrounded)
 		//{
-		//	if (Time.time - ch.lastGroundedCheckTime >= ch.acs.groundedSwitchCooldown)
+		//	if (Time.time - ch.LastGroundedCheckTime >= ch.acs.groundedSwitchCooldown)
 		//	{
-		//		ch.isGrounded = groundedByDistance;
-		//		ch.lastGroundedCheckTime = Time.time;
+		//		ch.IsGrounded = groundedByDistance;
+		//		ch.LastGroundedCheckTime = Time.time;
 
 		//		// Reset jumps on grounded
-		//		if (ch.isGrounded)
+		//		if (ch.IsGrounded)
 		//		{
-		//			ch.timeSinceLastGrounding = Time.time;
+		//			ch.TimeSinceLastGrounding = Time.time;
 
-		//			ch.onGrounding = true;
+		//			ch.OnGrounding = true;
 
-		//			ch.ScheduleAction((int)onGroundingHoldFrames, () => ch.onGrounding = false);
+		//			ch.ScheduleAction((int)onGroundingHoldFrames, () => ch.OnGrounding = false);
 		//		}
 		//		else
 		//		{
-		//			ch.onUngrounding = true;
+		//			ch.OnUngrounding = true;
 
-		//			ch.ScheduleAction((int)onUngroundingHoldFrames, () => ch.onUngrounding = false);
+		//			ch.ScheduleAction((int)onUngroundingHoldFrames, () => ch.OnUngrounding = false);
 		//		}
 		//	}
 		//}
@@ -219,19 +219,19 @@ public class PhysicalState : CState
 	#region rotation
 	public void HandleNaturalRotation()
 	{
-		//if (ch.isGrounded)
+		//if (ch.IsGrounded)
 		//{
-		//	// ch.facingRight = ch.velocityX > 0;
+		//	// ch.FacingRight = ch.FP_VelocityX > 0;
 		//}
 
 		//if (ch.inputMoveDirection != Vector3.zero)
 		//{
-		//	ch.facingRight = ch.inputMoveDirection.x > 0;
+		//	ch.FacingRight = ch.inputMoveDirection.x > 0;
 		//}
 
 		//bool clockwiseRotation = ch.FlipCoin();
 
-		//Vector3 directionFacing = ch.facingRight ? Vector3.right : Vector3.left;
+		//Vector3 directionFacing = ch.FacingRight ? Vector3.right : Vector3.left;
 
 		//// Calculate the target rotation
 		//Quaternion targetRotation = Quaternion.LookRotation(directionFacing, Vector3.up);
@@ -248,19 +248,19 @@ public class PhysicalState : CState
 	#region Routes
 	//protected virtual void HandleGrounding()
 	//{
-	//	if (ch.onGrounding)
+	//	if (ch.OnGrounding)
 	//	{
-	//		ch.jumpCount = 0;
-	//		if (!ch.isGroundedByState)
+	//		ch.JumpCount = 0;
+	//		if (!ch.IsGroundedByState)
 	//		{
-	//			StatePushState(CStateGlobal.GroundedIdle, (int)priority + 1, 2);
+	//			StatePushState(CStateID.GroundedIdle, (int)priority + 1, 2);
 	//		}
 	//	}
-	//	if (ch.onUngrounding)
+	//	if (ch.OnUngrounding)
 	//	{
-	//		if (ch.isGroundedByState)
+	//		if (ch.IsGroundedByState)
 	//		{
-	//			StatePushState(CStateGlobal.Airborne, (int)priority + 1, 2);
+	//			StatePushState(CStateID.Airborne, (int)priority + 1, 2);
 	//		}
 	//	}
 	//}
@@ -268,7 +268,7 @@ public class PhysicalState : CState
 	//{
 	//	// Assess
 	//	bool jumpAllowed = true;
-	//	if (ch.jumpCount > ch.acs.maxJumps)
+	//	if (ch.JumpCount > ch.acs.maxJumps)
 	//	{
 	//		jumpAllowed = false;
 	//	}
@@ -279,8 +279,8 @@ public class PhysicalState : CState
 	//	// Route 
 	//	if (cih.GetButtonDown("jump") && jumpAllowed)
 	//	{
-	//		ch.jumpCount++;
-	//		StatePushState(CStateGlobal.Jump, 4, 4);
+	//		ch.JumpCount++;
+	//		StatePushState(CStateID.Jump, 4, 4);
 	//	}
 	//}
 	#endregion Routes

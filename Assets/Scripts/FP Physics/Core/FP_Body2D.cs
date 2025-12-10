@@ -83,6 +83,8 @@ public class FP_Body2D : MonoBehaviour
 
     public void ApplyForces()
     {
+
+
         if (!IsDynamic) return;
 
         if (UseGravity)

@@ -80,7 +80,7 @@ namespace TMPro.Examples
                 vertexAnim[i].speed = Random.Range(1f, 3f);
             }
 
-            // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the CharacterList.
+            // Cache the vertex data of the text object as the Jitter FX is applied to the original FP_Position of the CharacterList.
             TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
             while (true)

@@ -27,7 +27,7 @@ public class AirborneState : PhysicalState
 	}
 	public override void SetGenericStateDefinition()
 	{
-		DefaultExitState = CStateGlobal.GroundedIdle;
+		DefaultExitState = CStateID.GroundedIdle;
 		ClearFromQueueOnSetNewState = true;
 		ForceClearQueueOnEntry = false;
 		DefaultPriority = 5;

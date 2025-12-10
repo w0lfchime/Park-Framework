@@ -77,13 +77,13 @@ public class TrafficManager : MonoBehaviour
 				break;
 		}
 
-		// Get the spline and evaluate the start position/tangent
+		// Get the spline and evaluate the start FP_Position/tangent
 		Spline spline = splines.Splines[laneIndex];
 		float startT = 0f;
 		Vector3 startPosition = spline.EvaluatePosition(startT);
 		Quaternion startRotation = Quaternion.LookRotation(spline.EvaluateTangent(startT));
 
-		// Instantiate the vehicle at the proper world space position/rotation, with no parent
+		// Instantiate the vehicle at the proper world space FP_Position/rotation, with no parent
 		GameObject newVehicle = Instantiate(vehiclePrefab, startPosition, startRotation, null);
 		newVehicle.SetActive(false); // Ensure it won't render yet
 

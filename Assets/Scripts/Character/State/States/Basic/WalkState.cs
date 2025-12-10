@@ -27,7 +27,7 @@ public class WalkState : PhysicalState
 	}
 	public override void SetGenericStateDefinition()
 	{
-		DefaultExitState = CStateGlobal.Airborne;
+		DefaultExitState = CStateID.Airborne;
 		ClearFromQueueOnSetNewState = false;
 		ForceClearQueueOnEntry = false;
 		DefaultPriority = 7;

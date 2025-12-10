@@ -62,9 +62,9 @@ public class Ric : Character
 	{
 		//BlacklistAllStates();
 
-		//WhitelistState(CStateGlobal.Suspended);
+		//WhitelistState(CStateID.Suspended);
 
-		CharacterHeight = 2.0f;
+		FP_CharacterHeight = 2.0f;
 
 		base.CharacterSetup();
 		//...

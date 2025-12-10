@@ -61,7 +61,7 @@ public class CStateMachine
 
 	public CStateMachine(Character owner)
 	{
-		this.CurrentStateID = CStateGlobal.Null;
+		this.CurrentStateID = CStateID.Null;
 		this.MachineOwner = owner;
 
 		StateDict = new Dictionary<int, CState>();
@@ -86,7 +86,7 @@ public class CStateMachine
 				i = ownerCharacterID; //move onto character specific states
 			}
 			if (MachineOwner.StateBlacklist.Contains(i)) continue; //blacklist skips
-			string stateName = CStateGlobal.GetStateName(i);
+			string stateName = CStateID.GetStateName(i);
 			if (stateName == null) continue;
 			if (stateName == "Null") continue;
 
@@ -140,12 +140,12 @@ public class CStateMachine
 			}
 			else if (!state.VerifyState())
 			{
-				LogCore.Log(LogType.CSM_Error, $"State {state.StateName} is invalid.");
+				LogCore.Log(LogType.CSM_Error, $"State {state.Name} is invalid.");
 				passed = false;
 			}
 			else
 			{
-				LogCore.Log(LogType.CSM_Setup, $"Verified state {state.StateName}");
+				LogCore.Log(LogType.CSM_Setup, $"Verified state {state.Name}");
 			}
 		}
 
@@ -169,7 +169,7 @@ public class CStateMachine
 	//sets a state of the state set
 	protected void SetStateDictState(int stateID, CState state)
 	{
-		LogCore.Log(LogType.CSM_Setup, $"Adding state {state.StateName} to {this.MachineName} with ID key {stateID}.");
+		LogCore.Log(LogType.CSM_Setup, $"Adding state {state.Name} to {this.MachineName} with ID key {stateID}.");
 		StateDict[stateID] = state;
 	}
 

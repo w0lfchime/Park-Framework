@@ -17,7 +17,7 @@ public abstract class CState
 	public CStateMachine StateMachine;
 	public Character Ch;
 	
-	public string StateName;
+	public string Name;
 	public int? StateID;
 	#endregion meta
 	//=//-----|State Definition|-----------------------------------------------//=//
@@ -60,9 +60,9 @@ public abstract class CState
 		
 		Ch = sm.MachineOwner;
 		string fullname = GetType().Name;
-		StateName = fullname.Substring(0, fullname.Length - 5); //Get rid of "state" at the end
-		StateID = CStateGlobal.GetStateId(StateName);
-		LogCore.Log(LogType.CSM_Setup, "State created: " + StateID + " " + StateName);
+		Name = fullname.Substring(0, fullname.Length - 5); //Get rid of "state" at the end
+		StateID = CStateID.GetStateId(Name);
+		LogCore.Log(LogType.CSM_Setup, "State created: " + StateID + " " + Name);
 	}
 	public abstract void SetGenericStateDefinition();
 	#endregion setup
@@ -127,13 +127,13 @@ public abstract class CState
 	#region driver_calls
 	public virtual void Enter()
 	{
-		LogCore.Log(LogType.CSM_Flow, $"Entering State {StateName}.");
+		LogCore.Log(LogType.CSM_Flow, $"Entering State {Name}.");
 		SetOnEntry();
 		//...
 	}
 	public virtual void Exit()
 	{
-		LogCore.Log(LogType.CSM_Flow, $"Exting State {StateName}.");
+		LogCore.Log(LogType.CSM_Flow, $"Exting State {Name}.");
 		//...
 	}
 	public virtual void FixedPhysicsUpdate() //run first

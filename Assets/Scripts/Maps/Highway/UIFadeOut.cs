@@ -16,7 +16,7 @@
 
 //	private void MonoUpdate()
 //	{
-//		if (!isFading && character != null && character.velocity != Vector3.zero)
+//		if (!isFading && character != null && character.FP_Velocity != Vector3.zero)
 //		{
 //			FadeOut();
 //		}
