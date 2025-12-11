@@ -13,15 +13,24 @@ public enum MatchState
 
 public class MatchAPS : AppState
 {
-	private string MatchScene;
+
+
+
+	public AppCameraController Camera;
+	public string MatchScene;
+
+
 
 	private FP_GameSpace gameSpace;
 
 	public MatchAPS(string matchScene)
 	{
 		this.MatchScene = matchScene;
-
-
+		this.Camera = App.app_camera.GetComponent<AppCameraController>();
+		if (this.Camera == null)
+		{
+			LogCore.Log(LogType.Camera, "Match APS failed to get AppCameraController ref.");
+		}
 	}
 
 
@@ -58,7 +67,16 @@ public class MatchAPS : AppState
 				LogCore.Log(LogType.PhysicsSetup, $"Failed to find GameSpace within loaded scene: {MatchScene}");
 				DebugCore.StopGame();
 			}
+
+			InitCamera();
 		}
+	}
+
+	private void InitCamera()
+	{
+		//Camera setup
+		Camera.SetMode(AppCameraController.CameraMode.LerpToTarget);
+		Camera.FindAndCopySceneCamera();
 	}
 
 	public void SpawnCharacter(CharacterID character_id)

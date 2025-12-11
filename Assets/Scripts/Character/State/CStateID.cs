@@ -19,6 +19,7 @@ public static class CStateID
 
 
 
+	//
 	public const int GroundedIdle = 100;
 	public const int Walk = 101;
 	public const int Run = 102;

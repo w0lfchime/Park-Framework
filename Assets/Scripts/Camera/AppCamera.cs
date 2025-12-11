@@ -43,6 +43,8 @@ public class AppCameraController : MonoBehaviour
         yaw = euler.y;
         pitch = euler.x;
 
+        SetMode(CameraMode.Static);
+
         CommandHandler.RegisterCommand("freecam", args =>
         {
             if (currentMode != CameraMode.FreeCam)

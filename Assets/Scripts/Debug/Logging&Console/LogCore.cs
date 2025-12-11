@@ -18,6 +18,7 @@ public enum LogType
 	Character,
 	Character_Setup,
 	GameSpace,
+	Camera,
 	PhysicsSetup,
 	ServiceLocator,
 	CommandMeta,
