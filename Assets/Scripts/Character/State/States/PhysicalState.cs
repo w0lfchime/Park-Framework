@@ -8,8 +8,8 @@ public class PhysicalState : CState
 	// Level 2 State 
 	//======// /==/==/==/=||[Local Fields]||==/==/==/==/==/==/==/==/==/ //======//
 	#region Local_Fields
-	private int? onGroundingHoldFrames = 5;
-	private int? onUngroundingHoldFrames = 5;
+	//private int? onGroundingHoldFrames = 5;
+	//private int? onUngroundingHoldFrames = 5;
 	//=//----------------------------------------------------------------//=//
 	#endregion Local_Fields
 	/////////////////////////////////////////////////////////////////////////////

@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-public class FP_GameSpace : MonoBehaviour
+[DefaultExecutionOrder(-500)]
+public class FP_PhysicsSpace : MonoBehaviour
 {
-    public static FP_GameSpace Instance { get; private set; }
+    public static FP_PhysicsSpace Instance { get; private set; }
 
 	public List<Character> CharacterList = new List<Character>();
 
@@ -40,13 +41,13 @@ public class FP_GameSpace : MonoBehaviour
     {
 
         LogCore.Log(LogType.GameSpace, "Generating gamespace...");
+
+        //IDK BRO WHY ITS CALLED LIKE THIS
         AssignBodiesFromLayer("FP_Character");
         AssignBodiesFromLayer("FP_Ground");
         AssignBodiesFromLayer("FP_Platform");
         AssignBodiesFromLayer("FP_Wall");
 
-        foreach (var body in bodies)
-            body.InitializeBody(); // Let each one complete its setup
 
         LogCore.Log(LogType.GameSpace, "Gamespace setup complete.");
         AppManager.Instance.SystemInputManager.ListPlayers();
@@ -63,23 +64,39 @@ public class FP_GameSpace : MonoBehaviour
         }
 
         // Find all GameObjects in the scene
-        foreach (var go in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        foreach (var go in FindObjectsByType<GameObject>())
         {
-            if (go.layer != layer || go.GetComponent<Rigidbody2D>() == null)
+            if (go.layer != layer)
                 continue;
 
             // Only assign if it doesn't already have one
-            var body = go.GetComponent<FP_Body2D>();
-            if (body == null)
-                body = go.AddComponent<FP_Body2D>();
-
+            var rb2d = go.GetComponent<Rigidbody2D>();
+            var fpbody = go.GetComponent<FP_Body2D>();
+            if (!fpbody && !rb2d)
+            {
+                continue;
+            }
+            if (fpbody && rb2d)
+            {
+                Destroy(rb2d);
+            }
+            else if (rb2d)
+            {
+                go.AddComponent<FP_Body2D>();
+                fpbody = go.GetComponent<FP_Body2D>();
+            }
 
 
             // Add to bodies list (only if not already tracked)
-            if (!bodies.Contains(body))
+            if (!bodies.Contains(fpbody))
+            {
+                bodies.Add(fpbody);
                 count++;
-            bodies.Add(body);
+            }
+            
 
+
+            //character handling
             if (layerName == "FP_Character")
             {
                 Character c = go.GetComponent<Character>();
@@ -95,17 +112,6 @@ public class FP_GameSpace : MonoBehaviour
             }
         }
         LogCore.Log(LogType.GameSpace, $"Found {count} objects in layer {layerName}");
-
-
-
-        switch (layerName) //HACK: random as switch statement
-        {
-            case "None":
-                break;
-            default:
-                break;
-        }
-
     }
 
     public void AddCharacter(Character c)

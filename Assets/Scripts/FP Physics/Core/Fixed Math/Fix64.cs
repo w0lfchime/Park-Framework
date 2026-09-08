@@ -1,22 +1,28 @@
 using System;
+using UnityEngine;
 
+[Serializable]
 public struct Fix64
 {
-
-
     public const int SHIFT = 16;
     public const long ONE = 1L << SHIFT;
-    public long RawValue;
 
+    [SerializeField]
+    private long rawValue;
 
+    public long RawValue => rawValue;
+
+    public Fix64(long raw) => rawValue = raw;
+
+    public static Fix64 FromFloat(float value)
+        => new((long)(value * ONE));
+
+    public float ToFloat()
+        => (float)rawValue / ONE;
 
     public static readonly Fix64 Zero = new(0);
 
 
-
-    public Fix64(long raw) => RawValue = raw;
-    public static Fix64 FromFloat(float f) => new((long)(f * ONE));
-    public float ToFloat() => (float)RawValue / ONE;
 
     // Basic operators
     public static Fix64 operator +(Fix64 a, Fix64 b) => new(a.RawValue + b.RawValue);

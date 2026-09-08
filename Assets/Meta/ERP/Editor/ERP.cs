@@ -11,6 +11,7 @@ using System.Threading;
 using ERP.Discord;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+using Activity = ERP.Discord.Activity;
 
 namespace ERP
 {

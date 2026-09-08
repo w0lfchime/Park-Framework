@@ -23,6 +23,8 @@ public enum STDAnimState
 /// </summary>
 public class FDAPController
 {
+    //WIP
+#pragma warning disable CS0414
     private Character owner;
 
     public Animator animator;
@@ -48,5 +50,5 @@ public class FDAPController
     {
         LogCore.Log(LogType.Animation_Setup, "Initializing FDAPController...");
     }
-
+   #pragma warning restore CS0414
 }

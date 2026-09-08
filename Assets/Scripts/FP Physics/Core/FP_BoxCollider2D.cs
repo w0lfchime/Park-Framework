@@ -1,21 +1,39 @@
 using UnityEngine;
 
+
 public class FP_BoxCollider2D : MonoBehaviour
 {
-	public FP_Body2D ParentBody { get; private set; }
+    public FP_Body2D ParentBody { get; private set; }
 
-	public FixVec2 Size { get; private set; }
-	public FixVec2 Offset { get; private set; }
+    [field: SerializeField]
+    public FixVec2 Size { get; private set; }
+
+    [field: SerializeField]
+    public FixVec2 Offset { get; private set; }
 
 	public bool IsTrigger { get; private set; } = false;
 	public bool IsActive { get; private set; } = true;
 
 	private void Awake()
 	{
-		FP_GameSpace.Instance.RegisterCollider(this);
+		FP_PhysicsSpace.Instance.RegisterCollider(this);
 	}
 
-	public void Initialize(FP_Body2D parent, BoxCollider2D sourceCollider)
+
+    //HACK: This is a hack to ensure that the collider is initialized correctly in the editor.
+    private void OnValidate()
+    {
+        if (ParentBody == null)
+		{
+			var parentBody = GetComponent<FP_Body2D>();
+			if (parentBody != null)
+			{
+				Initialize(parentBody);
+			}
+        }
+    }
+
+    public void Initialize(FP_Body2D parent, BoxCollider2D sourceCollider)
 	{
 		ParentBody = parent;
 		IsTrigger = sourceCollider.isTrigger;
@@ -25,8 +43,12 @@ public class FP_BoxCollider2D : MonoBehaviour
 		FixVec2 scale = new FixVec2(parent.transform.localScale);
 		Size = Size * scale;
 	}
+    public void Initialize(FP_Body2D parent)
+    {
+        ParentBody = parent;
+    }
 
-	public FixVec2 GetWorldPosition()
+    public FixVec2 GetWorldPosition()
 	{
 		return ParentBody.Position + Offset;
 	}

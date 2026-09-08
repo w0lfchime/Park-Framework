@@ -18,13 +18,15 @@ using UnityEngine;
 //for local input processing 
 public abstract class Character : MonoBehaviour
 {
-	//
+	//WIP
+#pragma warning disable CS0414
+    //
 
-	//======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
-	#region fields
-	//=//-----|General|-----------------------------------------------------------//=//
-	#region general
-	[Header("Meta")]
+    //======// /==/==/==/=||[FIELDS]||==/==/==/==/==/==/==/==/==/==/==/==/==/==/ //======//
+    #region fields
+    //=//-----|General|-----------------------------------------------------------//=//
+    #region general
+    [Header("Meta")]
 	public string Name;
 	public string InstanceName;
 	public string ClassPrefix;
@@ -56,7 +58,7 @@ public abstract class Character : MonoBehaviour
 	//=//-----|State|-------------------------------------------------------------//=//
 	#region state
 	[Header("State Machine")]
-	public CStateMachine CSM;
+    [NonSerialized] public CStateMachine CSM;
 	public string CurrentStateName;
 	public readonly HashSet<int> StateBlacklist = new HashSet<int>(); //for debug and development
 
@@ -68,13 +70,13 @@ public abstract class Character : MonoBehaviour
 	//=//-----|Animation|---------------------------------------------------------//=//
 	#region animation
 	[Header("Animation Refs")]
-	public FDAPController FDAP_Controller;
+    [NonSerialized] public FDAPController FDAP_Controller;
 
 	#endregion animation
 	//=//-----|Input|-------------------------------------------------------------//=//
 	#region input
 	[Header("Input")]
-	public ProcessedInputFrameData CurrentInput;
+	[NonSerialized] public ProcessedInputFrameData CurrentInput;
 	#endregion input
 	//=//-----|Action Queue|------------------------------------------------------//=//
 	#region hitstop
@@ -576,8 +578,11 @@ public abstract class Character : MonoBehaviour
 	{
 		StateBlacklist.Remove(stateID);
 	}
-	#endregion state
-	//=//------------------------------------------------------------------------//=//
-	#endregion debug 
-	/////////////////////////////////////////////////////////////////////////////////////
+    #endregion state
+    //=//------------------------------------------------------------------------//=//
+    #endregion debug 
+    /////////////////////////////////////////////////////////////////////////////////////
+    ///
+
+#pragma warning restore CS0414
 }

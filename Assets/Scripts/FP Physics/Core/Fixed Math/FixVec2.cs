@@ -5,12 +5,20 @@ using System.Numerics;
 [Serializable]
 public struct FixVec2
 {
-    public Fix64 x, y;
+    public Fix64 x;
+    public Fix64 y;
 
-    public static readonly FixVec2 zero = new(Fix64.Zero, Fix64.Zero);
-    public static readonly FixVec2 one = new(Fix64.FromFloat(1), Fix64.FromFloat(1));
-    public static readonly FixVec2 right = new(Fix64.FromFloat(1), Fix64.Zero);
-    public static readonly FixVec2 up = new(Fix64.Zero, Fix64.FromFloat(1));
+    public static readonly FixVec2 zero =
+        new(Fix64.Zero, Fix64.Zero);
+
+    public static readonly FixVec2 one =
+        new(Fix64.FromFloat(1), Fix64.FromFloat(1));
+
+    public static readonly FixVec2 right =
+        new(Fix64.FromFloat(1), Fix64.Zero);
+
+    public static readonly FixVec2 up =
+        new(Fix64.Zero, Fix64.FromFloat(1));
 
     public FixVec2(Fix64 x, Fix64 y)
     {

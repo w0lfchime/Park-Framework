@@ -18,7 +18,7 @@ public sealed class DebugVectorRenderer : MonoBehaviour
 			if (_instance == null)
 			{
 				// Try find in scene
-				_instance = FindFirstObjectByType<DebugVectorRenderer>();
+				_instance = FindAnyObjectByType<DebugVectorRenderer>();
 				if (_instance == null)
 				{
 					var go = new GameObject("[DebugVectorRenderer]");

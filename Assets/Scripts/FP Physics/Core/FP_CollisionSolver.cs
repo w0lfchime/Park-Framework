@@ -58,11 +58,11 @@ public class FP_CollisionSolver : MonoBehaviour
 		FixVec2 n = FixVec2.Normalize(mtv);
 		Fix64 vDot = FixVec2.Dot(movable.Velocity, n);
 		if (vDot < Fix64.Zero)
-			movable.Velocity -= n * vDot;
+			movable.SetVelocity(movable.Velocity - n * vDot);
 
-		// Snap to ground if basically resting
-		if (n == FixVec2.up && Fix64.Abs(movable.Velocity.y) < Fix64.FromFloat(0.05f))
-			movable.Velocity = new FixVec2(movable.Velocity.x, Fix64.Zero);
+        // Snap to ground if basically resting
+        if (n == FixVec2.up && Fix64.Abs(movable.Velocity.y) < Fix64.FromFloat(0.05f))
+			movable.SetVelocity(new FixVec2(movable.Velocity.x, Fix64.Zero));
 	}
 
 

@@ -21,8 +21,10 @@ public class FP_Body2D : MonoBehaviour
 
 
     // === Body State ===
-    public FixVec2 Position { get; set; }
-    public FixVec2 Velocity { get; set; }
+    [field: SerializeField]
+    public FixVec2 Position { get; private set; }
+    [field: SerializeField]
+    public FixVec2 Velocity { get; private set; }
     public Fix64 Mass => mass;
     public Fix64 InverseMass => mass.RawValue == 0 ? Fix64.Zero : Fix64.FromFloat(1f) / mass;
 
@@ -33,20 +35,16 @@ public class FP_Body2D : MonoBehaviour
 
     public List<FP_BoxCollider2D> colliders = new();
 
-
-    //Debug
-    
-
     public void InitializeBody()
     {
-        Position = new FixVec2(transform.position);
         var rb2d = GetComponent<Rigidbody2D>();
-        if (rb2d != null)
+
+        if (rb2d)
         {
+            Position = new FixVec2(rb2d.position);
             Velocity = FixVec2.zero;
             mass = Fix64.FromFloat(rb2d.mass);
-            UseGravity = rb2d.gravityScale != 0;
-
+            UseGravity = false;
             // Convert Rigidbody2D body type
             switch (rb2d.bodyType)
             {
@@ -54,11 +52,9 @@ public class FP_Body2D : MonoBehaviour
                     bodyType = FP_BodyType.Static;
                     mass = Fix64.Zero;
                     break;
-
                 case RigidbodyType2D.Kinematic:
                     bodyType = FP_BodyType.Kinematic;
                     break;
-
                 case RigidbodyType2D.Dynamic:
                     bodyType = FP_BodyType.Dynamic;
                     break;
@@ -66,6 +62,17 @@ public class FP_Body2D : MonoBehaviour
 
             Destroy(rb2d);
         }
+        else
+        {
+            Position = FixVec2.zero;
+            Velocity = FixVec2.zero;
+            mass = Fix64.FromFloat(1f);
+            UseGravity = false;
+        }
+
+
+
+
         // Convert Unity BoxCollider2Ds to FP_BoxCollider2Ds
         var unityColliders = GetComponents<BoxCollider2D>();
         foreach (var box in unityColliders)
@@ -78,7 +85,20 @@ public class FP_Body2D : MonoBehaviour
             // Disable PhysX collider
             Destroy(box);
         }
+
+
+        //init normal collider
+        var fpColliders = GetComponents<FP_BoxCollider2D>();
+        foreach (var fpCollider in fpColliders)
+        {
+            if (!colliders.Contains(fpCollider))
+            {
+                fpCollider.Initialize(this);
+                colliders.Add(fpCollider);
+            }
+        }
     }
+
 
 
     public void ApplyForces()

@@ -104,17 +104,12 @@ public class App_CanvasPanelController : MonoBehaviour
 	{
 		if (!currentlyPairing)
 		{
-			// Toggle DebugView1 with ~
-			//if (Input.GetKeyDown(KeyCode.BackQuote))
-			//{
-			//	if (GlobalDebugFlags.GlobalDebug)
-			//	{
-			//		isDebugVisible = !isDebugVisible;
-			//		SetCanvasGroupActive(DebugView1, isDebugVisible);
-			//	}
-			//}
+			
+		if (Input.GetKeyDown(KeyCode.BackQuote))
+			{
+				isDebugVisible = !isDebugVisible;
+			}
 
-			// Toggle PauseMenu with Esc
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
 				if (isPauseMenuVisible)
